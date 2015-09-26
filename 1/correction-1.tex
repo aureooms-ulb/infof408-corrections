@@ -1,0 +1,110 @@
+\documentclass{article}
+
+\begin{document}
+
+I feel I have been a little bit sloppy during the exercise session so here are
+more detailed explanations for the exercises we saw.
+
+\section*{3.10}
+
+\subsection*{Introductory remarks}
+In the standard definition of the Turing machine, each step writes a symbol to
+the cell pointed by the head. Here, we consider that writing the same symbol as
+the one that is already in this cell does not count as ``writing''. We
+interpret ``writing'' as altering the content of the cell.
+
+At the beginning of the execution of the Turing machine, the input is
+present on the tape and this is not counted as a write operation.
+
+When we say that we add new symbols (\texttt{x}, \texttt{\#}) we suppose they
+are not already part of some used alphabet and this is without loss of generality.
+
+\subsection*{Using two writes per cell}
+The idea is to simulate each step of the simulated
+Turing machine by copying all ``ẁorking'' cells to new cells
+while applying the transition function to the cell pointed by the head.
+
+We use a copy procedure that copies each character after
+the other by doing ``zig-zags'' between the cells to be copied and the destination
+cells. In order to remember which cells were already copied we cross those
+cells off during the procedure. We implement the cross off operation as
+writing a special character (for example, \texttt{x}) in the concerned cell.
+This operation counts thus as one write operation. The cost of writing the
+symbol of the copied cell to the desitination also counts as a write. A cell
+will thus be written to at most twice (once as a destination cell, and then
+once as a copied cell).
+
+In order to detect when the copy procedure has copied all cells\footnote{%
+This fixes an issue of the write-once machine someone pointed out during the
+exercise session.}
+we add a
+special character (for example, \texttt{\#})
+at the end of the currently used portion of the tape.
+We thus add this special symbol after the last cell being written to by the
+copy procedure (and also at the end of the input before beginning the
+simulation). The cells containing this special character will only be written to once.
+
+To remember the position of the head of the simulated Turing machine we use
+colored symbols (we do not need to color the first cell at the beginning of
+the simulation since we ``know'' the first cell is pointed by the head at the
+beginning).
+Before copying a cell we need to check whether the next one is the head (is a
+colored symbol).
+In that case, we have two possibilities:
+\begin{enumerate}
+\item If the transition function makes the head move left, then
+we copy the current cell (the cell to the left of the
+head) using the colored version of the symbol, write the symbol designated by
+the transition function to the destination cell for the
+cell pointed by the head, and then copy the cell to the right of the head
+using the normal copy procedure.
+\item If the transition function makes the head move right, then
+we copy the current cell (the cell to the left of the
+head) using the normal copy procedure, write the symbol designated by
+the transition function to the destination cell for the
+cell pointed by the head, and then copy the cell to the right of the head
+using the colored version of the symbol.
+\end{enumerate}
+
+We also need to handle two special cases.
+If the head was on the leftmost cell and the transition function makes the
+head move left then we write the colored version of the symbol designated by
+the transition function to the first destination cell and then continue the
+copy procedure normally.
+If the head was on the last ``used'' cell and the transition function makes
+the head move right then we need to write a colored blank space next to the
+last destination
+cell and put the special
+``end-of-the-currently-used-portion-of-the-tape'' symbol (\texttt{\#})
+one cell further.
+
+\subsection*{Using a single write per cell}
+
+We transform each cell into two adjacent cells. The left one will be used to
+store the symbol and the right one to remember whether the cell has been
+crossed (that is, store the \texttt{x} symbol).
+
+Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
+it is not difficult to see that we can build a Turing machine that will know
+which type of cell the head is currently pointing at (there is a finite number
+of types of cells (2) so we can encode this in a finite number of additional
+states compared to the write-twice version).
+
+Symbol cells will only be written to once since we do not mark them anymore.
+Cross marks cells contain the original blank symbol of the tape until the
+corresponding symbol cell has been copied. When the corresponding symbol cell
+is copied we write the \texttt{x} symbol in the cross mark cell. Since a symbol
+cell is copied only once, a cross mark cell is written to only once.
+
+
+\subsection*{Questions}
+\subsubsection{Why can we not use a Turing machine with an infinite number of
+tapes}
+To use this kind of device we must make sure that it is equivalent to a single
+tape Turing machine.
+A Turing machine with an infinite number of tapes performs an infinite number
+of operations at each step. It is not difficult to see that this leads to a
+computing model that is more powerful than the Turing machine.
+\section*{3.15.a}
+\section*{3.16.a}
+\end{document}
