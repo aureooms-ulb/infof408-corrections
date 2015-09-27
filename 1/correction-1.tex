@@ -1,5 +1,14 @@
 \documentclass{article}
 
+\usepackage{amsmath}
+\usepackage{stackengine,scalerel}
+\renewcommand\useanchorwidth{T}
+\newcommand\obullet[1]{\ThisStyle{\ensurestackMath{%
+  \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\bullet}}}}
+\newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
+  \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
+
+\newcommand{\blank}{\textvisiblespace}
 \begin{document}
 
 I feel I have been a little bit sloppy during the exercise session so here are
@@ -11,23 +20,41 @@ more detailed explanations for the exercises we saw.
 In the standard definition of the Turing machine, each step writes a symbol to
 the cell pointed by the head. Here, we consider that writing the same symbol as
 the one that is already in this cell does not count as ``writing''. We
-interpret ``writing'' as altering the content of the cell.
+interpret ``writing to a cell'' as altering the content of the cell.
 
 At the beginning of the execution of the Turing machine, the input is
-present on the tape and this is not counted as a write operation.
+present on the tape and this is counts as zero write operations.
+
+If some set/combinations/thing is of finite size and does not depend on the input
+we can encode all its different ``elements'' in the states of the Turing machine.
+
+We call the simulated Turing machine (the one we want to simulate) \(M\) and we
+call the simulation Turing machine (the one used to simulate \(M\)) \(S\).
 
 When we say that we add new symbols (\texttt{x}, \texttt{\#}) we suppose they
-are not already part of some used alphabet and this is without loss of generality.
+are not already part of some used alphabet and this is without loss of
+generality.
+Similarily, we make the blank symbol of the simulated Turing machine and the
+simulation Turing machine different. The blank symbol of \(M\)
+is \texttt{\obullet{\blank}} while the blank symbol of \(S\)
+is \texttt{\blank}. In general you can consider that the tape alphabet of \(M\)
+does not include any of the symbols we will add to make \(S\) work.
+For example, we can use one color for the tape alphabet of \(M\) and
+another color for symbols we add. Here we will consider that all symbols used
+by \(M\) are dotted (like \texttt{\obullet{\blank}}) while the symbols that
+have a special meaning for \(S\) are not (like \texttt{\blank}).
 
 \subsection*{Using two writes per cell}
 The idea is to simulate each step of the simulated
-Turing machine by copying all ``ẁorking'' cells to new cells
+Turing machine by copying all ``ẁorking'' cells to new (unused) cells
 while applying the transition function to the cell pointed by the head.
 
 We use a copy procedure that copies each character after
 the other by doing ``zig-zags'' between the cells to be copied and the destination
 cells. In order to remember which cells were already copied we cross those
-cells off during the procedure. We implement the cross off operation as
+cells off during the procedure.
+
+We implement the cross off operation as
 writing a special character (for example, \texttt{x}) in the concerned cell.
 This operation counts thus as one write operation. The cost of writing the
 symbol of the copied cell to the desitination also counts as a write. A cell
@@ -36,7 +63,9 @@ once as a copied cell).
 
 In order to detect when the copy procedure has copied all cells\footnote{%
 This fixes an issue of the write-once machine someone pointed out during the
-exercise session.}
+exercise session. Relying on the presence of blank symbols as I explained
+during the exercise session will not work. I apologize for the misleading
+explanation.}
 we add a
 special character (for example, \texttt{\#})
 at the end of the currently used portion of the tape.
@@ -44,10 +73,46 @@ We thus add this special symbol after the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
 
+Here are the detailed steps to copy a symbol \texttt{\obullet{\alpha}}:
+\begin{enumerate}
+	\item Cross off \texttt{\obullet{\alpha}} by writing a \texttt{x}. This
+		counts as a single write operation.
+	\item Enter a state that remembers that we need to copy symbol
+		\texttt{\obullet{\alpha}}, for example, \((q_{\texttt{\alpha}}^1)\). We are allowed
+		to do this since alphabets are finite sets (and their size does not
+		depend on the input).
+	\item While in state \((q_{\texttt{\alpha}}^1)\), move right (without
+		altering the current cell) until we reach
+		the symbol \texttt{\#}, change then to state
+		\((q_{\texttt{\alpha}}^2)\).
+	\item While in state \((q_{\texttt{\alpha}}^2)\), move right (without
+		altering the current cell) until we reach the symbol \texttt{\blank}.
+	\item Replace the \texttt{\blank} by \texttt{\obullet{\alpha}} using a
+		single write operation and enter state \((q_{\texttt{\alpha}}^3)\).
+	\item While in state \((q_{\texttt{\alpha}}^4)\), move left until we reach
+		the symbol \texttt{x}, enter state \((q_{\texttt{\alpha}}^0)\)
+		then move right.
+\end{enumerate}
+A copy of all the cells can be achieved by entering state \((q_{\texttt{\alpha}}^0)\)
+then apply the procedure above repeatedly.
+The copy stops when in state \((q_{\texttt{\alpha}}^0)\) we read a \texttt{\#}
+symbol.
+
+We still need to describe how we can simulate \(M\), that is, remember the
+position of the head, update the cell pointed by the head and move the head
+according to the transition function of \(M\).
+
 To remember the position of the head of the simulated Turing machine we use
-colored symbols (we do not need to color the first cell at the beginning of
+colored symbols (in addition to the color used to differentiate the symbols
+used by \(M\) from the symbols having a special meaning for \(S\)).
+We do not need to color the first cell at the beginning of
 the simulation since we ``know'' the first cell is pointed by the head at the
-beginning).
+beginning. Again we can handle this using states since there is a finite number
+of possibilities. A simple way to do this is to use special states for the
+first steps of \(S\) that will allow us to copy the input with the
+appropriate symbols/marks/colors added. Once this is done we can use the
+procedures that require the special symbols to be present.
+
 Before copying a cell we need to check whether the next one is the head (is a
 colored symbol).
 In that case, we have two possibilities:
@@ -72,7 +137,7 @@ head move left then we write the colored version of the symbol designated by
 the transition function to the first destination cell and then continue the
 copy procedure normally.
 If the head was on the last ``used'' cell and the transition function makes
-the head move right then we need to write a colored blank space next to the
+the head move right then we need to write a blank space (\texttt{\obullet{\blank}}) next to the
 last destination
 cell and put the special
 ``end-of-the-currently-used-portion-of-the-tape'' symbol (\texttt{\#})
@@ -82,7 +147,7 @@ one cell further.
 
 We transform each cell into two adjacent cells. The left one will be used to
 store the symbol and the right one to remember whether the cell has been
-crossed (that is, store the \texttt{x} symbol).
+crossed off (that is, store the \texttt{x} symbol).
 
 Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
 it is not difficult to see that we can build a Turing machine that will know
@@ -93,7 +158,7 @@ states compared to the write-twice version).
 Symbol cells will only be written to once since we do not mark them anymore.
 Cross marks cells contain the original blank symbol of the tape until the
 corresponding symbol cell has been copied. When the corresponding symbol cell
-is copied we write the \texttt{x} symbol in the cross mark cell. Since a symbol
+is copied we write the \texttt{x} symbol in the ``cross-off-mark'' cell. Since a symbol
 cell is copied only once, a cross mark cell is written to only once.
 
 
