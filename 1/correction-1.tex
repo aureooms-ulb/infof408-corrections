@@ -56,10 +56,15 @@
 \newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
   \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
 
-\newcommand{\blank}{\texttt{\textvisiblespace}}
-\newcommand{\oblank}{\obullet{\blank}}
+\newcommand{\0}{\texttt{\textvisiblespace}}
+\newcommand{\°}{\obullet{\0}}
+\newcommand{\BB}{\obullet{\0^*}}
+\newcommand{\A}{\obullet{\s}}
+\newcommand{\Q}{\obullet{\texttt{b}}}
+\newcommand{\HA}{\obullet{\s^*}}
+\newcommand{\HQ}{\obullet{\texttt{b}^*}}
 \newcommand{\s}{\texttt{a}}
-\newcommand{\x}{\texttt{x}}
+\newcommand{\X}{\texttt{x}}
 \newcommand{\e}{\texttt{\#}}
 \newcommand{\st}{\colon\,}
 \newcommand{\TM}{TM}
@@ -79,11 +84,11 @@
 In the standard definition of the Turing machine (\TM{}), each step writes a symbol to
 the cell pointed by the head. Here, we consider that writing the same symbol as
 the one that is already in this cell does not count as ``writing''. We
-interpret ``writing to a cell'' as altering the content of the cell (see
-\ref{writing}).
+interpret ``writing to a cell'' as altering the content of the cell
+(see~\ref{writing}).
 \begin{figure}
     \centering
-    \begin{subfigure}[t]{0.5\textwidth}
+    \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
 			\draw[->] (3,3.25) -- (3,2.75) ;
@@ -107,7 +112,7 @@ interpret ``writing to a cell'' as altering the content of the cell (see
         \caption{Altering a cell, \(\delta(q_i,1) = (q_j,0,R)\). Counting as one write operation.}
     \end{subfigure}%
     ~
-    \begin{subfigure}[t]{0.5\textwidth}
+    \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
 			\draw[->] (3,3.25) -- (3,2.75) ;
@@ -143,18 +148,18 @@ we can encode all its different ``elements'' in the states of the \TM{}.
 We call the simulated \TM{} (the one we want to simulate) \(M\) and we
 call the simulation \TM{} (the one used to simulate \(M\)) \(S\).
 
-When we say that we add new symbols (\x, \e) we suppose they
+When we say that we add new symbols (\X{}, \e{}) we suppose they
 are not already part of some used alphabet and this is without loss of
 generality.
 Similarily, we make the blank symbol of the simulated \TM{} and the
 simulation \TM{} different. The blank symbol of \(M\)
-is \oblank{} while the blank symbol of \(S\)
-is \blank{}. In general you can consider that the tape alphabet of \(M\)
+is \°{} while the blank symbol of \(S\)
+is \0{}. In general you can consider that the tape alphabet of \(M\)
 does not include any of the symbols we will add to make \(S\) work.
 For example, we can use one color for the tape alphabet of \(M\) and
 another color for symbols we add. Here we will consider that all symbols used
-by \(M\) are dotted (like \oblank{}) while the symbols that
-have a special meaning for \(S\) are not (like \blank{}).
+by \(M\) are dotted (like \°{}) while the symbols that
+have a special meaning for \(S\) are not (like \0{}).
 
 \subsection{Using two writes per cell}
 The idea is to simulate each step of the simulated
@@ -167,7 +172,7 @@ cells. In order to remember which cells were already copied we cross those
 cells off during the procedure.
 
 We implement the cross off operation as
-writing a special character (for example, \x) in the concerned cell.
+writing a special character (for example, \X{}) in the concerned cell.
 This operation counts thus as one write operation. The cost of writing the
 symbol of the copied cell to the destination also counts as a write. A cell
 will thus be written to at most twice (once as a destination cell, and then
@@ -179,37 +184,125 @@ This fixes some confusion/comprehension issue we had when designing the
 write-once machine. Relying on the presence of blank symbols as I explained
 during the exercise session was not easily comprehensible without all the
 explanation I give here.}
-a
-special character (for example, \e)
+a special character (for example, \e)
 at the end of the currently used portion of the tape.
 We thus add this special symbol after the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
+This is handled by steps 7 and 8 in \ref{copying:last}.
 
 Here are the detailed steps to copy a symbol \obullet{\s}:
 \begin{enumerate}
-	\item Cross off \obullet{\s} by writing a \x. This
+	\item Cross off \obullet{\s} by writing a \X{}. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
 		\obullet{\s}, for example, \((q_{\texttt{a}}^1)\). We are allowed
-		to do this since alphabets are finite sets (and their size does not
+		to do this since the alphabet of M is a finite set (and its size does not
 		depend on the input).
 	\item While in state \((q_{\texttt{a}}^1)\), move right (without
 		altering the current cell) until we reach
 		the symbol \e, change then to state
 		\((q_{\texttt{a}}^2)\).
 	\item While in state \((q_{\texttt{a}}^2)\), move right (without
-	altering the current cell) until we reach the symbol \blank{}.
-\item Replace the \blank{} by \obullet{\s} using a
+	altering the current cell) until we reach the symbol \0{}.
+\item Replace the \0{} by \obullet{\s} using a
 		single write operation and enter state \((q_{\texttt{a}}^3)\).
 	\item While in state \((q_{\texttt{a}}^4)\), move left until we reach
-		the symbol \x, enter state \((q_{\texttt{a}}^0)\)
+		the symbol \X{}, enter state \((q_{\texttt{a}}^0)\)
 		then move right.
 \end{enumerate}
 A copy of all the cells can be achieved by entering state \((q_{\texttt{a}}^0)\)
 then apply the procedure above repeatedly.
 The copy stops when in state \((q_{\texttt{a}}^0)\) we read a \e{}
-symbol.
+symbol (see~\ref{copying}).
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (1,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (1,3.25) ++(0,-2) -- +(0,-.5) ;
+			\draw[->] (6,3.25) ++(0,-4) -- +(0,-.5) ;
+			\draw[->] (7,3.25) ++(0,-6) -- +(0,-.5) ;
+			\draw[->] (7,3.25) ++(0,-8) -- +(0,-.5) ;
+			\draw[->] (2,3.25) ++(0,-10) -- +(0,-.5) ;
+
+			\foreach \y/\v in {%
+				2/{1/\Q,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				0/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				-2/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				-4/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				-6/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\Q,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				-8/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\Q,8/\0,9/\0,10/\0,11/\0,12/\0},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+			\draw (.5,-2) node[anchor=east]{3.} ;
+			\draw (.5,-4) node[anchor=east]{4.} ;
+			\draw (.5,-6) node[anchor=east]{5.} ;
+			\draw (.5,-8) node[anchor=east]{6.} ;
+
+		\end{tikzpicture}
+	\caption{Copying the first cell.}
+    \end{subfigure}%
+	~
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (5,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (5,3.25) ++(0,-2) -- +(0,-.5) ;
+			\draw[->] (6,3.25) ++(0,-4) -- +(0,-.5) ;
+			\draw[->] (11,3.25) ++(0,-6) -- +(0,-.5) ;
+			\draw[->] (11,3.25) ++(0,-8) -- +(0,-.5) ;
+			\draw[->] (6,3.25) ++(0,-10) -- +(0,-.5) ;
+			\draw[->] (12,3.25) ++(0,-12) -- +(0,-.5) ;
+			\draw[->] (12,3.25) ++(0,-14) -- +(0,-.5) ;
+			\draw[->] (7,3.25) ++(0,-16) -- +(0,-.5) ;
+
+			\foreach \y/\v in {%
+				2/{1/\X,2/\X,3/\X,4/\X,5/\A,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\0,12/\0},%
+				0/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\0,12/\0},%
+				-2/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\0,12/\0},%
+				-4/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\0,12/\0},%
+				-6/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\0},%
+				-8/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\0},%
+				-10/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\0},%
+				-12/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\e},%
+				-14/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\e},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+			\draw (.5,-2) node[anchor=east]{3.} ;
+			\draw (.5,-4) node[anchor=east]{4.} ;
+			\draw (.5,-6) node[anchor=east]{5.} ;
+			\draw (.5,-8) node[anchor=east]{6.} ;
+			\draw (.5,-10) node[anchor=east]{7.} ;
+			\draw (.5,-12) node[anchor=east]{8.} ;
+			\draw (.5,-14) node[anchor=east]{9.} ;
+
+		\end{tikzpicture}
+	\caption{Copying the last cell.}
+	\label{copying:last}
+    \end{subfigure}
+	\caption{Copying working cells.}
+	\label{copying}
+\end{figure}
 
 We still need to describe how we can simulate \(M\), that is, remember the
 position of the head, update the cell pointed by the head and move the head
@@ -217,18 +310,39 @@ according to the transition function of \(M\).
 
 To remember the position of the head of the simulated \TM{} we use
 colored symbols (in addition to the color used to differentiate the symbols
-used by \(M\) from the symbols having a special meaning for \(S\)).
+used by \(M\) from the symbols having a special meaning for \(S\),
+see~\ref{head}).
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[scale=.5]
+		\draw[->] (1,3.25) -- (1,2.75) ;
+
+		\foreach \y/\v in {2/{1/\Q,2/\HA,3/\Q,4/\Q,5/\A,6/\e}}
+		\foreach \x/\k in \v {
+			\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+			\draw (\x,\y) node{$\k$};
+		}
+
+		\draw[dotted] (0.5,2.5) -- (0,2.5);
+		\draw[dotted] (0.5,1.5) -- (0,1.5);
+		\draw[dotted] (6.5,2.5) -- (7,2.5);
+		\draw[dotted] (6.5,1.5) -- (7,1.5);
+
+	\end{tikzpicture}
+	\caption{The first cell is pointed by the head of \(S\) (the arrow).
+	The second cell is pointed by the head of \(M\) (the starred symbol).}
+	\label{head}
+\end{figure}
 We do not need to color the first cell at the beginning of
 the simulation since we ``know'' the first cell is pointed by the head at the
 beginning. Again we can handle this using states since there is a finite number
 of possibilities. A simple way to do this is to use special states for the
 first steps of \(S\) that will allow us to copy the input with the
-appropriate symbols/marks/colors added. Once this is done we can use the
-procedures that require the special symbols to be present.
+appropriate symbols/marks/colors added.
 
 Before copying a cell we need to check whether the next one is the head (is a
 colored symbol).
-In that case, we have two possibilities:
+In that case, we have two possibilities (see \ref{transition}):
 \begin{enumerate}
 \item If the transition function makes the head move left, then
 we copy the current cell (the cell to the left of the
@@ -243,11 +357,125 @@ the transition function to the destination cell for the
 cell pointed by the head, and then copy the cell to the right of the head
 using the colored version of the symbol.
 \end{enumerate}
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (2,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (5,3.25) ++(0,-2) -- +(0,-.5) ;
+
+			\foreach \y/\v in {%
+				2/{1/\X,2/\Q,3/\HA,4/\A,5/\A,6/\e,7/\A,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				0/{1/\X,2/\X,3/\X,4/\X,5/\A,6/\e,7/\A,8/\HQ,9/\Q,10/\A,11/\0,12/\0},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+
+		\end{tikzpicture}
+		\caption{\(\delta(q_i,a) = (q_j,b,L)\), that is, moving left.}
+    \end{subfigure}%
+	~
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (2,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (5,3.25) ++(0,-2) -- +(0,-.5) ;
+
+			\foreach \y/\v in {%
+				2/{1/\X,2/\Q,3/\HA,4/\A,5/\A,6/\e,7/\A,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				0/{1/\X,2/\X,3/\X,4/\X,5/\A,6/\e,7/\A,8/\Q,9/\Q,10/\HA,11/\0,12/\0},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+
+		\end{tikzpicture}
+		\caption{\(\delta(q_i,a) = (q_j,b,R)\), that is, moving right.}
+    \end{subfigure}%
+	\caption{Handling the transition function.}
+	\label{transition}
+\end{figure}
 
 We also need to handle two special cases.
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (2,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (3,3.25) ++(0,-2) -- +(0,-.5) ;
 
+			\foreach \y/\v in {%
+				2/{1/\e,2/\HA,3/\A,4/\A,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
+				0/{1/\e,2/\X,3/\A,4/\A,5/\A,6/\e,7/\HQ,8/\0,9/\0,10/\0,11/\0,12/\0},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\draw[dotted] (.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+
+		\end{tikzpicture}
+		\caption{\(\delta(q_i,a) = (q_j,b,L)\), that is, moving left on the
+		leftmost cell.}
+		\label{transition:leftmost}
+    \end{subfigure}%
+	~
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+		\begin{tikzpicture}[scale=.5]
+			\draw[->] (4,3.25) ++(0, 0)-- +(0,-.5) ;
+			\draw[->] (7,3.25) ++(0,-2) -- +(0,-.5) ;
+
+			\foreach \y/\v in {%
+				2/{1/\e,2/\X,3/\X,4/\A,5/\HA,6/\e,7/\A,8/\Q,9/\0,10/\0,11/\0,12/\0},%
+				0/{1/\e,2/\X,3/\X,4/\X,5/\X,6/\e,7/\A,8/\Q,9/\A,10/\Q,11/\BB,12/\e},%
+			}{
+				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
+				\draw[dotted] (.5,\y) +(0,0.5)-- +(.5,0.5);
+				\draw[dotted] (.5,\y) +(0,-.5)-- +(.5,-.5);
+				\foreach \x/\k in \v {
+					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+					\draw (\x,\y) node{$\k$};
+				}
+			}
+
+			\draw (.5,2) node[anchor=east]{1.} ;
+			\draw (.5,0) node[anchor=east]{2.} ;
+
+		\end{tikzpicture}
+		\caption{\(\delta(q_i,a) = (q_j,b,R)\), that is, moving right on the
+		rightmost cell.}
+		\label{transition:rightmost}
+    \end{subfigure}%
+	\caption{Handling the transition function (edge cases).}
+\end{figure}
 If the head was on the leftmost cell and the transition function makes the
-head move left then we write the colored version of the symbol designated by
+head move left (\ref{transition:leftmost}) then we write the colored version of the symbol designated by
 the transition function to the first destination cell and then continue the
 copy procedure normally. If instead the transition function makes the head move
 right, we copy the first and second cell while transfering the color
@@ -255,17 +483,19 @@ right, we copy the first and second cell while transfering the color
 cell is not colored).
 
 If the head was on the last ``used'' cell and the transition function makes
-the head move right then we need to write a blank space (\oblank{}) next to the
+the head move right (\ref{transition:rightmost}) then we need to write a blank space (\°{}) next to the
 last destination
 cell and put the special
 ``end-of-the-currently-used-portion-of-the-tape'' symbol (\e)
-one cell further.
+one cell further. If instead the transition function makes the head move left,
+we transfer the color (storing the position of the head) from the last
+to the penultimate working cell while copying them.
 
 \subsection{Using a single write per cell}
 
 We transform each cell into two adjacent cells. The left one will be used to
 store the symbol and the right one to remember whether the cell has been
-crossed off (that is, store the \x{} symbol).
+crossed off (that is, store the \X{} symbol).
 
 Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
 it is not difficult to see that we can build a \TM{} that will know
@@ -276,7 +506,7 @@ states compared to the write-twice version).
 Symbol cells will only be written to once since we do not mark them anymore.
 Cross marks cells contain the original blank symbol of the tape until the
 corresponding symbol cell has been copied. When the corresponding symbol cell
-is copied we write the \x{} symbol in the ``cross-off'' cell. Since a symbol
+is copied we write the \X{} symbol in the ``cross-off'' cell. Since a symbol
 cell is copied only once, a ``cross-off'' cell is written to only once.
 
 Again, a simple way to format the input for \(S\) to work
@@ -285,8 +515,7 @@ appropriate symbols/marks/colors) is to use special states for the
 first steps of \(S\). The copy of the input can be made by crossing off the copied
 cells, like in the write-twice version. Since the input cells have not been
 written to yet when we start \(S\), the crossing off is the only write
-operation that happens for those cells. Once this is done we can use the
-procedures that require the special symbols to be present.
+operation that happens for those cells.
 
 
 \subsection{Questions}
