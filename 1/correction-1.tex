@@ -1,5 +1,6 @@
 \documentclass{article}
 
+\usepackage{url}
 \usepackage{amsmath}
 \usepackage{stackengine,scalerel}
 \renewcommand\useanchorwidth{T}
@@ -8,8 +9,13 @@
 \newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
   \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
 
-\newcommand{\blank}{\textvisiblespace}
-\newcommand\st{\colon\,}
+\newcommand{\blank}{\texttt{\textvisiblespace}}
+\newcommand{\oblank}{\obullet{\blank}}
+\newcommand{\s}{\texttt{a}}
+\newcommand{\x}{\texttt{x}}
+\newcommand{\e}{\texttt{\#}}
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
 \begin{document}
 
 I feel my explanations have been a little bit sloppy during the first exercise
@@ -18,36 +24,36 @@ session so here are more detailed explanations for the exercises we saw.
 \section*{3.10}
 
 \subsection*{Introductory remarks}
-In the standard definition of the Turing machine, each step writes a symbol to
+In the standard definition of the Turing machine (\TM{}), each step writes a symbol to
 the cell pointed by the head. Here, we consider that writing the same symbol as
 the one that is already in this cell does not count as ``writing''. We
 interpret ``writing to a cell'' as altering the content of the cell.
 
-At the beginning of the execution of the Turing machine, the input is
+At the beginning of the execution of the \TM{}, the input is
 present on the tape and this is counts as zero write operations.
 
 If some set/combinations/thing is of finite size and does not depend on the input
-we can encode all its different ``elements'' in the states of the Turing machine.
+we can encode all its different ``elements'' in the states of the \TM{}.
 
-We call the simulated Turing machine (the one we want to simulate) \(M\) and we
-call the simulation Turing machine (the one used to simulate \(M\)) \(S\).
+We call the simulated \TM{} (the one we want to simulate) \(M\) and we
+call the simulation \TM{} (the one used to simulate \(M\)) \(S\).
 
-When we say that we add new symbols (\texttt{x}, \texttt{\#}) we suppose they
+When we say that we add new symbols (\x, \e) we suppose they
 are not already part of some used alphabet and this is without loss of
 generality.
-Similarily, we make the blank symbol of the simulated Turing machine and the
-simulation Turing machine different. The blank symbol of \(M\)
-is \texttt{\obullet{\blank}} while the blank symbol of \(S\)
-is \texttt{\blank}. In general you can consider that the tape alphabet of \(M\)
+Similarily, we make the blank symbol of the simulated \TM{} and the
+simulation \TM{} different. The blank symbol of \(M\)
+is \oblank{} while the blank symbol of \(S\)
+is \blank{}. In general you can consider that the tape alphabet of \(M\)
 does not include any of the symbols we will add to make \(S\) work.
 For example, we can use one color for the tape alphabet of \(M\) and
 another color for symbols we add. Here we will consider that all symbols used
-by \(M\) are dotted (like \texttt{\obullet{\blank}}) while the symbols that
-have a special meaning for \(S\) are not (like \texttt{\blank}).
+by \(M\) are dotted (like \oblank{}) while the symbols that
+have a special meaning for \(S\) are not (like \blank{}).
 
 \subsection*{Using two writes per cell}
 The idea is to simulate each step of the simulated
-Turing machine by copying all ``ẁorking'' cells to new (unused) cells
+\TM{} by copying all ``working'' cells to new (unused) cells
 while applying the transition function to the cell pointed by the head.
 
 We use a copy procedure that copies each character after
@@ -56,54 +62,55 @@ cells. In order to remember which cells were already copied we cross those
 cells off during the procedure.
 
 We implement the cross off operation as
-writing a special character (for example, \texttt{x}) in the concerned cell.
+writing a special character (for example, \x) in the concerned cell.
 This operation counts thus as one write operation. The cost of writing the
-symbol of the copied cell to the desitination also counts as a write. A cell
+symbol of the copied cell to the destination also counts as a write. A cell
 will thus be written to at most twice (once as a destination cell, and then
 once as a copied cell).
 
-In order to detect when the copy procedure has copied all cells\footnote{%
-This fixes an issue of the write-once machine someone pointed out during the
-exercise session. Relying on the presence of blank symbols as I explained
-during the exercise session will not work. I apologize for the misleading
-explanation.}
-we add a
-special character (for example, \texttt{\#})
+In order to detect when the copy procedure has copied all cells
+we add\footnote{%
+This fixes some confusion/comprehension issue we had when designing the
+write-once machine. Relying on the presence of blank symbols as I explained
+during the exercise session was not easily comprehensible without all the
+explanation I give here.}
+a
+special character (for example, \e)
 at the end of the currently used portion of the tape.
 We thus add this special symbol after the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
 
-Here are the detailed steps to copy a symbol \texttt{\obullet{\alpha}}:
+Here are the detailed steps to copy a symbol \obullet{\s}:
 \begin{enumerate}
-	\item Cross off \texttt{\obullet{\alpha}} by writing a \texttt{x}. This
+	\item Cross off \obullet{\s} by writing a \x. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
-		\texttt{\obullet{\alpha}}, for example, \((q_{\texttt{\alpha}}^1)\). We are allowed
+		\obullet{\s}, for example, \((q_{\texttt{a}}^1)\). We are allowed
 		to do this since alphabets are finite sets (and their size does not
 		depend on the input).
-	\item While in state \((q_{\texttt{\alpha}}^1)\), move right (without
+	\item While in state \((q_{\texttt{a}}^1)\), move right (without
 		altering the current cell) until we reach
-		the symbol \texttt{\#}, change then to state
-		\((q_{\texttt{\alpha}}^2)\).
-	\item While in state \((q_{\texttt{\alpha}}^2)\), move right (without
-		altering the current cell) until we reach the symbol \texttt{\blank}.
-	\item Replace the \texttt{\blank} by \texttt{\obullet{\alpha}} using a
-		single write operation and enter state \((q_{\texttt{\alpha}}^3)\).
-	\item While in state \((q_{\texttt{\alpha}}^4)\), move left until we reach
-		the symbol \texttt{x}, enter state \((q_{\texttt{\alpha}}^0)\)
+		the symbol \e, change then to state
+		\((q_{\texttt{a}}^2)\).
+	\item While in state \((q_{\texttt{a}}^2)\), move right (without
+	altering the current cell) until we reach the symbol \blank{}.
+\item Replace the \blank{} by \obullet{\s} using a
+		single write operation and enter state \((q_{\texttt{a}}^3)\).
+	\item While in state \((q_{\texttt{a}}^4)\), move left until we reach
+		the symbol \x, enter state \((q_{\texttt{a}}^0)\)
 		then move right.
 \end{enumerate}
-A copy of all the cells can be achieved by entering state \((q_{\texttt{\alpha}}^0)\)
+A copy of all the cells can be achieved by entering state \((q_{\texttt{a}}^0)\)
 then apply the procedure above repeatedly.
-The copy stops when in state \((q_{\texttt{\alpha}}^0)\) we read a \texttt{\#}
+The copy stops when in state \((q_{\texttt{a}}^0)\) we read a \e{}
 symbol.
 
 We still need to describe how we can simulate \(M\), that is, remember the
 position of the head, update the cell pointed by the head and move the head
 according to the transition function of \(M\).
 
-To remember the position of the head of the simulated Turing machine we use
+To remember the position of the head of the simulated \TM{} we use
 colored symbols (in addition to the color used to differentiate the symbols
 used by \(M\) from the symbols having a special meaning for \(S\)).
 We do not need to color the first cell at the beginning of
@@ -133,25 +140,30 @@ using the colored version of the symbol.
 \end{enumerate}
 
 We also need to handle two special cases.
+
 If the head was on the leftmost cell and the transition function makes the
 head move left then we write the colored version of the symbol designated by
 the transition function to the first destination cell and then continue the
-copy procedure normally.
+copy procedure normally. If instead the transition function makes the head move
+right, we copy the first and second cell while transfering the color
+(storing the position of the head) to the copy of the second cell (the copy of the first
+cell is not colored).
+
 If the head was on the last ``used'' cell and the transition function makes
-the head move right then we need to write a blank space (\texttt{\obullet{\blank}}) next to the
+the head move right then we need to write a blank space (\oblank{}) next to the
 last destination
 cell and put the special
-``end-of-the-currently-used-portion-of-the-tape'' symbol (\texttt{\#})
+``end-of-the-currently-used-portion-of-the-tape'' symbol (\e)
 one cell further.
 
 \subsection*{Using a single write per cell}
 
 We transform each cell into two adjacent cells. The left one will be used to
 store the symbol and the right one to remember whether the cell has been
-crossed off (that is, store the \texttt{x} symbol).
+crossed off (that is, store the \x{} symbol).
 
 Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
-it is not difficult to see that we can build a Turing machine that will know
+it is not difficult to see that we can build a \TM{} that will know
 which type of cell the head is currently pointing at (there is a finite number
 of types of cells (2) so we can encode this in a finite number of additional
 states compared to the write-twice version).
@@ -159,18 +171,35 @@ states compared to the write-twice version).
 Symbol cells will only be written to once since we do not mark them anymore.
 Cross marks cells contain the original blank symbol of the tape until the
 corresponding symbol cell has been copied. When the corresponding symbol cell
-is copied we write the \texttt{x} symbol in the ``cross-off-mark'' cell. Since a symbol
-cell is copied only once, a cross mark cell is written to only once.
+is copied we write the \x{} symbol in the ``cross-off'' cell. Since a symbol
+cell is copied only once, a ``cross-off'' cell is written to only once.
+
+Again, a simple way to format the input for \(S\) to work
+(interleave the input with blank symbols and add the
+appropriate symbols/marks/colors) is to use special states for the
+first steps of \(S\). The copy of the input can be made by crossing off the copied
+cells, like in the write-twice version. Since the input cells have not been
+written to yet when we start \(S\), the crossing off is the only write
+operation that happens for those cells. Once this is done we can use the
+procedures that require the special symbols to be present.
 
 
 \subsection*{Questions}
-\subsubsection{Why can we not use a Turing machine with an infinite number of
-tapes}
+\subsubsection*{Why can we not use a \TM{} with an infinite number of
+tapes?}
 To use this kind of device we must make sure that it is equivalent to a single
-tape Turing machine.
-A Turing machine with an infinite number of tapes performs an infinite number
-of operations at each step. It is not difficult to see that this leads to a
-computing model that is more powerful than the Turing machine.
+tape \TM{}.
+A \TM{} with an infinite number of tapes and an infinite number of heads
+performs an infinite number
+of operations at each step.
+It is not difficult to see that this leads to a
+computing model that is more powerful than the \TM{}.
+However, it should be possible to use a \TM{} with an infinite number of tapes
+and a finite number of heads. For example, a \TM{} with a two-dimensional
+semi-infinite tape and a single head\footnote{See
+\url{http://cs.stackexchange.com/q/23936}
+and
+\url{http://cs.stackexchange.com/q/14628}.}.
 
 \section*{3.15.a}
 A decision problem can be seen as language \(A\) using the following mapping:
@@ -180,22 +209,23 @@ A decision problem can be seen as language \(A\) using the following mapping:
 	\item \(A\) is the language (a set of words) containing only
 		the words that encode an instance for
 		which the decision problem answer is ``yes''. Words encoding an
-		instance for which the decision problem is ``no'' of words that do not
+		instance for which the decision problem is ``no'' or words that do not
 		encode an instance (garbage) are excluded of the language.
 \end{enumerate}
 Deciding the answer to an instance of the problem amounts to determining
 whether the word encoding this instance belongs to \(A\).
 
-A Turing machine decides a language if for each word \(w \in \Sigma^{*}\)
+A \TM{} decides a language if for each word \(w \in \Sigma^{*}\)
 of the language alphabet \(\Sigma\)
 it either accepts or rejects the word after a finite number of steps. A decider
 will never loop forever.
 
-\(A \cup B = {w \st w \in A \text{or} w \in B}\)
-is the language that contains all words in \(A\) and all words in \(B\).
+\(A \cup B = \{w \st w \in A \lor w \in B\}\)
+is\footnote{\(\lor = \text{``or''}\)}
+the language that contains all words in \(A\) and all words in \(B\).
 
-If we are given a Turing machine \(M_A\) that decides a language \(A\) and
-a turing machine \(M_B\) that decides a language \(B\) we can decide the
+If we are given a \TM{} \(M_A\) that decides a language \(A\) and
+a \TM{} \(M_B\) that decides a language \(B\) we can decide the
 language \(A \cup B\) using \(M_{A \cup B}\) defined as follows
 (solution given in the textbook):
 
@@ -225,35 +255,34 @@ accept. If both halt and reject, reject .''
 \end{enumerate}
 
 If either \(M_A\) or \(M_B\) accepts \(w\), \(M_{A \cup B}\) accepts \(w\)
-because the accepting Turing machine arrives to its
+because the accepting \TM{} arrives to its
 accepting state after a finite number of steps. Note that if both \(M_A\) and
 \(M_B\) reject and either of them does so by looping, then \(M_{A \cup B}\)
 will loop.
 
-\section*{Other exercices from 3.15 and 3.16}
+\section*{Other exercises from 3.15 and 3.16}
 
-You can try to solve these exercices by yourself. Here are the definition of
-the operators:
+You can try to solve these exercises by yourself. Here are the definitions of
+the operators\footnote{\(\land = \text{``and''}\)}:
 \begin{itemize}
-\item[concatenation] \( A \times B = { w_a w_b \st w_a \in A \text{and} w_b \in
-	B}\), that is, the
+\item[concatenation] \( A \circ B = \{ w_a w_b \st w_a \in A \land w_b \in
+	B\}\), that is, the
 	words that are the result of concatenating a word of \(B\) to a word of
 	\(A\).
-\item[star] \( A* = { \epsilon } \cup { w_1 \cdots w_n \st w_i \in A, n \ge
-	1}\), that is,
+\item[star] \( A^* = \{ \epsilon \} \cup \{ w_1 \cdots w_n \st w_i \in A, n \ge
+	1\}\), that is,
 	words that are the result of concatenating any number of words from \(A\).
-\item[complementation] \( \overline{A} = { w \in \Sigma^{*} \st w \not \in A
-	}\), that is, the words of the language alphabet that are not in the
+\item[complementation] \( \overline{A} = \Sigma^{*} \setminus A = \{ w \in \Sigma^{*} \st w \not \in A
+	\}\), that is, words containing only symbols of the language alphabet that are not in the
 	language.
-\item[intersection] \( A \cap B = {w \st w \in A \text{and} w \in B}\), that
+\item[intersection] \( A \cap B = \{w \st w \in A \land w \in B\}\), that
 	is, words that are in both \(A\) and \(B\).
 \item[homomorphism] Let \(h \colon \Sigma^{*} \to \Sigma^{*}\)
 	be a function such that \(h(w_1 w_2) = h(w_1) h(w_2)\) for any words
 	\(w_1\) and \(w_2\). If \(A\) is
-	a language, then \(h(A)\) is defined as \({ w \st w = h(x), x \in A}\).
+	a language, then \(h(A)\) is defined as \(\{ w \st w = h(x), x \in A\}\).
 \end{itemize}
 
-It is maybe interesting to understand why complementation is not listed in
-3.16.
+It is important to understand why complementation is not listed in 3.16.
 
 \end{document}
