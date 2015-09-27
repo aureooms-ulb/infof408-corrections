@@ -9,10 +9,11 @@
   \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
 
 \newcommand{\blank}{\textvisiblespace}
+\newcommand\st{\colon\,}
 \begin{document}
 
-I feel I have been a little bit sloppy during the exercise session so here are
-more detailed explanations for the exercises we saw.
+I feel my explanations have been a little bit sloppy during the first exercise
+session so here are more detailed explanations for the exercises we saw.
 
 \section*{3.10}
 
@@ -170,6 +171,89 @@ tape Turing machine.
 A Turing machine with an infinite number of tapes performs an infinite number
 of operations at each step. It is not difficult to see that this leads to a
 computing model that is more powerful than the Turing machine.
+
 \section*{3.15.a}
+A decision problem can be seen as language \(A\) using the following mapping:
+\begin{enumerate}
+	\item To each instance of the problem is associated a word of some alphabet
+		\(\Sigma\) that encodes this instance.
+	\item \(A\) is the language (a set of words) containing only
+		the words that encode an instance for
+		which the decision problem answer is ``yes''. Words encoding an
+		instance for which the decision problem is ``no'' of words that do not
+		encode an instance (garbage) are excluded of the language.
+\end{enumerate}
+Deciding the answer to an instance of the problem amounts to determining
+whether the word encoding this instance belongs to \(A\).
+
+A Turing machine decides a language if for each word \(w \in \Sigma^{*}\)
+of the language alphabet \(\Sigma\)
+it either accepts or rejects the word after a finite number of steps. A decider
+will never loop forever.
+
+\(A \cup B = {w \st w \in A \text{or} w \in B}\)
+is the language that contains all words in \(A\) and all words in \(B\).
+
+If we are given a Turing machine \(M_A\) that decides a language \(A\) and
+a turing machine \(M_B\) that decides a language \(B\) we can decide the
+language \(A \cup B\) using \(M_{A \cup B}\) defined as follows
+(solution given in the textbook):
+
+``On input word \(w\):
+\begin{enumerate}
+	\item Run \(M_A\) on \(w\). If it accepts, accept.
+	\item Run \(M_B\) on \(w\). If it accepts, accept. Otherwise, reject.''
+\end{enumerate}
+\(M_{A \cup B}\) accepts \(w\) if either \(M_A\) or \(M_B\) accepts it.
+If both reject, \(M_{A \cup B}\) rejects.
+
 \section*{3.16.a}
+
+The difference from the previous exercise is that we are given \(M_A\) and
+\(M_B\) that are recognizers (not deciders). A recognizer \(M\) will always stop
+after a finite number of steps if run on a word that belongs to the language
+\(L(M)\) (the language recognized by \(M\)).
+However, if the word does not belong to \(L(M)\), \(M\) can either stop and reject or loop forever.
+
+The solution is thus to simulate both machines \(M_A\) and \(M_B\) ``in
+parallel'' (instead of in ``sequence'', like above). Solution given in the textbook:
+
+``On input w:
+\begin{enumerate}
+	\item Run \(M_A\) and \(M_B\) alternately on \(w\) step by step. If either accepts,
+accept. If both halt and reject, reject .''
+\end{enumerate}
+
+If either \(M_A\) or \(M_B\) accepts \(w\), \(M_{A \cup B}\) accepts \(w\)
+because the accepting Turing machine arrives to its
+accepting state after a finite number of steps. Note that if both \(M_A\) and
+\(M_B\) reject and either of them does so by looping, then \(M_{A \cup B}\)
+will loop.
+
+\section*{Other exercices from 3.15 and 3.16}
+
+You can try to solve these exercices by yourself. Here are the definition of
+the operators:
+\begin{itemize}
+\item[concatenation] \( A \times B = { w_a w_b \st w_a \in A \text{and} w_b \in
+	B}\), that is, the
+	words that are the result of concatenating a word of \(B\) to a word of
+	\(A\).
+\item[star] \( A* = { \epsilon } \cup { w_1 \cdots w_n \st w_i \in A, n \ge
+	1}\), that is,
+	words that are the result of concatenating any number of words from \(A\).
+\item[complementation] \( \overline{A} = { w \in \Sigma^{*} \st w \not \in A
+	}\), that is, the words of the language alphabet that are not in the
+	language.
+\item[intersection] \( A \cap B = {w \st w \in A \text{and} w \in B}\), that
+	is, words that are in both \(A\) and \(B\).
+\item[homomorphism] Let \(h \colon \Sigma^{*} \to \Sigma^{*}\)
+	be a function such that \(h(w_1 w_2) = h(w_1) h(w_2)\) for any words
+	\(w_1\) and \(w_2\). If \(A\) is
+	a language, then \(h(A)\) is defined as \({ w \st w = h(x), x \in A}\).
+\end{itemize}
+
+It is maybe interesting to understand why complementation is not listed in
+3.16.
+
 \end{document}
