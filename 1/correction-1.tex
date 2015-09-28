@@ -1,4 +1,5 @@
 \documentclass{article}
+\errorcontextlines 10000
 
 \usepackage{fontspec}
 \usepackage{xunicode}
@@ -501,7 +502,51 @@ Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
 it is not difficult to see that we can build a \TM{} that will know
 which type of cell the head is currently pointing at (there is a finite number
 of types of cells (2) so we can encode this in a finite number of additional
-states compared to the write-twice version).
+states compared to the write-twice version). Look \ref{copying:write-once} for
+an example of how copying works using two cells per symbol.
+\begin{figure}
+    \centering
+	\begin{tikzpicture}[scale=.5]
+		\draw[->] (1,3.25) ++(0, 0)-- +(0,-.5) ;
+		\draw[->] (2,3.25) ++(0,-2) -- +(0,-.5) ;
+		\draw[->] (11,3.25) ++(0,-4) -- +(0,-.5) ;
+		\draw[->] (12,3.25) ++(0,-6) -- +(0,-.5) ;
+		\draw[->] (12,3.25) ++(0,-8) -- +(0,-.5) ;
+		\draw[->] (3,3.25) ++(0,-10) -- +(0,-.5) ;
+
+		\foreach \y/\v in {%
+			2/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\0,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\0,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+			0/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\0,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+			-2/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\0,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+			-4/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\0,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+			-6/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\Q,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+			-8/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\Q,14/\0,16/\0,18/\0,20/\0,22/\0,%
+			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
+		}{
+			\draw[dotted] (23.5,\y) +(0,0.5)-- +(.5,0.5);
+			\draw[dotted] (23.5,\y) +(0,-.5)-- +(.5,-.5);
+			\foreach \x/\k in \v {
+				\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
+				\draw (\x,\y) node{$\k$};
+			}
+		}
+
+		\draw (.5,2) node[anchor=east]{1.} ;
+		\draw (.5,0) node[anchor=east]{2.} ;
+		\draw (.5,-2) node[anchor=east]{3.} ;
+		\draw (.5,-4) node[anchor=east]{4.} ;
+		\draw (.5,-6) node[anchor=east]{5.} ;
+		\draw (.5,-8) node[anchor=east]{6.} ;
+
+	\end{tikzpicture}
+	\caption{Copying a single cell with a write-once TM.}
+	\label{copying:write-once}
+\end{figure}
 
 Symbol cells will only be written to once since we do not mark them anymore.
 Cross marks cells contain the original blank symbol of the tape until the
