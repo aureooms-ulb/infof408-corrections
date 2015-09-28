@@ -141,7 +141,7 @@ interpret ``writing to a cell'' as altering the content of the cell
 \end{figure}
 
 At the beginning of the execution of the \TM{}, the input is
-present on the tape and this is counts as zero write operations.
+present on the tape and this counts as zero write operations.
 
 If some set/combinations/thing is of finite size and does not depend on the input
 we can encode all its different ``elements'' in the states of the \TM{}.
@@ -176,10 +176,10 @@ We implement the cross off operation as
 writing a special character (for example, \X{}) in the concerned cell.
 This operation counts thus as one write operation. The cost of writing the
 symbol of the copied cell to the destination also counts as a write. A cell
-will thus be written to at most twice (once as a destination cell, and then
-once as a copied cell).
+will thus be written to at most twice (once when copied to, and then
+once when crossed off).
 
-In order to detect when the copy procedure has copied all cells
+In order to detect when the copy procedure has copied all cells,
 we add\footnote{%
 This fixes some confusion/comprehension issue we had when designing the
 write-once machine. Relying on the presence of blank symbols as I explained
@@ -187,7 +187,7 @@ during the exercise session was not easily comprehensible without all the
 explanation I give here.}
 a special character (for example, \e)
 at the end of the currently used portion of the tape.
-We thus add this special symbol after the last cell being written to by the
+We thus add this special symbol directly to the right of the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
 This is handled by steps 7 and 8 in \ref{copying:last}.
@@ -548,8 +548,8 @@ an example of how copying works using two cells per symbol.
 	\label{copying:write-once}
 \end{figure}
 
-Symbol cells will only be written to once since we do not mark them anymore.
-Cross marks cells contain the original blank symbol of the tape until the
+Symbol cells will only be written to once since we do not cross them off anymore.
+``Cross-off'' cells contain the original blank symbol of the tape until the
 corresponding symbol cell has been copied. When the corresponding symbol cell
 is copied we write the \X{} symbol in the ``cross-off'' cell. Since a symbol
 cell is copied only once, a ``cross-off'' cell is written to only once.
@@ -565,15 +565,12 @@ operation that happens for those cells.
 
 \subsection{Questions}
 \subsubsection{Why can we not use a \TM{} with an infinite number of
-tapes?}
-To use this kind of device we must make sure that it is equivalent to a single
-tape \TM{}.
+tapes?\footnote{Thanks to the anonymous student who proposed this solution.}}
 A \TM{} with an infinite number of tapes and an infinite number of heads
-performs an infinite number
-of operations at each step.
-It is not difficult to see that this leads to a
-computing model that is more powerful than the \TM{}.
-However, it should be possible to use a \TM{} with an infinite number of tapes
+performs an infinite number of operations at each step.
+To use this kind of device we should first make sure that it is equivalent to a single
+tape \TM{}.
+However, it is be possible to use a \TM{} with an infinite number of tapes
 and a finite number of heads. For example, a \TM{} with a two-dimensional
 semi-infinite tape and a single head\footnote{See
 \url{http://cs.stackexchange.com/q/23936}
