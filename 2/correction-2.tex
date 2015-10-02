@@ -1,0 +1,269 @@
+\documentclass{article}
+\errorcontextlines 10000
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+
+\usepackage{hyperref}
+
+\hypersetup{
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+%\hypersetup{
+%	linktocpage  = true, %page number is the link (not title)
+%	colorlinks   = true, %Colours links instead of ugly boxes
+%	allcolors = bookColor,
+%	hidelinks = true
+%}
+
+% good looking urls
+\urlstyle{same}
+
+% we use this for our references as well
+\let\sref\ref
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage[nameinlink]{cleveref}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+%\usepackage[table,dvipdfx,cmyk]{xcolor}
+%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
+%\color{bookColor}
+
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+\usepackage[stable]{footmisc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{amsmath,amsthm}
+\newcommand{\theoremname}{Theorem}
+\newtheorem{theorem}{\theoremname}
+
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
+\newcommand{\Atm}{A\textsubscript{TM}}
+\newcommand{\HALTtm}{HALT\textsubscript{TM}}
+
+\title{Computability and Complexity:\\Exercise Session 2 (2015-10-02)}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Exercise 4.30\footnote{Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+
+Let \(A\) be a Turing-recognizable language consisting of descriptions of
+Turing machines,
+\(\{\langle M_1 \rangle, \langle M_2 \rangle, \ldots \}\),
+where every \(M_i\) is a decider. Prove that some decidable
+language \(Q\) is not decided by any decider \(M_i\) whose description appears in
+\(A\).
+(Hint: You may find it helpful to consider an enumerator for \(A\).)
+
+\subsection{Solution}
+\begin{enumerate}
+\item Generate a language \(A\) using diagonalization.
+\item The following \TM{} \(M\) is a decider for \(A\): (1) on input word \(w_i\)
+run \(M_i\); (2) if \(M_i\) accept, reject, otherwise accept.
+\end{enumerate}
+
+\section{Scooping the Loop Snooper}
+What is the following poem about?
+
+\begin{verse}
+\emph{No general procedure for bug checks will do}\footnote{%
+\emph{Geoffrey K. Pullum}
+\url{http://www.lel.ed.ac.uk/~gpullum/loopsnoop.html}%
+}.\\
+Now, I won't just assert that, I’ll prove it to you.\\
+I will prove that although you might work till you drop,\\
+you cannot tell if computation will stop.
+\end{verse}
+\begin{verse}
+For imagine we have a procedure called \(P\)\\
+that for specified input permits you to see\\
+whether specified source code, with all of its faults,\\
+defines a routine that eventually halts.
+\end{verse}
+\begin{verse}
+You feed in your program, with suitable data,\\
+and \(P\) gets to work, and a little while later\\
+(in finite compute time) correctly infers\\
+whether infinite looping behavior occurs.
+\end{verse}
+\begin{verse}
+If there will be no looping, then \(P\) prints out ``Good.''\\
+That means work on this input will halt, as it should.\\
+But if it detects an unstoppable loop,\\
+then \(P\) reports ``Bad!'' -- which means you're in the soup.
+\end{verse}
+\begin{verse}
+Well, the truth is that \(P\) cannot possibly be,\\
+because if you wrote it and gave it to me,\\
+I could use it to set up a logical bind\\
+that would shatter your reason and scramble your mind.
+\end{verse}
+\begin{verse}
+Here's the trick that I’ll use -- and it's simple to do.\\
+I’ll define a procedure, which I will call \(Q\),\\
+that will use \(P\)'s predictions of halting success\\
+to stir up a terrible logical mess.
+\end{verse}
+\begin{verse}
+For a specified program, say \(A\), one supplies,\\
+the first step of this program called \(Q\) I devise\\
+is to find out from \(P\) what's the right thing to say\\
+of the looping behavior of \(A\) run on \(A\).
+\end{verse}
+\begin{verse}
+If \(P\)'s answer is ``Bad!'', \(Q\) will suddenly stop.\\
+But otherwise, \(Q\) will go back to the top,\\
+and start off again, looping endlessly back,\\
+till the universe dies and turns frozen and black.
+\end{verse}
+\begin{verse}
+And this program called \(Q\) wouldn't stay on the shelf;\\
+I would ask it to forecast its run on itself.\\
+When it reads its own source code, just what will it do?\\
+What's the looping behavior of \(Q\) run on \(Q\)?
+\end{verse}
+\begin{verse}
+If \(P\) warns of infinite loops, \(Q\) will quit;\\
+yet \(P\) is supposed to speak truly of it!\\
+And if \(Q\)'s going to quit, then \(P\) should say ``Good.''\\
+Which makes \(Q\) start to loop! (\(P\) denied that it would.)
+\end{verse}
+\begin{verse}
+No matter how \(P\) might perform, \(Q\) will scoop it:\\
+\(Q\) uses \(P\)'s output to make \(P\) look stupid.\\
+	Whatever \(P\) says, it cannot predict \(Q\):\\
+\(P\) is right when it's wrong, and is false when it's true!
+\end{verse}
+\begin{verse}
+I’ve created a paradox, neat as can be --\\
+and simply by using your putative \(P\).\\
+When you posited \(P\) you stepped into a snare;\\
+Your assumption has led you right into my lair.
+\end{verse}
+\begin{verse}
+So where can this argument possibly go?\\
+I don't have to tell you; I'm sure you must know.\\
+A \textbf{reductio}: There cannot possibly be\\
+a procedure that acts like the mythical \(P\).
+\end{verse}
+\begin{verse}
+You can never find general mechanical means\\
+for predicting the acts of computing machines;\\
+it's something that cannot be done. So we users\\
+must find our own bugs. Our computers are losers!
+\end{verse}
+
+\subsection{Solution}
+
+We define the following language
+\begin{displaymath}
+\text{\HALTtm{}} = \{ \langle M,w \rangle \st \text{\(M\) is a \TM{} and \(M\)
+stops on \(w\)} \}.
+\end{displaymath}
+and prove the following theorem
+\begin{theorem}\label{HALTtm}
+\HALTtm{} is undecidable.
+\end{theorem}
+\begin{proof}
+We assume that HALT\textsubscript{TM} is decidable and obtain a contradiction.
+Suppose that \(P\) is a decider for \HALTtm{}.
+On input \(\langle M, w \rangle\), where \(M\) is a \TM{} and \(w\) is a
+word, \(P\) halts and accepts if \(M\) stops (accepting or rejecting) on \(w\).
+Furthermore, \(P\) halts and rejects if
+\(M\) loops on \(w\).
+In other words, we assume that \(P\) is a \TM{}, where
+\begin{displaymath}
+P(\langle M, w\rangle) = \begin{cases}
+	\emph{accept}&\text{if \(M\) stops on \(w\)}\\
+	\emph{reject}&\text{if \(M\) loops on \(w\)}.
+\end{cases}
+\end{displaymath}
+
+Now we construct a new Turing machine \(Q\) with \(P\) as a subroutine. This
+new \TM{} calls \(P\) to determine what \(M\) does when the input to \(M\)
+is its own
+description \(\langle M \rangle\).
+Once \(Q\) has determined this information, it does the opposite.
+That is, it loops if \(M\) stops and stops if \(M\) loops.
+The following is a description of \(Q\).
+
+\(Q =\) ``On input \(\langle M \rangle\), where \(M\) is a \TM{}:
+\begin{enumerate}
+	\item Run \(P\) on input \(\langle M, \langle M \rangle \rangle\).
+	\item Do the opposite of what \(M\) does according to the output of
+		\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, stop (by
+		either accepting or rejecting).''
+\end{enumerate}
+In summary,
+\begin{displaymath}
+	Q(\langle M\rangle) = \begin {cases}
+	\emph{stop}&\text{if \(M\) loops on \(\langle M\rangle\)}\\
+	\emph{loop}&\text{if \(M\) stops on \(\langle M\rangle\).}
+\end{cases}
+\end{displaymath}
+What happens when we run \(Q\) with its own description \(\langle Q\rangle\) as input? In that
+case, we get
+\begin{displaymath}
+Q(\langle Q\rangle) = \begin {cases}
+\emph{stop}&\text{if \(Q\) loops on \(\langle Q\rangle\)}\\
+\emph{loop}&\text{if \(Q\) stops on \(\langle Q\rangle\).}
+\end{cases}
+\end{displaymath}
+No matter what \(Q\) does, it is forced to do the opposite, which is obviously a
+contradiction. We must conclude that \(Q\) cannot exist, and therefore, that
+\(P\) cannot exist, that is, that \HALTtm{} is undecidable.
+\end{proof}
+\subsection{Questions}
+\subsubsection{Can we not prove that \HALTtm{} is undecidable using the fact
+that \Atm{} is undecidable?\footnote{%
+Thanks to the anonymous student who suggested this solution.%
+}}
+
+\begin{theorem}\label{Atm}
+\Atm{} is undecidable.
+\end{theorem}
+
+For a proof of this theorem, see the textbook or the course notes you have taken
+on 2015-09-28. We now prove~\ref{HALTtm} using~\ref{Atm}.
+
+\begin{proof}
+By contradiction. Suppose \HALTtm{} is decidable, then,
+there exists a decider \(P\) such that \(L(P) =
+\text{\HALTtm{}} \). Using \(P\) we
+can build a decider \(D\) for \Atm{}
+
+\(D =\) ``On input \(\langle M,w \rangle\), where \(M\) is a \TM{} and \(w\) is
+a word:
+\begin{enumerate}
+	\item Run \(P\) on input \(\langle M,w \rangle\).
+	\item If \(P\) rejects, that is, warns of the looping behavior of \(M\) on
+		\(w\), reject.
+	\item Otherwise \(M\) will stop on \(w\). We can thus simulate \(M\) on
+		\(w\). If \(M\) accepts, accept. Otherwise, reject.'',
+\end{enumerate}
+a contradiction.
+\end{proof}
+
+\end{document}
