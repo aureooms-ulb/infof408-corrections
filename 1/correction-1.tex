@@ -1,6 +1,7 @@
 \documentclass{article}
 \errorcontextlines 10000
 
+\makeatletter
 \usepackage{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
@@ -69,6 +70,36 @@
 \newcommand{\e}{\texttt{\#}}
 \newcommand{\st}{\colon\,}
 \newcommand{\TM}{TM}
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+\makeatother
 
 \title{Computability and Complexity:\\Exercise Session 1 (2015-09-25)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
@@ -605,11 +636,11 @@ a \TM{} \(M_B\) that decides a language \(B\) we can decide the
 language \(A \cup B\) using \(M_{A \cup B}\) defined as follows
 (solution given in the textbook):
 
-``On input word \(w\):
-\begin{enumerate}
-	\item Run \(M_A\) on \(w\). If it accepts, accept.
-	\item Run \(M_B\) on \(w\). If it accepts, accept. Otherwise, reject.''
-\end{enumerate}
+
+\begin{TMachine}{``On input word \(w\):}
+\item[1.] Run \(M_A\) on \(w\). If it accepts, \accept.
+\item[2.] Run \(M_B\) on \(w\). If it accepts, \accept. Otherwise, \reject.''
+\end{TMachine}
 \(M_{A \cup B}\) accepts \(w\) if either \(M_A\) or \(M_B\) accepts it.
 If both reject, \(M_{A \cup B}\) rejects.
 
@@ -624,11 +655,10 @@ However, if the word does not belong to \(L(M)\), \(M\) can either stop and reje
 The solution is thus to simulate both machines \(M_A\) and \(M_B\) ``in
 parallel'' (instead of in ``sequence'', like above). Solution given in the textbook:
 
-``On input w:
-\begin{enumerate}
-	\item Run \(M_A\) and \(M_B\) alternately on \(w\) step by step. If either accepts,
-accept. If both halt and reject, reject .''
-\end{enumerate}
+\begin{TMachine}{``On input w:}
+\item[1.] Run \(M_A\) and \(M_B\) alternately on \(w\) step by step. If either accepts,
+	\accept{}. If both halt and reject, \reject{}.''
+\end{TMachine}
 
 If either \(M_A\) or \(M_B\) accepts \(w\), \(M_{A \cup B}\) accepts \(w\)
 because the accepting \TM{} arrives to its

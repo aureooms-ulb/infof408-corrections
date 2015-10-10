@@ -1,6 +1,7 @@
 \documentclass{article}
 \errorcontextlines 10000
 
+\makeatletter
 \usepackage{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
@@ -60,6 +61,36 @@
 
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
             \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+\makeatother
 
 \title{Computability and Complexity:\\Exercise Session 2 (2015-10-02)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
@@ -126,16 +157,15 @@ for \(A\), as we have shown in a previous lecture.
 
 To prove that \(Q\) is decidable, we build the following \TM{}:
 
-\(D =\) on input \(w_i\):
-\begin{enumerate}
-\item Determine the value of \(i\) using the enumerator \(W\), that is,
+\begin{TMachine}{\(D =\) on input \(w_i\):}
+\item[1.] Determine the value of \(i\) using the enumerator \(W\), that is,
 enumerate all words in standard string order while maintaining a count of how
 many words have been enumerated, and stop when encountering \(w_i\).
-\item Enumerate the \(M_k\) of \(A\) using the enumerator for \(A\). Stop once
+\item[2.] Enumerate the \(M_k\) of \(A\) using the enumerator for \(A\). Stop once
 we have enumerated \(i\) different deciders, that is, the last decider yielded
 by the enumerator is \(M_i\).
-\item Simulate \(M_i\) on \(w_i\). If \(M_i\) accepts, reject. If \(M_i\) rejects, accept.
-\end{enumerate}
+\item[3.] Simulate \(M_i\) on \(w_i\). If \(M_i\) accepts, reject. If \(M_i\) rejects, accept.
+\end{TMachine}
 
 \(D\) is a decider since:
 \begin{enumerate}
@@ -273,13 +303,12 @@ Once \(Q\) has determined this information, it does the opposite.
 That is, it loops if \(M\) stops and stops if \(M\) loops.
 The following is a description of \(Q\).
 
-\(Q =\) ``On input \(\langle M \rangle\), where \(M\) is a \TM{}:
-\begin{enumerate}
-	\item Run \(P\) on input \(\langle M, \langle M \rangle \rangle\).
-	\item Do the opposite of what \(M\) does according to the output of
-		\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, stop (by
-		either accepting or rejecting).''
-\end{enumerate}
+\begin{TMachine}{\(Q =\) ``On input \(\langle M \rangle\), where \(M\) is a \TM{}:}
+\item[1.] Run \(P\) on input \(\langle M, \langle M \rangle \rangle\).
+\item[2.] Do the opposite of what \(M\) does according to the output of
+	\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, stop (by
+	either accepting or rejecting).''
+\end{TMachine}
 In summary,
 \begin{displaymath}
 	Q(\langle M\rangle) = \begin {cases}
@@ -318,15 +347,14 @@ there exists a decider \(P\) such that \(L(P) =
 \text{\HALTtm{}} \). Using \(P\) we
 can build a decider \(D\) for \Atm{}
 
-\(D =\) ``On input \(\langle M,w \rangle\), where \(M\) is a \TM{} and \(w\) is
-a word:
-\begin{enumerate}
+\begin{TMachine}{\(D =\) ``On input \(\langle M,w \rangle\), where \(M\) is a \TM{} and \(w\) is
+a word:}
 	\item Run \(P\) on input \(\langle M,w \rangle\).
 	\item If \(P\) rejects, that is, warns of the looping behavior of \(M\) on
 		\(w\), reject.
 	\item Otherwise \(M\) will stop on \(w\). We can thus simulate \(M\) on
 		\(w\). If \(M\) accepts, accept. Otherwise, reject.'',
-\end{enumerate}
+\end{TMachine}
 a contradiction.
 \end{proof}
 
