@@ -10,7 +10,7 @@
 
 \usepackage{hyperref}
 
-\hypersetup{
+\hypersetup{%
 	linktocpage  = true, %page number is the link (not title)
 	colorlinks   = true, %Colours links instead of ugly boxes
 	urlcolor     = darkblue, %Colour for external hyperlinks
@@ -43,8 +43,8 @@
 %\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
 %\color{bookColor}
 
-\definecolor{lightgray}{rgb}{.9,.9,.9}
-\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
 \definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
 \usepackage[stable]{footmisc}
@@ -80,12 +80,13 @@
 \section{Exercise 5.19\footnote{Exercises from the reference book: Sipser M.,
 \emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
 
-Remember the definition of Post's correspondance problem
+Remember the definition of Post's correspondence problem
 \begin{problem}\label{PCP}
 	Given a finite set of \(n\) dominos\footnote{\([n] = \{1,2,\ldots,n\}\)}
 	\(P = \mleft\{ \mleft[\frac{t_1}{b_1}\mright] , \mleft[\frac{t_2}{b_2}\mright] , \ldots
-			, \mleft[\frac{t_n}{b_n}\mright]\mright\}, t_i, b_i \in \Sigma^*
-				\Forall i \in [n]\), decide
+			, \mleft[\frac{t_n}{b_n}\mright]\mright\}\), such that \(t_i, b_i
+		\in \Sigma^*\)
+			for all \(i \in [n]\), decide
 	whether there exists a \(k\)-tuple of indices \((i_1,i_2,\ldots,i_k)\),
 	called a match,
 	such that\footnote{\(v = v_1 v_2 \ldots v_{n_v} \in \Sigma^* \land w = w_1 w_2 \ldots
@@ -120,8 +121,9 @@ match since all dominos are of the form\footnote{\(1^n = \underbrace{11\ldots1}_
 and hence for each domino either the bottom string is a prefix of the top
 string or the top string is a prefix of the bottom string, or both.
 For each domino \(d\) of the form \(\mleft[\frac{1^m}{1^n}\mright]\) let us
-define \(\Delta(d) = m - n\). Since we only need to match the lengths of the
-top and bottom part of a match, a \(k\)-tuple \(M = (i_1,i_2,\ldots,i_k)\)
+define \(\Delta(d) = m - n\). Since there is only one symbol,
+we only need to match the lengths of the
+top and bottom part of a match, and hence a \(k\)-tuple \(M = (i_1,i_2,\ldots,i_k)\)
 is a match if and only if \(\sum_{i \in M}
 	\Delta(\mleft[\frac{t_i}{b_i}\mright]) = 0\).
 To solve this problem, we have to handle four cases:
@@ -183,7 +185,7 @@ Note that \(L(D) = \Sigma^* \in P\) if and only if \(M\) accepts \(w\) and
 \(w\). Hence, for any input \(\langle M,w\rangle\) we can decide whether \(M\)
 accepts \(w\) by running the decider \(H\) on \(\langle D_{\langle M,w\rangle}
 \rangle\), a contradiction with respect to the theorem about the undecidability
-of \Atm{}.
+of \Atm{} we proved during the lectures.
 
 \section{Exercise 5.31}
 
