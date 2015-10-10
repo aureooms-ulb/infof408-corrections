@@ -1,6 +1,8 @@
 \documentclass{article}
 \errorcontextlines 10000
 
+\makeatletter
+
 \usepackage{fontspec}
 \usepackage{xunicode}
 \usepackage{xltxtra}
@@ -72,6 +74,39 @@
 
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
             \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+
+\makeatother
 
 \title{Computability and Complexity:\\Exercise Session 3 (2015-10-09)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
@@ -178,12 +213,11 @@ there exists a decider \(H\) for language \(T\). Given some input \(\langle
 M,w\rangle\) to test against the language \Atm{}, build the following
 \TM{}:
 
-\(D_{\langle M,w\rangle} =\) on input \(x\):
-\begin{enumerate}
-	\item If \(x = \texttt{01}\): accept
-	\item Otherwise run \(M\) on \(w\). If \(M\) accepts, accept. Otherwise
-		reject.
-\end{enumerate}
+\begin{TMachine}{\(D_{\langle M,w\rangle} =\) on input \(x\):}
+\item[1.] If \(x = \texttt{01}\): \accept.
+\item[2.] Otherwise run \(M\) on \(w\). If \(M\) accepts, \accept. Otherwise
+		\reject.
+\end{TMachine}
 Note that \(L(D) = \Sigma^* \in P\) if and only if \(M\) accepts \(w\) and
 \(L(D) = \{\texttt{01}\} \not\in P\) if and only if \(M\) does not accept
 \(w\). Hence, for any input \(\langle M,w\rangle\) we can decide whether \(M\)
@@ -215,11 +249,10 @@ the subset of \(\N\)
 for which the conjecture holds, that is, \(\{x \in \N \st 1 \in
 \{x,f(x),f(f(x)),\ldots\} \}\).
 
-\(C =\) on input \(\langle x \rangle\):
-\begin{enumerate}
-	\item While \(x \neq 1\): \(x \gets f(x)\)
-	\item accept
-\end{enumerate}
+\begin{TMachine}{\(C =\) on input \(\langle x \rangle\):}
+\item[1.] While \(x \neq 1\): \(x \gets f(x)\)
+\item[2.] \(1 \in \{x,f(x),f(f(x)),\ldots\}\) so \accept.
+\end{TMachine}
 
 To be able to easily combine\footnote{Alternatively, one can use a mapping from
 \(\Sigma\) to \(\N\).} this \TM{} with others, we will define
@@ -227,26 +260,24 @@ a \TM{} \(C_{\Sigma^*}\) so that~\ref{collatz} holds if and only if
 \(L(C_{\Sigma^*}) =
 		\Sigma^*\). Here we take \(\Sigma = \{0,1\}\), the binary alphabet.
 
-		\(C_{\Sigma^*} =\) on input \(w\):
-\begin{enumerate}
-	\item If \(w \not\in
+\begin{TMachine}{\(C_{\Sigma^*} =\) on input \(w\):}
+\item[1.] If\footnote{This can be checked in a finite amount of time.} \(w \not\in
 \{\texttt{1},\texttt{10},\texttt{11},\texttt{100},\texttt{101},\texttt{110},\texttt{111},\ldots\}\),
 that is, \(w\) is not\footnote{For example, \(w
 	= \epsilon\).} the binary representation \(\langle x \rangle\)
-		of a number \(x \in \N\), accept.
-	\item While \(x \neq 1\): \(x \gets f(x)\)
-	\item accept
-\end{enumerate}
+		of a number \(x \in \N\), \accept.
+	\item[2.] While \(x \neq 1\): \(x \gets f(x)\)
+	\item[3.] \(1 \in \{x,f(x),f(f(x)),\ldots\}\) so \accept.
+\end{TMachine}
 
 Using \(H\) we build \(R_{\neq \Sigma^*}\), a recognizer for the language
 \(L(R_{\neq \Sigma^*}) = \{\langle M\rangle\st L(M) \neq \Sigma^*\}\).
 
-\(R_{\neq \Sigma^*} =\) on input \(\langle M \rangle\):
-\begin{enumerate}
+\begin{TMachine}{\(R_{\neq \Sigma^*} =\) on input \(\langle M \rangle\):}
 	\item[1.] For each \(w \in \Sigma^*\) in lexicographic order:
 	\item[1.1.] Run \(H\) on \(\langle M , w \rangle\).
-	\item[1.2.] If \(H\) rejects, accept.
-\end{enumerate}
+	\item[1.2.] If \(H\) rejects, \accept.
+\end{TMachine}
 
 Finally, we run \(H\) on \(\langle R_{\neq \Sigma^*}, \langle C_{\Sigma^*} \rangle
 		\rangle\) to check whether~\ref{collatz} holds. If \(H\) rejects then
