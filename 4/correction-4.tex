@@ -1,0 +1,158 @@
+\documentclass{article}
+\errorcontextlines 10000
+
+\makeatletter
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+\usepackage{mleftright}
+
+\usepackage{hyperref}
+
+\hypersetup{%
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+%\hypersetup{
+%	linktocpage  = true, %page number is the link (not title)
+%	colorlinks   = true, %Colours links instead of ugly boxes
+%	allcolors = bookColor,
+%	hidelinks = true
+%}
+
+% good looking urls
+\urlstyle{same}
+
+\newcommand{\theoremname}{Theorem}
+\newcommand{\problemname}{Problem}
+\newcommand{\conjecturename}{Conjecture}
+
+% we use this for our references as well
+\let\sref\ref
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage[nameinlink]{cleveref}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+%\usepackage[table,dvipdfx,cmyk]{xcolor}
+%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
+%\color{bookColor}
+
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+\usepackage[stable]{footmisc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amsfonts}
+\newtheorem{theorem}{\theoremname}
+\newtheorem{problem}{\problemname}
+\newtheorem{conjecture}{\conjecturename}
+
+% nicely spaced operators
+\DeclareMathOperator{\Exists}{\exists}
+\DeclareMathOperator{\Forall}{\forall}
+
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
+\newcommand{\Atm}{A\textsubscript{TM}}
+\newcommand{\HALTtm}{HALT\textsubscript{TM}}
+
+\newcommand\N{\mathbb{N}_1}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+
+\makeatother
+
+\title{Computability and Complexity:\\Exercise Session 4 (2015-10-16)}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Exercises 7.1 and 7.2\footnote{Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+Those exercises are simple to understand once you have the definitions for the
+\emph{Big Oh} and \emph{small oh} notations\footnote{We saw these definitions
+during last lecture and it is explained at the beginning of Chapter 7.}.
+
+\subsection{Exercise 7.1.a}
+\(2n = O(n)\)
+is true because \(c = 2\) and \(n_0 = 0\) verify the definition.
+
+\subsection{Exercise 7.1.b}
+\(n^2 = O(n)\)
+is false because for any \(c \ge 1\) we have that for all \(n > c\), \(n^2 > cn\).
+
+\subsection{Exercise 7.1.c}
+\(n^2 = O(n \log^2 n)\)
+is false because for any \(c \ge 1\) we have that for all \(n > c \log^2 n\), \(n^2 > cn \log^2 n\).
+
+\subsection{Exercise 7.1.d}
+\(n \log n = O(n^2)\)
+is true because \(c = 1\) and \(n_0 = 0\) verify the definition.
+
+\subsection{Exercise 7.1.e}
+\(3^n = 2^{O(n)}\)
+is true because \(c = \log_2 3\) and \(n_0 = 0\) verify the definition.
+
+\subsection{Exercise 7.1.f}
+\(2^{2^n} = O(2^{2^n})\)
+is true because \(c = 1\) and \(n_0 = 0\) verify the definition. We always have
+\(f(n) = O(f(n))\).
+
+\section{Exercise 5.18}
+
+\section{Exercise 4.17\footnote{Exercise 4.16 in the second edition of the
+reference book}}
+
+\section{Exercise 3.15}
+\section{Exercise 3.16}
+
+\end{document}
