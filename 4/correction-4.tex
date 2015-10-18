@@ -57,6 +57,7 @@
 \usepackage{tikz}
 \usepackage{url}
 \usepackage{amsmath,amsthm,amsfonts}
+\usepackage{xfrac}
 \newtheorem{theorem}{\theoremname}
 \newtheorem{problem}{\problemname}
 \newtheorem{conjecture}{\conjecturename}
@@ -122,32 +123,63 @@ Those exercises are simple to understand once you have the definitions for the
 \emph{Big Oh} and \emph{small oh} notations\footnote{We saw these definitions
 during last lecture and it is explained at the beginning of Chapter 7.}.
 
-\subsection{Exercise 7.1.a}
+\subsection{Exercise 7.1}
+
+\subsubsection{Exercise 7.1.a}
 \(2n = O(n)\)
 is true because \(c = 2\) and \(n_0 = 0\) verify the definition.
 
-\subsection{Exercise 7.1.b}
+\subsubsection{Exercise 7.1.b}
 \(n^2 = O(n)\)
 is false because for any \(c \ge 1\) we have that for all \(n > c\), \(n^2 > cn\).
 
-\subsection{Exercise 7.1.c}
+\subsubsection{Exercise 7.1.c}
 \(n^2 = O(n \log^2 n)\)
 is false because for any \(c \ge 1\) we have that for all \(n > c \log^2 n\), \(n^2 > cn \log^2 n\).
 
-\subsection{Exercise 7.1.d}
+\subsubsection{Exercise 7.1.d}
 \(n \log n = O(n^2)\)
 is true because \(c = 1\) and \(n_0 = 0\) verify the definition.
 
-\subsection{Exercise 7.1.e}
+\subsubsection{Exercise 7.1.e}
 \(3^n = 2^{O(n)}\)
 is true because \(c = \log_2 3\) and \(n_0 = 0\) verify the definition.
 
-\subsection{Exercise 7.1.f}
+\subsubsection{Exercise 7.1.f}
 \(2^{2^n} = O(2^{2^n})\)
-is true because \(c = 1\) and \(n_0 = 0\) verify the definition. We always have
-\(f(n) = O(f(n))\).
+is true because \(c = 1\) and \(n_0 = 0\) verify the definition. Note that we
+always have \(f(n) = O(f(n))\).
+
+\subsection{Exercise 7.2}
+
+\subsubsection{Exercise 7.2.a}
+\(n = o(2n)\) is false because \(\lim_{n \to \infty} \frac{n}{2n} = \lim_{n \to
+\infty} \frac{1}{2} = \frac{1}{2} \neq 0\). Note that we always have \(f(n)
+\neq o(f(n))\).
+
+\subsubsection{Exercise 7.2.b}
+\(2n = o(n^2)\) is true because \(\lim_{n \to \infty} \frac{2n}{n^2} =
+\lim_{n \to \infty} \frac{2}{n} = 0\)
+
+\subsubsection{Exercise 7.2.c}
+\(2^n = o(3^n)\) is true because \(\lim_{n \to \infty} \frac{2^n}{3^n} =
+\lim_{n \to \infty} \mleft(\frac{2}{3}\mright)^n = 0\).
+
+\subsubsection{Exercise 7.2.d}
+\(1 = o(n)\) is true because \(\lim_{n \to \infty} \frac{1}{n} = 0\).
+
+\subsubsection{Exercise 7.2.e}
+\(n = o(\log n)\) is false because \(\lim_{n \to \infty} \frac{n}{\log n} =
+\infty \neq 0\).
+
+\subsubsection{Exercise 7.2.f}
+\(1 = o(\sfrac{1}{n})\) is false beacuse \(\lim_{n \to \infty}
+\frac{1}{\sfrac{1}{n}} = \lim_{n \to \infty} n = \infty \neq 0\).
+
 
 \section{Exercise 5.18}
+
+
 
 \section{Exercise 4.17\footnote{Exercise 4.16 in the second edition of the
 reference book}}
