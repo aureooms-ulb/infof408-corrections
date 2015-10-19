@@ -69,6 +69,7 @@
 \DeclareMathOperator{\Forall}{\forall}
 
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand{\card}[1]{|#1|}
 
 \newcommand{\st}{\colon\,}
 \newcommand{\TM}{TM}
@@ -254,8 +255,54 @@ mappings from \(\Gamma\) to \(\Sigma^*\) such that no encoding of a symbol of
 
 \section{Exercise 4.17\footnote{Exercise 4.16 in the second edition of the
 reference book}}
+A DFA is a \(5\)-tuple \((Q,\Sigma,\delta,q_0,F)\) where \(Q\) is the set of
+states, \(\Sigma\) is the input alphabet, \(\delta : Q \times \Sigma \to Q\) is the transition
+function, \(q_0 \in Q\) is the start state and \(F \subseteq Q\) is the set of
+accept states. Without loss of generality, we consider the case \(\Sigma =
+\{0,1\}\).
+Given a DFA \(A\) and an input string \(w = w_1 w_2 \ldots w_n\) we can check
+whether \(w \in L(A)\) by computing the value of the following function \(D_A\)
+for \(w\)
+\begin{align*}
+	D_A(w) &= \alpha_A(D_A'(w))\\
+	\alpha_A(q) &= \begin{cases}
+		\accept & \text{if \(q \in F\)},\\
+		\reject & \text{otherwise}
+	\end{cases}\\
+	D_A'(w) &= D_A''(q_0,w)\\
+	D_A''(q,w_1 w_{2 \ldots n}) &= D_A''(\delta(q,w_1),w_{2 \ldots n})\\
+	D_A''(q,\epsilon) &= q.
+\end{align*}
+
+Given two DFA's \(A_1 = (Q_1,\Sigma,\delta_1,q_0^1,F_1)\) and \(A_2 =
+(Q_2,\Sigma,\delta_2,q_0^2,F_2)\) we want to check whether \(L(A_1) =
+L(A_2)\). Imagine we are given an input \(w\) and run \(A_1\) and \(A_2\)
+on their own copy of \(w\). Let \(e_1 = D_{A_1}'(w)\) be the last state reached by
+\(A_1\) when run on \(w\) and let \(e_2 = D_{A_2}'(w)\) be the last state reached
+by \(A_2\) when run on \(w\). Then \(L(A_1) = L(A_2) \implies D_{A_1}(w) =
+D_{A_2}(w)\), that is, either both \(e_1\) and \(e_2\) are accepting, or
+both are rejecting. Indeed, to show that \(L(A_1) = L(A_2)\) we only need to
+show that each possible ending configuration \((e_1,e_2) \in (Q_1 \times Q_2)\) obtained by
+simulating both \(A_1\) and \(A_2\) on an input word contain states that are
+both accepting or rejecting. There are at most \(\card{Q_1} \card{Q_2}\) such
+configurations. Here is an algorithm that checks all of them
+\begin{TMachine}{On input \(\langle A_1, A_2 \rangle\):}
+\item 1. \(Z \gets \{\}\)
+\item 2. \(X \gets \{(q_0^1,q_0^2)\}\)
+\item 3. While \(X \neq \emptyset\):
+\item 3.1. Pick \((q_1,q_2) \in X\).
+\item 3.2. If \(\alpha_{A_1}(q_1) \neq \alpha_{A_2}(q_2)\), \reject.
+\item 3.3. \(Z \gets Z \cup \{(q_1,q_2)\}\)
+\item 3.4. \(X \gets X \cup
+	\{(\delta_1(q_1,0),\delta_2(q_2,0)),(\delta_1(q_1,1),\delta_2(q_2,1))\}
+\setminus Z\)
+\item 4. \accept.
+\end{TMachine}
+Another equivalent (but less efficient) algorithm checks that \(A_1\) agrees
+with \(A_2\) on all strings of length at most \(\card{Q_1} \card{Q_2}\).
 
 \section{Exercise 3.15}
+
 \section{Exercise 3.16}
 
 \end{document}
