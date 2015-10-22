@@ -1,0 +1,239 @@
+\documentclass{article}
+\errorcontextlines 10000
+
+\makeatletter
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+\usepackage{mleftright}
+
+\usepackage{hyperref}
+
+\hypersetup{%
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+%\hypersetup{
+%	linktocpage  = true, %page number is the link (not title)
+%	colorlinks   = true, %Colours links instead of ugly boxes
+%	allcolors = bookColor,
+%	hidelinks = true
+%}
+
+% good looking urls
+\urlstyle{same}
+
+\newcommand{\theoremname}{Theorem}
+\newcommand{\corollaryname}{Corollary}
+\newcommand{\problemname}{Problem}
+\newcommand{\conjecturename}{Conjecture}
+\newcommand{\definitionname}{Definition}
+
+% we use this for our references as well
+\let\sref\ref
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage[nameinlink]{cleveref}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+%\usepackage[table,dvipdfx,cmyk]{xcolor}
+%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
+%\color{bookColor}
+
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+\usepackage[stable]{footmisc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage{xfrac}
+\newtheorem{theorem}{\theoremname}
+\newtheorem{corollary}{\corollaryname}
+\newtheorem{problem}{\problemname}
+\newtheorem{conjecture}{\conjecturename}
+\newtheorem{definition}{\definitionname}
+
+% nicely spaced operators
+\DeclareMathOperator{\Exists}{\exists}
+\DeclareMathOperator{\Forall}{\forall}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand{\card}[1]{|#1|}
+
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
+\newcommand{\Atm}{A\textsubscript{TM}}
+\newcommand{\HALTtm}{HALT\textsubscript{TM}}
+
+\newcommand\N{\mathbb{N}_1}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+
+\makeatother
+
+\title{Computability and Complexity:\\Exercise Session 5 (2015-10-23)}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{3SAT is polynomial time reducible to CLIQUE\footnote{%
+Theorem 7.32 from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+
+\subsection{Introduction}
+
+Let us recall the big picture. We have shown in the first part of the course,
+the part about computability, that not all problems can be solved by means of
+Turing machines. We made the distinction between decidable and undecidable
+problems, the former being the ones we can solve with algorithms, that is,
+procedures that eventually terminate.
+
+The second part, that is, the part about complexity, focuses on the resources
+it takes to solve decidable problems. We already introduced the classes P and
+NP. NP is the class of problems for which there exists a nondeterministic
+polynomial-time algorithm. An equivalent definition is to consider the
+languages for which all words have at least one corresponding certificate of
+appartenance of polynomial size that can be verified using a polynomial
+algorithm called a verifier. P is the class of problems for which there exists
+a deterministic polynomial-time algorithm. By definition P is contained in NP.
+However, we do not know whether P is different from NP.
+
+Later on in the lectures, we will define the notion of NP-completeness and show
+that, while we (today) cannot answer the question ``P vs. NP'', we can identify
+a set of problems, the NP-complete problems, that capture the complexity of all
+the problems in NP. This kind of result relies heavily on the notion of
+reduction.
+
+\subsection{Definitions}
+
+We already saw that the reducibility of a problem to
+another need not rely on similarity between the two problems. It is
+possible to prove reducibility results between two apriori unrelated problems.
+The goal of this exercise is to show you a first reduction of an NP-complete
+problem to a problem in NP.
+
+Let us begin with a few definitions
+\begin{definition}
+	A boolean formula \(\Phi\) over \(n\) variables \(x_1,x_2,\ldots,x_n\) is in
+	conjunctive normal form (CNF) if \(\Phi\) can be
+	written as a conjunction of \(m\) clauses \(c_1 \land c_2 \land \cdots \land
+	c_m\) where each clause \(c_j\) can be written as a disjunction of literals
+	\((l_1^j \lor l_2^j \lor \cdots \lor l_{k_j}^j)\) where each literal is
+	either a variable \(x_i\) or the negation of a variable \(\lnot x_i\).
+\end{definition}
+
+The language CNF-SAT is defined as
+\begin{definition}
+	CNF-SAT \(\{ \langle \Phi \rangle \st \Phi \text{ is in CNF and there exists an assignment \(\in
+		\{0,1\}^n\) on the
+		variables \(x_1,x_2,\ldots,x_n\) that makes the formula evaluate to
+		true}\}\)
+\end{definition}
+
+The language 3SAT is a subset of CNF-SAT
+\begin{definition}
+	3SAT \(\{ \langle \Phi \rangle \st \Phi \in \text{ CNF-SAT and has exactly 3 literals per clause}\}\)
+\end{definition}
+
+The language CLIQUE is the following
+\begin{definition}
+	CLIQUE \(\{ \langle G , k \rangle \st \text{ \(G\) is a graph with a clique
+		of size \(k\)\}\)
+\end{definition}
+
+We now prove the following
+\begin{theorem}
+	3SAT \(\le_P\) CLIQUE
+\end{theorem}
+
+\begin{proof}
+\end{proof}
+
+What we just did is called a Karp reduction. Given two problems \(A\)
+and \(B\), an algorithm for problem \(B\), and a polynomial
+procedure to translate any
+instance \(a\) of \(A\) into an instance \(b\) of \(B\) in such a way that the
+answer to the decision problem \(a\) is ``yes'' if and only if the answer to
+the decision problem \(b\) is ``yes'', we can decide any instance of \(A\) using
+following algorithm
+\begin{TMachine}{On input \(\langle a \rangle\):}
+\item[1.] Translate instance \(a \in A\) to the corresponding instance \(b \in
+	B\) in polynomial time.
+\item[2.] Answer the same as the algorithm for \(B\) run on \(\langle b \rangle\).
+\end{TMachine}
+Moreover, if the algorithm for \(B\) runs in polynomial time so does this
+algorithm.
+
+\subsection{CLIQUE is NP-complete}
+
+During the next lecture, we will define the notion of NP-completeness
+\begin{definition}
+	A language \(B\) is NP-complete if it satisfies two conditions:
+	\begin{enumerate}
+		\item \(B\) is in NP, and
+		\item every \(A\) in NP is polynomial time reducible to \(B\).
+	\end{enumerate}
+\end{definition}
+and see that
+\begin{theorem}
+	CNF-SAT is NP-complete
+\end{theorem}
+and that
+\begin{theorem}
+	CNF-SAT \(\le_P\) 3SAT.
+\end{theorem}
+Those two theorems together with the one we just proved and the fact that
+CLIQUE is in NP\footnote{Left as exercise for the reader}
+imply the following corollary
+\begin{corollary}
+	CLIQUE is NP-complete.
+\end{corollary}
+\end{document}
