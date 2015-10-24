@@ -60,6 +60,8 @@
 \usepackage{url}
 \usepackage{amsmath,amsthm,amsfonts,mathtools}
 \usepackage{xfrac}
+
+
 \newtheorem{theorem}{\theoremname}
 \newtheorem{corollary}{\corollaryname}
 \newtheorem{problem}{\problemname}
@@ -175,11 +177,9 @@ Let us begin with a few definitions
 
 The language CNF-SAT is defined as
 \begin{definition}
-	CNF-SAT \(= \{ \langle \phi \rangle \st \phi \in \text{CNF and there
-						exists an assignment } \in
-						\{0,1\}^n \text{ on the
-							variables } x_1,x_2,\ldots,x_n \text{ that makes the formula evaluate to
-		true.}\}\)
+	CNF-SAT \(= \{ \langle \phi \rangle \st \phi \in\) CNF and there exists an
+	assignment \(\in \{0,1\}^n\) on the variables \(x_1,x_2,\ldots,x_n\) that
+	makes the formula evaluate to true. \(\}\)
 \end{definition}
 
 The language 3SAT is a subset of CNF-SAT
@@ -201,6 +201,19 @@ We now prove the following
 	3SAT \(\le_P\) CLIQUE
 \end{theorem}
 
+\subsubsection{Reduction}
+
+Given a boolean formula \(\phi\) in conjunctive normal form with exactly three
+literals per clause, we construct graph \(G = (V,E)\) and then prove that \(G\)
+has a clique of size \(m\) if and only if \(\phi\) is satisfiable.
+
+We start with an empty graph. For each clause we add a set of three vertices to
+the graph, called a triple. The three added vertices correspond to the three
+literals of the clause. For each pair of vertices that are not from the same
+triple, we add an edge if the two literals do not contradict each other. Note
+that we do not add any edge between the vertices of the same triple.
+
+Here is the corresponding Turing-machine description of the algorithm
 \begin{TMachine}{\(f\) : on input \(\langle \phi \rangle\):}
 \item[1.] \(V \gets \emptyset\)
 \item[2.] \(E \gets \emptyset\)
