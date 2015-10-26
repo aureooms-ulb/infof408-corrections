@@ -158,7 +158,7 @@ reduction.
 
 We already saw that the reducibility of a problem to
 another need not rely on similarity between the two problems. It is
-possible to prove reducibility results between two apriori unrelated problems.
+possible to prove reducibility results between two \emph{a priori} unrelated problems.
 The goal of this exercise is to show you a first reduction of an NP-complete
 problem to a problem in NP that, at first sight, might not seem intuitive.
 
@@ -213,8 +213,8 @@ literals of the clause. For each pair of vertices that are not from the same
 triple, we add an edge if the two literals do not contradict each other. Note
 that we do not add any edge between the vertices of the same triple.
 
-Here is the corresponding Turing-machine description of the algorithm
-\begin{TMachine}{\(f\) : on input \(\langle \phi \rangle\):}
+Here is a corresponding \emph{Turing-machine-like} description of the algorithm
+\begin{TMachine}{\(f =\) on input \(\langle \phi \rangle\):}
 \item[1.] \(V \gets \emptyset\)
 \item[2.] \(E \gets \emptyset\)
 \item[3.] For each \(c_j = (l_{j1},l_{j2},l_{j3}) \in \phi\):
@@ -238,7 +238,7 @@ time and produces a graph of polynomial size.
 
 \subsubsection{Correctness}
 
-We need to prove that \(\phi \in \text{3SAT} \iff f(\langle \phi \rangle) \in
+We need to prove that \(\langle \phi \rangle \in \text{3SAT} \iff f(\langle \phi \rangle) \in
 \text{CLIQUE}\). We prove the two implications of the equivalence.
 
 \paragraph{(\(\implies\))} If \(\langle\phi\rangle \in \text{3SAT}\) then, by definition,
@@ -247,12 +247,14 @@ that for each clause there is at least one literal \(l_{jz_j}\) that evaluates
 to true. In other words, \(\exists l_{1z_1},l_{2z_2},\ldots,l_{mz_m}\) such
 that no two literals \(l_{az_a},l_{bz_b}\) are contradictory, that is,
 \(l_{az_a} \neq \lnot l_{bz_b} \Forall a,b \in [m]\). The corresponding
-vertices in the graph of \(f(\langle \phi \rangle)\) form a \(m\)-clique, that
+vertices in the graph \(G\) of \(f(\langle \phi \rangle) = \langle G,m
+\rangle\)
+form a \(m\)-clique, that
 is, the graph induced by \(v_{1z_1},v_{2z_2},\ldots,v_{mz_m}\) must be
-complete. This holds because, by definition, an edge can only be missing if two
+complete. This holds because, by construction, an edge can only be missing if two
 vertices represent literals of the same clause, which is not the case here
 since we have selected exactly one literal per clause, \textbf{or} if two
-vertices represent contradictory literals, which by construction is not
+vertices represent contradictory literals, which is not
 possible either. Hence, \(f(\langle \phi \rangle) \in \text{CLIQUE}\).
 
 \paragraph{(\(\impliedby\))} If \(f(\langle \phi \rangle) = \langle G, m \rangle \in \text{CLIQUE}\),
@@ -269,17 +271,15 @@ between them. Hence, \(\langle \phi \rangle \in\) 3SAT.
 
 \subsection{About Karp reductions}
 
-What we just did is called a Karp reduction. Given two problems \(A\)
-and \(B\), an algorithm for problem \(B\), and a polynomial-time
-mapping procedure \(f\) to translate any
-instance \(a\) of \(A\) into an instance \(b = f(a)\) of \(B\) in such a way that the
-answer to the decision problem \(a\) is ``yes'' if and only if the answer to
-the decision problem \(b\) is ``yes'', we can decide any instance of \(A\) using
+What we just did is called a Karp reduction. Given two languages \(A\)
+and \(B\), an algorithm for deciding \(B\), and a polynomial-time
+mapping procedure \(f\) such that
+\(a \in A\) if and only if \(f(a) \in B\), we can decide whether \(a \in A\) using
 the following algorithm
-\begin{TMachine}{On input \(\langle a \rangle\):}
-\item[1.] Translate instance \(a \in A\) to the corresponding instance \(b \in
+\begin{TMachine}{On input \(a\):}
+\item[1.] Translate instance \(a \in A\) to the corresponding instance \(f(a) \in
 	B\) in polynomial time.
-\item[2.] Answer the same as the algorithm for \(B\) run on \(\langle b \rangle\).
+\item[2.] Answer the same as the algorithm for \(B\) run on \(f(a)\).
 \end{TMachine}
 Moreover, if the algorithm for \(B\) runs in polynomial time so does this
 algorithm.
