@@ -134,11 +134,11 @@ Last lecture we showed that
 \begin{theorem}
 	HAMPATH is NP-complete.
 \end{theorem}
-We now want to show that the undericted version of HAMPATH is NP-complete too:
+We now want to show that the undirected version of HAMPATH is NP-complete too:
 \begin{definition}
-	UHAMPATH \(= \{\langle G, s, t\rangle \st \text{\(G\) is an undericted
+	UHAMPATH \(= \{\langle G, s, t\rangle \st G\) is an undirected
 				graph and has an hamiltonian path from vertex \(s\) to vertex
-	\(t\).}\}\).
+	\(t\}\).
 \end{definition}
 We prove the following
 \begin{theorem}
@@ -151,7 +151,7 @@ We prove the following
 	vertices \(s\) and \(t\) of \(G\) add the vertices \(s^{out}\) and
 	\(t^{in}\) to \(G'\). For each vertex \(v\) other than \(s\) and \(t\) add
 	vertices \(v^{in}, v^{mid}\) and \(v^{out}\) to \(G'\). For each triple
-	\(v^{in},v^{mid},v^{out}\) of \(G'\) add the undericted edges \(\{v^{in},
+	\(v^{in},v^{mid},v^{out}\) of \(G'\) add the undirected edges \(\{v^{in},
 	v^{mid}\}\) and \(\{v^{mid},v^{out}\}\) to \(G'\).
 	For each directed
 	edge \((u,v)\) with \(u \neq t\) and \(v \neq s\) of \(G\) add an
@@ -183,7 +183,8 @@ We prove the following
 	we started with, except that we removed vertices
 	\(s^{out},u^{in},u^{mid}\). To visit all vertices, we must repeat this
 	scheme until there is only two vertices left, that is, \(u^{out}_{n-2}\)
-	and \(t^{in}\).
+	and \(t^{in}\). Note that the complexity of this reduction is linear in the
+	size of the input graph \(G\).
 \end{proof}
 
 \section{SUBSET-SUM is NP-complete\footnote{%
