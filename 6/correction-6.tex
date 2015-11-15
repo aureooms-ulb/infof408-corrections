@@ -128,15 +128,16 @@
 \maketitle
 \tableofcontents
 
-\section{UHAMPATH is NP-complete\footnote{%
+\section{\texorpdfstring{UHAMPATH is NP-complete\footnote{%
 Theorem 7.55 from the reference book: Sipser M.,
-\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{UHAMPATH is NP-complete}}
 
 Last lecture we showed that
 \begin{theorem}
 	HAMPATH is NP-complete.
 \end{theorem}
-We now want to show that the undirected version of HAMPATH is NP-complete too:
+We now want to show that the undirected version of HAMPATH is NP-complete too
 \begin{definition}
 	UHAMPATH \(= \{\langle G, s, t\rangle \st G\) is an undirected
 				graph and has an hamiltonian path from vertex \(s\) to vertex
@@ -147,6 +148,10 @@ We prove the following
 	UHAMPATH is NP-complete.
 \end{theorem}
 \begin{proof}
+	Clearly, UHAMPATH is in NP. For any instance \(\langle G,s,t\rangle\)
+	any sequence of vertices that is a
+	hamiltonian path from \(s\) to \(t\) in \(G\) can be used as a certificate
+	of polynomial size.
 	Given an instance \(\langle G, s, t \rangle\) of the HAMPATH problem, we
 	build an instance \(\langle G', s^{out}, t^{in}\rangle\) of the UHAMPATH
 	problem as follows. Start with an empty undirected graph \(G'\). For the
@@ -189,9 +194,10 @@ We prove the following
 	size of the input graph \(G\).
 \end{proof}
 
-\section{SUBSET-SUM is NP-complete\footnote{%
+\section{\texorpdfstring{SUBSET-SUM is NP-complete\footnote{%
 Theorem 7.56 from the reference book: Sipser M.,
-\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{SUBSET-SUM is NP-complete}}
 Let us define the language SUBSET-SUM
 \begin{definition}
 	SUBSET-SUM \(= \{\langle S, t\rangle \st\)
@@ -346,9 +352,10 @@ time. We do this by reducing 3SAT to SUBSET-SUM in polynomial time.
 \end{table}
 
 
-\section{Exercise 7.18\footnote{%
+\section{\texorpdfstring{Exercise 7.18\footnote{%
 Exercises from the reference book: Sipser M.,
-\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{Exercise 7.18}}
 
 We want to prove that
 \begin{theorem}
@@ -374,6 +381,8 @@ Turing-machine that decides \(A\) in polynomial time
 \item[2.] If \(w \in A\) write \(x\) on the tape and halt. Otherwise, write
 \(z\) on the tape and halt.
 \end{TMachine}
+Note that \(x\) and \(z\) do not depend on \(w\) and hence, their size does not
+depend on the input size. The whole computation runs thus in polynomial time.
 
 \end{proof}
 \end{document}
