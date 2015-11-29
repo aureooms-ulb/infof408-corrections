@@ -1,0 +1,167 @@
+\documentclass{article}
+\errorcontextlines 10000
+
+\makeatletter
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+\usepackage{mleftright}
+\usepackage{hhline}
+
+\usepackage{hyperref}
+
+\hypersetup{%
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+%\hypersetup{
+%	linktocpage  = true, %page number is the link (not title)
+%	colorlinks   = true, %Colours links instead of ugly boxes
+%	allcolors = bookColor,
+%	hidelinks = true
+%}
+
+% good looking urls
+\urlstyle{same}
+
+\newcommand{\theoremname}{Theorem}
+\newcommand{\corollaryname}{Corollary}
+\newcommand{\problemname}{Problem}
+\newcommand{\conjecturename}{Conjecture}
+\newcommand{\definitionname}{Definition}
+
+% we use this for our references as well
+\let\sref\ref
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage[nameinlink]{cleveref}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+%\usepackage[table,dvipdfx,cmyk]{xcolor}
+%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
+%\color{bookColor}
+
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+\usepackage[stable]{footmisc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage{xfrac}
+
+
+\newtheorem{theorem}{\theoremname}
+\newtheorem{corollary}{\corollaryname}
+\newtheorem{problem}{\problemname}
+\newtheorem{conjecture}{\conjecturename}
+\newtheorem{definition}{\definitionname}
+
+% nicely spaced operators
+\DeclareMathOperator{\Exists}{\exists}
+\DeclareMathOperator{\Forall}{\forall}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand{\card}[1]{|#1|}
+
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
+\newcommand{\Atm}{A\textsubscript{TM}}
+\newcommand{\HALTtm}{HALT\textsubscript{TM}}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\nth}[1]{#1^{\text{th}}}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+
+\makeatother
+
+\title{Computability and Complexity:\\Exercise Session 7 (2015-11-27)}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{\texorpdfstring{Exercise 7.38\footnote{%
+Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{Exercise 7.38}}
+
+Le \(D\) be a decider for SAT, here is an algorithm that computes a satisfiable
+assignment for an input formula \(\phi\) on variables \(x_1,x_2,\ldots,x_n\)
+\begin{TMachine}{\(M =\) on input \(\langle \phi \rangle\)}
+\item[1.] Decide whether \(\phi\) is satisfiable using \(D\).
+\item[1.1.] Output ``not satisfiable'' and halt if the decider rejects.
+\item[2.] For \(i = 1\) to \(n\):
+\item[2.1.] Decide whether \(\phi \land x_i\) is satisfiable using \(D\).
+\item[2.2.] If the decider accepts, let \(a_i = 1\) and \(\phi \gets \phi \land
+	x_i\).
+\item[2.3.] Otherwise, let \(a_i = 0\) and \(\phi \gets \phi \land \overline{x_i}\).
+\item[3.] Output \(a_1, a_2, \ldots, a_n\).
+\end{TMachine}
+Suppose P = NP. Then there exists a decider \(D\) for SAT that runs in
+polynomial time. Then the algorithm given above runs in polynomial time.
+
+\section{Exercise 7.40}
+
+Let \(D\) be a decider for CLIQUE, here is an algorithm that finds the maximum
+clique of an input graph \(G\) with vertices \(v_1,v_2,\ldots,v_n\)
+\begin{TMachine}{\(M =\) on input \(\langle G \rangle\)}
+\item[1.] For \(k=2\) to \(n\):
+\item[1.1.] Decide whether \(G\) has a \(k\)-clique using \(D\).
+\item[1.2.] If \(D\) rejects, let \(k \gets k - 1\) and got to step \textbf{2}.
+\item[2.] For \(i=1\) to \(n\):
+\item[2.1.] Decide whether \(G \setminus \{x_i\}\) has a \(k\)-clique using \(D\).
+\item[2.2.] If \(D\) accepts, let \(G \gets G \setminus \{x_i\}\).
+\item[3.] Output \(G\).
+\end{TMachine}
+Suppose P = NP. Then there exists a decider \(D\) for CLIQUE that runs in
+polynomial time. Then the algorithm given above runs in polynomial time.
+
+\end{document}
