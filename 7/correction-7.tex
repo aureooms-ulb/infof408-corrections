@@ -131,7 +131,8 @@
 \section{\texorpdfstring{Exercise 7.38\footnote{%
 Exercises from the reference book: Sipser M.,
 \emph{Introduction to the Theory of Computation}, 3rd edition
-(2013).}}{Exercise 7.38}}
+(2013). In the
+second edition of the book, this exercise is Exercise 7.36.}}{Exercise 7.38}}
 
 Le \(D\) be a decider for SAT, here is an algorithm that computes a satisfiable
 assignment for an input formula \(\phi\) on variables \(x_1,x_2,\ldots,x_n\)
@@ -148,14 +149,15 @@ assignment for an input formula \(\phi\) on variables \(x_1,x_2,\ldots,x_n\)
 Suppose P = NP. Then there exists a decider \(D\) for SAT that runs in
 polynomial time. Then the algorithm given above runs in polynomial time.
 
-\section{Exercise 7.40}
+\section{\texorpdfstring{Exercise 7.40\footnote{In the
+second edition of the book, this exercise is Exercise 7.38.}}{Exercise 7.40}}
 
 Let \(D\) be a decider for CLIQUE, here is an algorithm that finds the maximum
 clique of an input graph \(G\) with vertices \(v_1,v_2,\ldots,v_n\)
 \begin{TMachine}{\(M =\) on input \(\langle G \rangle\)}
 \item[1.] For \(k=2\) to \(n\):
 \item[1.1.] Decide whether \(G\) has a \(k\)-clique using \(D\).
-\item[1.2.] If \(D\) rejects, let \(k \gets k - 1\) and got to step \textbf{2}.
+\item[1.2.] If \(D\) rejects, let \(k \gets k - 1\) and go to step \textbf{2}.
 \item[2.] For \(i=1\) to \(n\):
 \item[2.1.] Decide whether \(G \setminus \{x_i\}\) has a \(k\)-clique using \(D\).
 \item[2.2.] If \(D\) accepts, let \(G \gets G \setminus \{x_i\}\).
