@@ -1,0 +1,183 @@
+\documentclass{article}
+\errorcontextlines 10000
+
+\makeatletter
+
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+\usepackage{mleftright}
+\usepackage{hhline}
+
+\usepackage{hyperref}
+
+\hypersetup{%
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+%\hypersetup{
+%	linktocpage  = true, %page number is the link (not title)
+%	colorlinks   = true, %Colours links instead of ugly boxes
+%	allcolors = bookColor,
+%	hidelinks = true
+%}
+
+% good looking urls
+\urlstyle{same}
+
+\newcommand{\theoremname}{Theorem}
+\newcommand{\corollaryname}{Corollary}
+\newcommand{\problemname}{Problem}
+\newcommand{\conjecturename}{Conjecture}
+\newcommand{\definitionname}{Definition}
+
+% we use this for our references as well
+\let\sref\ref
+\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage[nameinlink]{cleveref}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+%\usepackage[table,dvipdfx,cmyk]{xcolor}
+%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
+%\color{bookColor}
+
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+\usepackage[stable]{footmisc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{url}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage{xfrac}
+
+
+\newtheorem{theorem}{\theoremname}
+\newtheorem{corollary}{\corollaryname}
+\newtheorem{problem}{\problemname}
+\newtheorem{conjecture}{\conjecturename}
+\newtheorem{definition}{\definitionname}
+
+% nicely spaced operators
+\DeclareMathOperator{\Exists}{\exists}
+\DeclareMathOperator{\Forall}{\forall}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand{\card}[1]{|#1|}
+
+\newcommand{\st}{\colon\,}
+\newcommand{\TM}{TM}
+\newcommand{\Atm}{A\textsubscript{TM}}
+\newcommand{\HALTtm}{HALT\textsubscript{TM}}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\nth}[1]{#1^{\text{th}}}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
+
+
+
+% TURING MACHINE DESCRIPTIONS
+\usepackage{changepage}
+\newenvironment{steps}%
+{%
+\vspace{0.25cm}%
+\begin{adjustwidth}{0.3cm}{0cm}%
+\begin{description}%
+}
+{%
+\end{description}%
+\end{adjustwidth}%
+\vspace{0.1cm}%
+}
+
+\newcounter{TMachine}[section]
+\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
+\newenvironment{TMachine}[1]
+  {\refstepcounter{TMachine}%
+   \par%
+   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
+   \noindent{#1}%
+   \begin{steps}}%\begin{TMachine}
+  {\end{steps}%
+\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
+}% \end{TMachine}
+
+\newcommand{\accept}{\emph{accept}}
+\newcommand{\reject}{\emph{reject}}
+
+\makeatother
+
+\title{Computability and Complexity:\\Exercise Session 8 (2015-12-04)}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{\texorpdfstring{TQBF is in PSPACE\footnote{%
+First part in Theorem 8.9 from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{TQBF is in PSPACE}}
+
+As a reminder
+\begin{definition}
+	SPACE\((f(n))\) \(= \{L \st L \) is a language decided by an \(O(f(n))\) space
+	deterministic Turing machine.\(\}\)
+\end{definition}
+\begin{definition}
+	PSPACE \(= \bigcup_k\) SPACE\((n^k)\)
+\end{definition}
+\begin{definition}
+	TQBF \(= \{ \langle \phi \rangle \st \phi\) is a true fully quantified
+	boolean formula.\(\}\)
+\end{definition}
+
+\begin{theorem}
+	TQBF \(\in\) PSPACE
+\end{theorem}
+
+\begin{proof}
+Obviously, the following recursive algorithm decides TQBF
+\begin{TMachine}{\(T =\) ``On input \(\langle \varphi \rangle\), a fully quantified Boolean formula:}
+\item[1.] If \(\varphi\) contains no quantifiers, then it is an expression with only
+constants, so evaluate \(\varphi\) and accept if it is true; otherwise, reject.
+\item[2.] If \(\varphi\) equals \(\exists x~\phi\), recursively call \(T\) on
+	\(\phi\), first with \(0\) substituted
+	for \(x\) and then with \(1\) substituted for \(x\). If either result is accept,
+then \accept; otherwise, \reject.
+\item[3.] If \(\varphi\) equals \(\forall x~\phi\), recursively call \(T\) on
+	\(\phi\), first with \(0\) substituted
+	for \(x\) and then with \(1\) substituted for \(x\). If both results are
+	accept, then \accept; otherwise, \reject.''
+\end{TMachine}
+
+The depth of the recursion is \(m\), the number of variables.
+Note that \(m = O(n)\), where \(n\) is the size of the input formula.
+At each level of
+the recursion we only need to store the value of one variable and so the space
+used is \(O(n)\). Hence, this algorithm decides TQBF using linear space.
+
+\end{proof}
+
+\section{FORMULA GAME = TQBF}
+
+See the complete subsection \emph{``WINNING STRATEGIES FOR GAMES''} in the
+texbook, and in particular Theorem 8.11 together with its proof.
+Pages 313 to 315 in the second edition. Pages 341 to 343 in the third
+edition.
+
+\end{document}

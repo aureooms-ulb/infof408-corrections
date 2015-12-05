@@ -1,23 +1,16 @@
 
+TARGETS=$(shell find . -maxdepth 1 -type d -name [^\.]\* | sed 's:^\./::' | sort)
+
 all:
-	make -C 1
-	make -C 2
-	make -C 3
-	make -C 4
-	make -C 5
-	make -C 6
-	make -C 7
-	make -C extra
+	for target in $(TARGETS) ; do \
+        make -C $$target ; \
+    done
+
 
 clean:
-	make -C 1 clean
-	make -C 2 clean
-	make -C 3 clean
-	make -C 4 clean
-	make -C 5 clean
-	make -C 6 clean
-	make -C 7 clean
-	make -C extra clean
+	for target in $(TARGETS) ; do \
+        make -C $$target clean ; \
+    done
 	rm -f infof408-corrections.zip
 
 zip: infof408-corrections.zip
