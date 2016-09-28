@@ -60,11 +60,11 @@
 
 \newcommand{\0}{\texttt{\textvisiblespace}}
 \newcommand{\°}{\obullet{\0}}
-\newcommand{\BB}{\obullet{\0^*}}
+\newcommand{\BB}{\obullet{\underline{\0}}}
 \newcommand{\A}{\obullet{\s}}
 \newcommand{\Q}{\obullet{\texttt{b}}}
-\newcommand{\HA}{\obullet{\s^*}}
-\newcommand{\HQ}{\obullet{\texttt{b}^*}}
+\newcommand{\HA}{\obullet{\underline{\s}}}
+\newcommand{\HQ}{\obullet{\underline{\texttt{b}}}}
 \newcommand{\s}{\texttt{a}}
 \newcommand{\X}{\texttt{x}}
 \newcommand{\e}{\texttt{\#}}
@@ -176,6 +176,9 @@ present on the tape and this counts as zero write operations.
 
 If some set/combinations/thing is of finite size and does not depend on the input
 we can encode all its different ``elements'' in the states of the \TM{}.
+In particular, states can be tuples and remember as many pieces of
+information we want to as long as their size is fixed (independent of the
+input size).
 
 We call the simulated \TM{} (the one we want to simulate) \(M\) and we
 call the simulation \TM{} (the one used to simulate \(M\)) \(S\).
@@ -210,13 +213,8 @@ symbol of the copied cell to the destination also counts as a write. A cell
 will thus be written to at most twice (once when copied to, and then
 once when crossed off).
 
-In order to detect when the copy procedure has copied all cells,
-we add\footnote{%
-This fixes some confusion/comprehension issue we had when designing the
-write-once machine. Relying on the presence of blank symbols as I explained
-during the exercise session was not easily comprehensible without all the
-explanation I give here.}
-a special character (for example, \e)
+In order to detect when the copy procedure has copied all cells, we add a
+special character (for example, \e)
 at the end of the currently used portion of the tape.
 We thus add this special symbol directly to the right of the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
@@ -228,24 +226,24 @@ Here are the detailed steps to copy a symbol \obullet{\s}:
 	\item Cross off \obullet{\s} by writing a \X{}. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
-		\obullet{\s}, for example, \((q_{\texttt{a},\e})\). We are allowed
+		\obullet{\s}, for example, \((\texttt{a},\e)\). We are allowed
 		to do this since the alphabet of M is a finite set (and its size does not
 		depend on the input).
-	\item While in state \((q_{\texttt{a},\e})\), move right (without
+	\item While in state \((\texttt{a},\e)\), move right (without
 		altering the current cell) until we reach
 		the symbol \e, change then to state
-		\((q_{\texttt{a},\0{}})\).
-	\item While in state \((q_{\texttt{a},\0{}})\), move right (without
+		\((\texttt{a},\0{})\).
+	\item While in state \((\texttt{a},\0{})\), move right (without
 	altering the current cell) until we reach the symbol \0{}.
 	\item Replace the \0{} by \obullet{\s} using a
-		single write operation and enter state \((q_{\texttt{x}})\).
-	\item While in state \((q_{\texttt{x}})\), move left until we reach
-		the symbol \X{}, enter state \((q_{\texttt{?}})\)
+		single write operation and enter state \((\texttt{x})\).
+	\item While in state \((\texttt{x})\), move left until we reach
+		the symbol \X{}, enter state \((\texttt{?})\)
 		then move right.
 \end{enumerate}
-A copy of all the cells can be achieved by entering state \((q_{\texttt{?}})\)
+A copy of all the cells can be achieved by entering state \((\texttt{?})\)
 then apply the procedure above repeatedly.
-The copy stops when in state \((q_{\texttt{?}})\) we read a \e{}
+The copy stops when in state \((\texttt{?})\) we read a \e{}
 symbol (see~\ref{copying}).
 \begin{figure}
     \centering
@@ -337,9 +335,13 @@ symbol (see~\ref{copying}).
 \end{figure}
 
 We still need to describe how we can simulate \(M\), that is, remember the
-position of the head, update the cell pointed by the head and move the head
-according to the transition function of \(M\).
+current state of \(M\), remember the position of the head on the tape of \(M\),
+update the cell pointed by the head and move the head according to the
+transition function of \(M\).
 
+To remember the current state $q_i$ of $M$,
+we prepend the current state of $S$ with $q_i$ (for example replace
+$(\texttt{a},\e)$ in the previous explanation by $(q_i,\texttt{a},\e)$).
 To remember the position of the head of the simulated \TM{} we use
 colored symbols (in addition to the color used to differentiate the symbols
 used by \(M\) from the symbols having a special meaning for \(S\),
@@ -523,6 +525,72 @@ one cell further. If instead the transition function makes the head move left,
 we transfer the color (storing the position of the head) from the last
 to the penultimate working cell while copying them.
 
+\subsubsection{Formal solution}
+
+Let $M=(Q,\Sigma,\Gamma,\delta,q_0,q_{\text{accept}},q_{\text{reject}})$.
+Let $S=(Q',\Sigma',\Gamma',\delta',q'_0,q'_{\text{accept}},q'_{\text{reject}})$.
+$S$ must start with the same input as $M$ so $\Sigma'=\Sigma$. Let
+$$\Gamma' = \Sigma \cup \{\,\obullet{\gamma} \st \s \in \Gamma\,\} \cup
+\{\,\underline{\obullet{\gamma}} \st \s \in \Gamma\,\} \cup \{\,\0{}, \X, \e\,\}.$$
+Start with $Q' = \{\,q'_0\,\}$. Below we define $\delta'$. Add each state used
+in this definition to $Q'$.
+
+\paragraph{Crossing of first symbol}
+For all $\texttt{a} \in \Sigma$,
+let $$\delta'(q'_0,\texttt{a})
+= ((\text{init},\text{bound then copy}, \texttt{a}), \X, R).$$
+Let $$\delta'(q'_0,\0{})
+= ((\text{init},\text{bound then copy}, \0{}), \X, R).$$
+
+\paragraph{Going to the first blank symbol}
+For all $\texttt{a} \in \Sigma$,
+for all $\texttt{b} \in \Sigma$,
+let $$\delta'((\text{init},\text{bound then copy}, \texttt{a}), \texttt{b})
+= ((\text{init},\text{bound then copy}, \texttt{a}), \texttt{b}, R).$$
+For all $\texttt{b} \in \Sigma$,
+let $$\delta'((\text{init},\text{bound then copy}, \0{}), \texttt{b})
+= ((\text{init},\text{bound then copy}, \0{}), \texttt{b}, R).$$
+
+\paragraph{Bound the input}
+For all $\texttt{a} \in \Sigma$,
+let $$\delta'((\text{init},\text{bound then copy}, \texttt{a}), \0{})
+= ((\text{init},\text{copy}, \texttt{a}), \e, R).$$
+Let $$\delta'((\text{init},\text{bound then copy}, \0{}), \0{})
+= ((\text{init},\text{copy}, \0{}), \e, R).$$
+
+\paragraph{Copy first symbol}
+For all $\texttt{a} \in \Sigma$,
+let $$\delta'((\text{init},\text{copy}, \texttt{a}), \0{})
+= ((\text{init},\text{back}), \HA, L).$$
+Let $$\delta'((\text{init},\text{copy}, \0{}), \0{})
+= ((\text{init},\text{back}), \BB, L).$$
+
+\paragraph{Going back to the first uncopied symbol of the tape}
+For all $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
+let $$\delta'((\text{init},\text{back}), \gamma)
+= ((\text{init},\text{back}), \gamma, L).$$
+Let $$\delta'((\text{init},\text{back}), \X)
+= ((\text{init},\text{copy rest}), \X, R).$$
+
+\paragraph{Copying the rest of the input}
+For all $\s \in\Sigma$,
+let $$\delta'((\text{init},\text{copy rest}), \s)
+= ((\text{init},\text{copy one}, \s), \X, R).$$
+
+For all $\s \in\Sigma$,
+for all $\gamma \in\Gamma'\setminus\{\,\0{}\,\}$,
+let $$\delta'((\text{init},\text{copy one}, \s), \gamma)
+= ((\text{init},\text{copy one}, \s), \gamma, R).$$
+
+For all $\s \in\Sigma$,
+let $$\delta'((\text{init},\text{copy one}, \s), \0{})
+= ((\text{init},\text{back}), \A, L).$$
+
+\paragraph{Start the simultation}
+Let $$\delta'((\text{init},\text{copy rest}), \e)
+= ((\text{simul},q_0), \e, R).$$
+
+
 \subsection{Using a single write per cell}
 
 We transform each cell into two adjacent cells. The left one will be used to
@@ -593,10 +661,11 @@ cells, like in the write-twice version. Since the input cells have not been
 written to yet when we start \(S\), the crossing off is the only write
 operation that happens for those cells.
 
+Formal description of $S$ left as an exercise for the reader.
 
 \subsection{Questions}
 \subsubsection{Why can we not use a \TM{} with an infinite number of
-tapes?\footnote{Thanks to the anonymous student who proposed this solution.}}
+tapes?}
 A \TM{} with an infinite number of tapes and an infinite number of heads
 performs an infinite number of operations at each step.
 To use this kind of device we should first make sure that it is equivalent to a single
