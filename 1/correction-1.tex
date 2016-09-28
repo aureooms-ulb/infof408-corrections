@@ -228,24 +228,24 @@ Here are the detailed steps to copy a symbol \obullet{\s}:
 	\item Cross off \obullet{\s} by writing a \X{}. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
-		\obullet{\s}, for example, \((q_{\texttt{a}}^1)\). We are allowed
+		\obullet{\s}, for example, \((q_{\texttt{a},\e})\). We are allowed
 		to do this since the alphabet of M is a finite set (and its size does not
 		depend on the input).
-	\item While in state \((q_{\texttt{a}}^1)\), move right (without
+	\item While in state \((q_{\texttt{a},\e})\), move right (without
 		altering the current cell) until we reach
 		the symbol \e, change then to state
-		\((q_{\texttt{a}}^2)\).
-	\item While in state \((q_{\texttt{a}}^2)\), move right (without
+		\((q_{\texttt{a},\0{}})\).
+	\item While in state \((q_{\texttt{a},\0{}})\), move right (without
 	altering the current cell) until we reach the symbol \0{}.
-\item Replace the \0{} by \obullet{\s} using a
-		single write operation and enter state \((q_{\texttt{a}}^3)\).
-	\item While in state \((q_{\texttt{a}}^3)\), move left until we reach
-		the symbol \X{}, enter state \((q_{\texttt{a}}^0)\)
+	\item Replace the \0{} by \obullet{\s} using a
+		single write operation and enter state \((q_{\texttt{x}})\).
+	\item While in state \((q_{\texttt{x}})\), move left until we reach
+		the symbol \X{}, enter state \((q_{\texttt{?}})\)
 		then move right.
 \end{enumerate}
-A copy of all the cells can be achieved by entering state \((q_{\texttt{a}}^0)\)
+A copy of all the cells can be achieved by entering state \((q_{\texttt{?}})\)
 then apply the procedure above repeatedly.
-The copy stops when in state \((q_{\texttt{a}}^0)\) we read a \e{}
+The copy stops when in state \((q_{\texttt{?}})\) we read a \e{}
 symbol (see~\ref{copying}).
 \begin{figure}
     \centering
