@@ -239,7 +239,7 @@ Here are the detailed steps to copy a symbol \obullet{\s}:
 	altering the current cell) until we reach the symbol \0{}.
 \item Replace the \0{} by \obullet{\s} using a
 		single write operation and enter state \((q_{\texttt{a}}^3)\).
-	\item While in state \((q_{\texttt{a}}^4)\), move left until we reach
+	\item While in state \((q_{\texttt{a}}^3)\), move left until we reach
 		the symbol \X{}, enter state \((q_{\texttt{a}}^0)\)
 		then move right.
 \end{enumerate}
@@ -601,7 +601,7 @@ A \TM{} with an infinite number of tapes and an infinite number of heads
 performs an infinite number of operations at each step.
 To use this kind of device we should first make sure that it is equivalent to a single
 tape \TM{}.
-However, it is be possible to use a \TM{} with an infinite number of tapes
+However, it is possible to use a \TM{} with an infinite number of tapes
 and a finite number of heads. For example, a \TM{} with a two-dimensional
 semi-infinite tape and a single head\footnote{See
 \url{http://cs.stackexchange.com/q/23936}
