@@ -833,13 +833,21 @@ let $(q_j, \w, D)=\delta(q_i,\s)$.
   \end{cases}
 \end{equation}
 
+For each tape symbol of the simulated machine $\d \in \Gamma$,
+let
 \begin{align}
   \delta'((\text{sim}, q_j, \text{look ahead}, \text{move right}, \C, \Q),\D)
-  &=((\text{sim}, q_j, \text{copy rest}, 3, \C, \Q, \HD), \X, R),
-  \forall\,
-  \y,\w,\d \in \Gamma,
-  q_j \in \qwar.
+  &=((\text{sim}, q_j, \text{copy rest}, 3, \C, \Q, \HD), \X, R).
 \end{align}
+
+We also need to handle the case where the working tape ends on the second
+symbol:
+let
+\begin{align}
+  \delta'((\text{sim}, q_j, \text{look ahead}, \text{move right}, \C, \Q),\e)
+  &=((\text{sim}, q_j, \text{copy rest}, 3, \C, \Q, \BB), \e, R).
+\end{align}
+
 
 \paragraph{Copying three symbols of the working tape then copy the rest}
 \begin{align}
@@ -869,8 +877,8 @@ cells.
 Crossing off happens for all cells that are not $\e$. Hence there is exactly
 one write operation per bounding cell $\e$,
 one write operation per input cell,
-two write operations for other crossed off cells,
-and one write operation for other non crossed off cells.
+two write operations for other crossed-off cells,
+and one write operation for other non crossed-off cells.
 
 \subsection{Using a single write per cell}
 
@@ -929,10 +937,10 @@ an example of how copying works using two cells per symbol.
 \end{figure}
 
 Symbol cells will only be written to once since we do not cross them off anymore.
-``Cross-off'' cells contain the original blank symbol of the tape until the
+crossed-off cells contain the original blank symbol of the tape until the
 corresponding symbol cell has been copied. When the corresponding symbol cell
-is copied we write the \X{} symbol in the ``cross-off'' cell. Since a symbol
-cell is copied only once, a ``cross-off'' cell is written to only once.
+is copied we write the \X{} symbol in the crossed-off cell. Since a symbol
+cell is copied only once, a crossed-off cell is written to only once.
 
 Again, a simple way to format the input for \(S\) to work
 (interleave the input with blank symbols and add the
