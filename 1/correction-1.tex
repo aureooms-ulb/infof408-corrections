@@ -62,14 +62,28 @@
 \newcommand{\°}{\obullet{\0}}
 \newcommand{\BB}{\obullet{\underline{\0}}}
 \newcommand{\A}{\obullet{\s}}
-\newcommand{\Q}{\obullet{\texttt{b}}}
+\newcommand{\Q}{\obullet{\w}}
+\renewcommand{\C}{\obullet{\y}}
 \newcommand{\HA}{\obullet{\underline{\s}}}
-\newcommand{\HQ}{\obullet{\underline{\texttt{b}}}}
+\newcommand{\HQ}{\obullet{\underline{\w}}}
+\newcommand{\HC}{\obullet{\underline{\y}}}
 \newcommand{\s}{\texttt{a}}
+\newcommand{\w}{\texttt{b}}
+\newcommand{\y}{\texttt{c}}
 \newcommand{\X}{\texttt{x}}
 \newcommand{\e}{\texttt{\#}}
 \newcommand{\st}{\colon\,}
 \newcommand{\TM}{TM}
+\newcommand{\qz}{q_0}
+\newcommand{\qa}{q_\text{accept}}
+\newcommand{\qr}{q_\text{reject}}
+\newcommand{\qpz}{q'_0}
+\newcommand{\qpa}{q'_\text{accept}}
+\newcommand{\qpr}{q'_\text{reject}}
+\newcommand{\gwb}{\Gamma\setminus\{\,\0{}\,\}}
+\newcommand{\gpwb}{\Gamma'\setminus\{\,\0{}\,\}}
+\newcommand{\qwar}{Q\setminus\{\,\qa,\qr\,\}}
+\newcommand{\qpwar}{Q'\setminus\{\,\qpa,\qpr\,\}}
 
 % TURING MACHINE DESCRIPTIONS
 \usepackage{changepage}
@@ -196,6 +210,12 @@ another color for symbols we add. Here we will consider that all symbols used
 by \(M\) are dotted (like \°{}) while the symbols that
 have a special meaning for \(S\) are not (like \0{}).
 
+Note that any transition that we do not define explicitely will be implicitely
+defined as leading to the reject state.
+
+Finaly, note that going left when the head points to the leftmost cell of the
+tape means that we stay on the leftmost cell of the tape.
+
 \subsection{Using two writes per cell}
 The idea is to simulate each step of the simulated
 \TM{} by copying all ``working'' cells to new (unused) cells
@@ -226,14 +246,14 @@ Here are the detailed steps to copy a symbol \obullet{\s}:
 	\item Cross off \obullet{\s} by writing a \X{}. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
-		\obullet{\s}, for example, \((\texttt{a},\e)\). We are allowed
+		\obullet{\s}, for example, \((\s,\e)\). We are allowed
 		to do this since the alphabet of M is a finite set (and its size does not
 		depend on the input).
-	\item While in state \((\texttt{a},\e)\), move right (without
+	\item While in state \((\s,\e)\), move right (without
 		altering the current cell) until we reach
 		the symbol \e, change then to state
-		\((\texttt{a},\0{})\).
-	\item While in state \((\texttt{a},\0{})\), move right (without
+		\((\s,\0{})\).
+	\item While in state \((\s,\0{})\), move right (without
 	altering the current cell) until we reach the symbol \0{}.
 	\item Replace the \0{} by \obullet{\s} using a
 		single write operation and enter state \((\texttt{x})\).
@@ -341,9 +361,9 @@ transition function of \(M\).
 
 To remember the current state $q_i$ of $M$,
 we prepend the current state of $S$ with $q_i$ (for example replace
-$(\texttt{a},\e)$ in the previous explanation by $(q_i,\texttt{a},\e)$).
+$(\s,\e)$ in the previous explanation by $(q_i,\s,\e)$).
 To remember the position of the head of the simulated \TM{} we use
-colored symbols (in addition to the color used to differentiate the symbols
+colored symbols $\HA$ (in addition to the color used to differentiate the symbols
 used by \(M\) from the symbols having a special meaning for \(S\),
 see~\ref{head}).
 \begin{figure}
@@ -526,70 +546,203 @@ we transfer the color (storing the position of the head) from the last
 to the penultimate working cell while copying them.
 
 \subsubsection{Formal solution}
+Here we give a formal construction of $S$.
+Diagram of $S$ left as exercise for the reader.
 
 Let $M=(Q,\Sigma,\Gamma,\delta,q_0,q_{\text{accept}},q_{\text{reject}})$.
-Let $S=(Q',\Sigma',\Gamma',\delta',q'_0,q'_{\text{accept}},q'_{\text{reject}})$.
+Let $S=(Q',\Sigma',\Gamma',\delta',\qpz,\qpa,\qpr)$.
 $S$ must start with the same input as $M$ so $\Sigma'=\Sigma$. Let
-$$\Gamma' = \Sigma \cup \{\,\obullet{\gamma} \st \s \in \Gamma\,\} \cup
-\{\,\underline{\obullet{\gamma}} \st \s \in \Gamma\,\} \cup \{\,\0{}, \X, \e\,\}.$$
-Start with $Q' = \{\,q'_0\,\}$. Below we define $\delta'$. Add each state used
-in this definition to $Q'$.
+$$\Gamma' = \Sigma \cup \{\,\A \st \s \in \Gamma\,\} \cup
+\{\,\HA \st \s \in \Gamma\,\} \cup \{\,\0{}, \X, \e\,\}.$$
+Start with $Q' = \{\,\qpz,\qpa,\qpr\,\}$. In the following paragraphs we define
+$\delta'$. Add each state used in this definition to $Q'$.
+Note that states of $S$ are given as tuples. Feel free to devise a scheme to
+give a number ($q'_i$) to each of those state tuples.
 
-\paragraph{Crossing of first symbol}
-For all $\texttt{a} \in \Sigma$,
-let $$\delta'(q'_0,\texttt{a})
-= ((\text{init},\text{bound then copy}, \texttt{a}), \X, R).$$
-Let $$\delta'(q'_0,\0{})
-= ((\text{init},\text{bound then copy}, \0{}), \X, R).$$
+\paragraph{Crossing off the first symbol}
+For each $\s \in \Sigma$,
+let $$\delta'(\qpz,\s)
+= ((\text{init},\text{bound}, \text{seek}, \s), \X, R).$$
+Let $$\delta'(\qpz,\0{})
+= ((\text{init},\text{bound}, \text{seek}, \0{}), \X, R).$$
 
 \paragraph{Going to the first blank symbol}
-For all $\texttt{a} \in \Sigma$,
-for all $\texttt{b} \in \Sigma$,
-let $$\delta'((\text{init},\text{bound then copy}, \texttt{a}), \texttt{b})
-= ((\text{init},\text{bound then copy}, \texttt{a}), \texttt{b}, R).$$
-For all $\texttt{b} \in \Sigma$,
-let $$\delta'((\text{init},\text{bound then copy}, \0{}), \texttt{b})
-= ((\text{init},\text{bound then copy}, \0{}), \texttt{b}, R).$$
+For each $\s \in \Sigma$,
+for each $\w \in \Sigma$,
+let $$\delta'((\text{init},\text{bound}, \text{seek}, \s), \w)
+= ((\text{init},\text{bound}, \text{seek}, \s), \w, R).$$
+For each $\w \in \Sigma$,
+let $$\delta'((\text{init},\text{bound}, \text{seek}, \0{}), \w)
+= ((\text{init},\text{bound}, \text{seek}, \0{}), \w, R).$$
 
 \paragraph{Bound the input}
-For all $\texttt{a} \in \Sigma$,
-let $$\delta'((\text{init},\text{bound then copy}, \texttt{a}), \0{})
-= ((\text{init},\text{copy}, \texttt{a}), \e, R).$$
-Let $$\delta'((\text{init},\text{bound then copy}, \0{}), \0{})
-= ((\text{init},\text{copy}, \0{}), \e, R).$$
+For each $\s \in \Sigma$,
+let $$\delta'((\text{init},\text{bound}, \text{seek}, \s), \0{})
+= ((\text{init},\text{bound},\text{copy}, \s), \e, R).$$
+Let $$\delta'((\text{init},\text{bound}, \text{seek}, \0{}), \0{})
+= ((\text{init},\text{bound},\text{copy}, \0{}), \e, R).$$
 
-\paragraph{Copy first symbol}
-For all $\texttt{a} \in \Sigma$,
-let $$\delta'((\text{init},\text{copy}, \texttt{a}), \0{})
-= ((\text{init},\text{back}), \HA, L).$$
-Let $$\delta'((\text{init},\text{copy}, \0{}), \0{})
-= ((\text{init},\text{back}), \BB, L).$$
+\paragraph{Copy first symbol of the input}
+For each $\s \in \Sigma$,
+let $$\delta'((\text{init},\text{bound},\text{copy}, \s), \0{})
+= ((\text{init},\text{copy rest},\text{back}), \HA, L).$$
+Let $$\delta'((\text{init},\text{bound},\text{copy}, \0{}), \0{})
+= ((\text{init},\text{copy rest},\text{back}), \BB, L).$$
 
-\paragraph{Going back to the first uncopied symbol of the tape}
-For all $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
-let $$\delta'((\text{init},\text{back}), \gamma)
-= ((\text{init},\text{back}), \gamma, L).$$
-Let $$\delta'((\text{init},\text{back}), \X)
-= ((\text{init},\text{copy rest}), \X, R).$$
+\paragraph{Going back to the first uncopied symbol of the input}
+For each $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
+let $$\delta'((\text{init},\text{copy rest},\text{back}), \gamma)
+= ((\text{init},\text{copy rest},\text{back}), \gamma, L).$$
+Let $$\delta'((\text{init},\text{copy rest},\text{back}), \X)
+= ((\text{init},\text{copy rest},\text{read}), \X, R).$$
 
 \paragraph{Copying the rest of the input}
-For all $\s \in\Sigma$,
-let $$\delta'((\text{init},\text{copy rest}), \s)
-= ((\text{init},\text{copy one}, \s), \X, R).$$
+For each $\s \in\Sigma$,
+let $$\delta'((\text{init},\text{copy rest},\text{read}), \s)
+= ((\text{init}, \text{copy rest}, \text{copy}, \s), \X, R).$$
 
-For all $\s \in\Sigma$,
-for all $\gamma \in\Gamma'\setminus\{\,\0{}\,\}$,
-let $$\delta'((\text{init},\text{copy one}, \s), \gamma)
-= ((\text{init},\text{copy one}, \s), \gamma, R).$$
+For each $\s \in\Sigma$,
+for each $\gamma \in\Gamma'\setminus\{\,\0{}\,\}$,
+let $$\delta'((\text{init}, \text{copy rest},\text{copy}, \s), \gamma)
+= ((\text{init}, \text{copy rest},\text{copy}, \s), \gamma, R).$$
 
-For all $\s \in\Sigma$,
-let $$\delta'((\text{init},\text{copy one}, \s), \0{})
-= ((\text{init},\text{back}), \A, L).$$
+For each $\s \in\Sigma$,
+let $$\delta'((\text{init}, \text{copy rest},\text{copy}, \s), \0{})
+= ((\text{init},\text{copy rest},\text{back}), \A, L).$$
 
-\paragraph{Start the simultation}
-Let $$\delta'((\text{init},\text{copy rest}), \e)
-= ((\text{simul},q_0), \e, R).$$
+\paragraph{Start the simulation}
+Let $$\delta'((\text{init},\text{copy rest},\text{read}), \e)
+= ((\text{simul},q_0, \text{bound}, \text{seek}), \e, R).$$
 
+\paragraph{Bound the working tape}
+For each state of the simulated machine $q_i \in Q \setminus
+\{\,q_\text{accept},q_{reject}\,\}$,
+for each tape symbol of the simulated machine $\gamma \in \Gamma$,
+let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\obullet{\gamma})=((\text{simul},
+q_i, \text{bound}, \text{seek}),\obullet{\gamma},R),$$
+and
+let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\underline{\obullet{\gamma}})=((\text{simul},
+q_i, \text{bound}, \text{seek}),\underline{\obullet{\gamma}},R).$$
+
+If we read a blank symbol, we write a $\e$ and go back to the first symbol
+of the working tape.
+Let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\0{})=((\text{simul},
+q_i, \text{bound}, \text{back}),\e,L).$$
+
+\paragraph{Go back to the beginning of the working tape after bounding}
+For each state of the simulated machine $q_i \in Q \setminus
+\{\,q_\text{accept},q_{reject}\,\}$,
+for each tape symbol of the simulated machine $\gamma \in \Gamma$,
+let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\obullet{\gamma})=((\text{simul},
+q_i, \text{bound}, \text{back}),\obullet{\gamma},L),$$
+and
+let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\underline{\obullet{\gamma}})=((\text{simul},
+q_i, \text{bound}, \text{back}),\underline{\obullet{\gamma}},L).$$
+
+If we read a $\e$ symbol, then the first symbol of the working tape is just to
+the right:
+let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\e{})=((\text{simul},
+q_i, \text{first symbol}),\e,R).$$
+
+\paragraph{Head is on the first symbol}
+For each tape symbol of the simulated machine $\s \in \Gamma$,
+for each state of the simulated machine $q_i \in \qwar$,
+let $(q_j, \w, D)=\delta(q_i,\s)$.
+
+If $q_j = q_\text{accept}$, then
+let $$\delta'((\text{simul}, q_i, \text{first symbol}),\HA)
+=(\qpa,\HA, R),$$
+else if $q_j = q_\text{reject}$, then
+let $$\delta'((\text{simul}, q_i, \text{first symbol}),\HA)
+=(\qpr,\HA, R).$$
+
+If we go left, we just leave the head on the
+first symbol:
+if $q_j \in \qwar$ and $D=L$ (go left),
+let $$\delta'((\text{simul}, q_i, \text{first symbol}),\HA)=((\text{simul},
+q_j, \text{copy rest}, \text{copy one}, \HQ),\X,R).$$
+
+If we go right, we move the head on the second symbol:
+if $q_j \in \qwar$ and $D=R$ (go right),
+let $$\delta'((\text{simul}, q_i, \text{first symbol}),\HA)=((\text{simul},
+q_j, \text{first symbol}, \text{move right}, \Q),\X,R).$$
+For each tape symbol of the simulated machine $\y \in \Gamma$,
+let $$\delta'((\text{simul}, q_j, \text{first symbol}, \text{move right}, \Q), \C)=
+((\text{simul}, q_j, \text{copy rest}, \text{copy two}, \Q, \HC),\X,R).$$
+
+We also need to handle the case where there is only one symbol on the working
+tape:
+let $$\delta'((\text{simul}, q_j, \text{first symbol}, \text{move right}, \Q), \e)=
+((\text{simul}, q_j, \text{copy rest}, \text{copy two}, \Q, \BB),\e,R).$$
+
+\paragraph{Copying the rest of the working tape}
+For each $\s \in\Gamma$,
+for each state of the simulated machine $q_j \in \qwar$,
+let $$\delta'((\text{simul},q_j,\text{copy rest}, \text{read}), \A)
+= ((\text{simul},q_j, \text{copy rest},\text{copy one}, \A), \X, R),$$
+and let $$\delta'((\text{simul},q_j,\text{copy rest}, \text{read}), \HA)
+= ((\text{simul},q_j, \text{copy rest},\text{copy one}, \HA), \X, R).$$
+
+For each $\s \in \gpwb$,
+for each state of the simulated machine $q_j \in \qwar$,
+for each $\gamma \in\gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{copy one}, \A), \gamma)
+= ((\text{simul}, q_j, \text{copy rest}, \text{copy one}, \A), \gamma, R),$$
+and
+let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{copy one}, \HA), \gamma)
+= ((\text{simul}, q_j, \text{copy rest}, \text{copy one}, \HA), \gamma, R).$$
+
+For each $\s \in\Gamma$,
+for each state of the simulated machine $q_j \in \qwar$,
+let $$\delta'((\text{simul},q_j, \text{copy rest},\text{copy one}, \A), \0{})
+= ((\text{simul}, q_j, \text{copy rest}, \text{back}), \A, L),$$
+and
+let $$\delta'((\text{simul},q_j, \text{copy rest},\text{copy one}, \HA), \0{})
+= ((\text{simul}, q_j, \text{copy rest}, \text{back}), \HA, L).$$
+
+\paragraph{Going back to the first uncopied symbol of the working tape}
+For each $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
+let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \gamma)
+= ((\text{simul}, q_j, \text{copy rest}, \text{back}), \gamma, L).$$
+Let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \X)
+= ((\text{simul}, q_j, \text{copy rest}, \text{read}), \X, R).$$
+
+\paragraph{Copying two symbols of the working tape then copy the rest}
+For each $\s \in \gpwb$,
+for each $\w \in \gpwb$,
+for each state of the simulated machine $q_j \in \qwar$,
+for each $\gamma \in\gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy two}, \A, \HQ), \gamma)
+= ((\text{simul}, q_j, \text{copy two}, \A, \HQ), \gamma, R).$$
+
+For each $\s \in \gpwb$,
+for each $\w \in \gpwb$,
+for each state of the simulated machine $q_j \in \qwar$,
+for each $\gamma \in\gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy two}, \A, \HQ), \0{})
+= ((\text{simul}, q_j, \text{copy rest}, \text{copy one}, \HQ), \A, R).$$
+
+\paragraph{Go to the next step of the simulation}
+Let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{read}), \e)
+= ((\text{simul}, q_j, \text{bound}, \text{seek}), \e, R).$$
+
+\paragraph{Head is not on the first symbol}
+\dots
+
+\paragraph{Number of writes}
+The only transitions of the simulation \TM{} $S$ where we alter a cell are the
+ones where we
+copy a symbol (with or without transition of the simulated \TM{} $M$), where we add a
+$\BB$ symbol at the end of the working tape, where we bound the working tape
+with $\e$, or where we cross off a cell by writing a $\X$.
+None of the first three operations happens for input cells.
+Exactly one of the first three operations happens for the other
+cells.
+Crossing off happens for all cells that are not $\e$. Hence there is exactly
+one write operation per bounding cell $\e$,
+one write operation per input cell,
+two write operations for other crossed off cells,
+and one write operation for other non crossed off cells.
 
 \subsection{Using a single write per cell}
 
