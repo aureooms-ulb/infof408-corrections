@@ -53,11 +53,12 @@
 \usepackage{amsmath}
 \usepackage{stackengine,scalerel}
 \renewcommand\useanchorwidth{T}
-\newcommand\obullet[1]{\ThisStyle{\ensurestackMath{%
-  \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\bullet}}}}
-\newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
-  \stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
+%\newcommand\obullet[1]{\ThisStyle{\ensurestackMath{%
+  %\stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\bullet}}}}
+%\newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
+  %\stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
 
+\newcommand{\obullet}[1]{\ensuremath{#1^*}}
 \newcommand{\0}{\texttt{\textvisiblespace}}
 \newcommand{\°}{\obullet{\0}}
 \newcommand{\BB}{\obullet{\underline{\0}}}
@@ -84,8 +85,10 @@
 \newcommand{\qpa}{q'_\text{accept}}
 \newcommand{\qpr}{q'_\text{reject}}
 \newcommand{\gwb}{\Gamma\setminus\{\,\0{}\,\}}
-\newcommand{\gpwb}{\Gamma'\setminus\{\,\0{}\,\}}
-\newcommand{\qwar}{Q\setminus\{\,\qa,\qr\,\}}
+\newcommand{\gpwb}{\Gamma'_{\0{}}}
+\newcommand{\gpwx}{\Gamma'_{\X{}}}
+\newcommand{\gpwe}{\Gamma'_{\e{}}}
+\newcommand{\qwar}{Q_{a,r}}
 \newcommand{\qpwar}{Q'\setminus\{\,\qpa,\qpr\,\}}
 
 % TURING MACHINE DESCRIPTIONS
@@ -244,12 +247,12 @@ copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
 This is handled by steps 7 and 8 in \ref{copying:last}.
 
-Here are the detailed steps to copy a symbol \obullet{\s}:
+Here are the detailed steps to copy a symbol \A{}:
 \begin{enumerate}
-	\item Cross off \obullet{\s} by writing a \X{}. This
+	\item Cross off \A{} by writing a \X{}. This
 		counts as a single write operation.
 	\item Enter a state that remembers that we need to copy symbol
-		\obullet{\s}, for example, \((\s,\e)\). We are allowed
+		\A{}, for example, \((\s,\e)\). We are allowed
 		to do this since the alphabet of M is a finite set (and its size does not
 		depend on the input).
 	\item While in state \((\s,\e)\), move right (without
@@ -258,7 +261,7 @@ Here are the detailed steps to copy a symbol \obullet{\s}:
 		\((\s,\0{})\).
 	\item While in state \((\s,\0{})\), move right (without
 	altering the current cell) until we reach the symbol \0{}.
-	\item Replace the \0{} by \obullet{\s} using a
+	\item Replace the \0{} by \A{} using a
 		single write operation and enter state \((\texttt{x})\).
 	\item While in state \((\texttt{x})\), move left until we reach
 		the symbol \X{}, enter state \((\texttt{?})\)
@@ -557,95 +560,126 @@ Let $S=(Q',\Sigma',\Gamma',\delta',\qpz,\qpa,\qpr)$.
 $S$ must start with the same input as $M$ so $\Sigma'=\Sigma$. Let
 $$\Gamma' = \Sigma \cup \{\,\A \st \s \in \Gamma\,\} \cup
 \{\,\HA \st \s \in \Gamma\,\} \cup \{\,\0{}, \X, \e\,\}.$$
+$$\gpwx = \Gamma' \setminus\{\,\X\,\}.$$
+$$\gpwb = \Gamma' \setminus\{\,\0{}\,\}.$$
+$$\gpwe = \Gamma' \setminus\{\,\e\}.$$
+$$\qwar = Q\setminus\{\,\qa,\qr\,\}.$$
 Start with $Q' = \{\,\qpz,\qpa,\qpr\,\}$. In the following paragraphs we define
 $\delta'$. Add each state used in this definition to $Q'$.
 Note that states of $S$ are given as tuples. Feel free to devise a scheme to
 give a number ($q'_i$) to each of those state tuples.
 
 \paragraph{Crossing off the first symbol}
-For each $\s \in \Sigma$,
-let $$\delta'(\qpz,\s)
-= ((\text{init},\text{bound}, \text{seek}, \s), \X, R).$$
-Let $$\delta'(\qpz,\0{})
-= ((\text{init},\text{bound}, \text{seek}, \0{}), \X, R).$$
+\begin{align}
+  \delta'(\qpz,\s)
+  &= ((\text{init},\text{bound}, \text{seek}, \s), \X, R),
+  \forall\, \s \in \Sigma.\\
+  \delta'(\qpz,\0{})
+  &= ((\text{init},\text{bound}, \text{seek}, \0{}), \X, R).
+\end{align}
 
 \paragraph{Going to the first blank symbol}
-For each $\s \in \Sigma$,
-for each $\w \in \Sigma$,
-let $$\delta'((\text{init},\text{bound}, \text{seek}, \s), \w)
-= ((\text{init},\text{bound}, \text{seek}, \s), \w, R).$$
-For each $\w \in \Sigma$,
-let $$\delta'((\text{init},\text{bound}, \text{seek}, \0{}), \w)
-= ((\text{init},\text{bound}, \text{seek}, \0{}), \w, R).$$
+\begin{align}
+  \delta'((\text{init},\text{bound}, \text{seek}, \s), \w)
+  &= ((\text{init},\text{bound}, \text{seek}, \s), \w, R),
+  \forall\,
+  \w \in \Sigma,
+  \s \in \Sigma.\\
+  \delta'((\text{init},\text{bound}, \text{seek}, \0{}), \w)
+  &= ((\text{init},\text{bound}, \text{seek}, \0{}), \w, R),
+  \forall\, \w \in \Sigma.
+\end{align}
 
 \paragraph{Bound the input}
-For each $\s \in \Sigma$,
-let $$\delta'((\text{init},\text{bound}, \text{seek}, \s), \0{})
-= ((\text{init},\text{bound},\text{copy}, \s), \e, R).$$
-Let $$\delta'((\text{init},\text{bound}, \text{seek}, \0{}), \0{})
-= ((\text{init},\text{bound},\text{copy}, \0{}), \e, R).$$
+\begin{align}
+  \delta'((\text{init},\text{bound}, \text{seek}, \s), \0{})
+  &= ((\text{init},\text{bound},\text{copy}, \s), \e, R),
+  \forall\,\s\in\Sigma.\\
+  \delta'((\text{init},\text{bound}, \text{seek}, \0{}), \0{})
+  &= ((\text{init},\text{bound},\text{copy}, \0{}), \e, R).
+\end{align}
 
 \paragraph{Copy first symbol of the input}
-For each $\s \in \Sigma$,
-let $$\delta'((\text{init},\text{bound},\text{copy}, \s), \0{})
-= ((\text{init},\text{copy rest},\text{back}), \HA, L).$$
-Let $$\delta'((\text{init},\text{bound},\text{copy}, \0{}), \0{})
-= ((\text{init},\text{copy rest},\text{back}), \BB, L).$$
+\begin{align}
+  \delta'((\text{init},\text{bound},\text{copy}, \s), \0{})
+  &= ((\text{init},\text{copy rest},\text{back}), \HA, L),
+  \forall\,\s \in \Sigma.\\
+  \delta'((\text{init},\text{bound},\text{copy}, \0{}), \0{})
+  &= ((\text{init},\text{copy rest},\text{back}), \BB, L).
+\end{align}
 
 \paragraph{Going back to the first uncopied symbol of the input}
-For each $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
-let $$\delta'((\text{init},\text{copy rest},\text{back}), \gamma)
-= ((\text{init},\text{copy rest},\text{back}), \gamma, L).$$
-Let $$\delta'((\text{init},\text{copy rest},\text{back}), \X)
-= ((\text{init},\text{copy rest},\text{read}), \X, R).$$
+\begin{align}
+  \delta'((\text{init},\text{copy rest},\text{back}), \gamma)
+  &= ((\text{init},\text{copy rest},\text{back}), \gamma, L),
+  \forall\,
+  \gamma \in \gpwx.\\
+  \delta'((\text{init},\text{copy rest},\text{back}), \X)
+  &= ((\text{init},\text{copy rest},\text{read}), \X, R).
+\end{align}
 
 \paragraph{Copying the rest of the input}
-For each $\s \in\Sigma$,
-let $$\delta'((\text{init},\text{copy rest},\text{read}), \s)
-= ((\text{init}, \text{copy rest}, \text{copy}, \s), \X, R).$$
-
-For each $\s \in\Sigma$,
-for each $\gamma \in\Gamma'\setminus\{\,\0{}\,\}$,
-let $$\delta'((\text{init}, \text{copy rest},\text{copy}, \s), \gamma)
-= ((\text{init}, \text{copy rest},\text{copy}, \s), \gamma, R).$$
-
-For each $\s \in\Sigma$,
-let $$\delta'((\text{init}, \text{copy rest},\text{copy}, \s), \0{})
-= ((\text{init},\text{copy rest},\text{back}), \A, L).$$
+\begin{align}
+  \delta'((\text{init},\text{copy rest},\text{read}), \s)
+  &= ((\text{init}, \text{copy rest}, \text{copy}, \s), \X, R),
+  \forall\,
+  \s \in\Sigma.\\
+  \delta'((\text{init}, \text{copy rest},\text{copy}, \s), \gamma)
+  &= ((\text{init}, \text{copy rest},\text{copy}, \s), \gamma, R)
+  \forall\,
+  \s \in\Sigma,
+  \gamma \in\gpwb.\\
+  \delta'((\text{init}, \text{copy rest},\text{copy}, \s), \0{})
+  &= ((\text{init},\text{copy rest},\text{back}), \A, L)
+  \forall\,
+  \s \in\Sigma.
+\end{align}
 
 \paragraph{Start the simulation}
-Let $$\delta'((\text{init},\text{copy rest},\text{read}), \e)
-= ((\text{simul},q_0, \text{bound}, \text{seek}), \e, R).$$
+\begin{align}
+  \delta'((\text{init},\text{copy rest},\text{read}), \e)
+  &= ((\text{simul},q_0, \text{bound}, \text{seek}), \e, R)
+\end{align}
 
 \paragraph{Bound the working tape}
-For each state of the simulated machine $q_i \in Q \setminus
-\{\,q_\text{accept},q_{reject}\,\}$,
-for each tape symbol of the simulated machine $\gamma \in \Gamma$,
-let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\obullet{\gamma})=((\text{simul},
-q_i, \text{bound}, \text{seek}),\obullet{\gamma},R),$$
-and
-let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\underline{\obullet{\gamma}})=((\text{simul},
-q_i, \text{bound}, \text{seek}),\underline{\obullet{\gamma}},R).$$
+\begin{align}
+  \delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\gamma)
+  &=((\text{simul},
+  q_i, \text{bound}, \text{seek}),\gamma,R)
+  \forall\,
+  q_i \in \qwar,
+  \gamma \in \gpwb.
+\end{align}
 
 If we read a blank symbol, we write a $\e$ and go back to the first symbol
 of the working tape.
-Let $$\delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\0{})=((\text{simul},
-q_i, \text{bound}, \text{back}),\e,L).$$
+\begin{align}
+  \delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\0{})
+  &=((\text{simul},
+  q_i, \text{bound}, \text{back}),\e,L)
+  \forall\,
+  q_i \in \qwar.
+\end{align}
 
 \paragraph{Go back to the beginning of the working tape after bounding}
-For each state of the simulated machine $q_i \in Q \setminus
-\{\,q_\text{accept},q_{reject}\,\}$,
-for each tape symbol of the simulated machine $\gamma \in \Gamma$,
-let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\obullet{\gamma})=((\text{simul},
-q_i, \text{bound}, \text{back}),\obullet{\gamma},L),$$
-and
-let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\underline{\obullet{\gamma}})=((\text{simul},
-q_i, \text{bound}, \text{back}),\underline{\obullet{\gamma}},L).$$
+\begin{align}
+  \delta'((\text{simul}, q_i, \text{bound}, \text{back}),\gamma)
+  &=((\text{simul},
+  q_i, \text{bound}, \text{back}),\gamma,L)
+  \forall\,
+  q_i \in \qwar,
+  \gamma \in \gpwe.
+\end{align}
 
 If we read a $\e$ symbol, then the first symbol of the working tape is just to
 the right:
-let $$\delta'((\text{simul}, q_i, \text{bound}, \text{back}),\e{})=((\text{simul},
-q_i, \text{first symbol}),\e,R).$$
+\begin{align}
+  \delta'((\text{simul}, q_i, \text{bound}, \text{back}),\e{})
+  &=((\text{simul},
+  q_i, \text{first symbol}),\e,R),
+  \forall\,
+  q_i \in \qwar.
+\end{align}
 
 \paragraph{Head is on the first symbol}
 For each tape symbol of the simulated machine $\s \in \Gamma$,
@@ -707,7 +741,7 @@ let $$\delta'((\text{simul},q_j, \text{copy rest},\text{copy one}, \HA), \0{})
 For each $\gamma \in \Gamma' \setminus\{\,\X\,\}$,
 let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \gamma)
 = ((\text{simul}, q_j, \text{copy rest}, \text{back}), \gamma, L).$$
-Let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \X)
+$$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \X)
 = ((\text{simul}, q_j, \text{copy rest}, \text{read}), \X, R).$$
 
 \paragraph{Copying two symbols of the working tape then copy the rest}
