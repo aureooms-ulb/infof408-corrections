@@ -62,14 +62,17 @@
 \newcommand{\°}{\obullet{\0}}
 \newcommand{\BB}{\obullet{\underline{\0}}}
 \newcommand{\A}{\obullet{\s}}
+\newcommand{\D}{\obullet{\d}}
 \newcommand{\Q}{\obullet{\w}}
 \renewcommand{\C}{\obullet{\y}}
 \newcommand{\HA}{\obullet{\underline{\s}}}
+\newcommand{\HD}{\obullet{\underline{\d}}}
 \newcommand{\HQ}{\obullet{\underline{\w}}}
 \newcommand{\HC}{\obullet{\underline{\y}}}
 \newcommand{\s}{\texttt{a}}
 \newcommand{\w}{\texttt{b}}
 \newcommand{\y}{\texttt{c}}
+\renewcommand{\d}{\texttt{d}}
 \newcommand{\X}{\texttt{x}}
 \newcommand{\e}{\texttt{\#}}
 \newcommand{\st}{\colon\,}
@@ -708,12 +711,12 @@ Let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{back}), \X)
 = ((\text{simul}, q_j, \text{copy rest}, \text{read}), \X, R).$$
 
 \paragraph{Copying two symbols of the working tape then copy the rest}
-For each $\s \in \gpwb$,
-for each $\w \in \gpwb$,
+For each $\psi \in \gpwb$,
+for each $\rho \in \gpwb$,
 for each state of the simulated machine $q_j \in \qwar$,
-for each $\gamma \in\gpwb$,
-let $$\delta'((\text{simul}, q_j, \text{copy two}, \A, \HQ), \gamma)
-= ((\text{simul}, q_j, \text{copy two}, \A, \HQ), \gamma, R).$$
+for each $\gamma \in \gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy two}, \psi, \rho), \gamma)
+= ((\text{simul}, q_j, \text{copy two}, \psi, \rho), \gamma, R).$$
 
 For each $\s \in \gpwb$,
 for each $\w \in \gpwb$,
@@ -727,7 +730,76 @@ Let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{read}), \e)
 = ((\text{simul}, q_j, \text{bound}, \text{seek}), \e, R).$$
 
 \paragraph{Head is not on the first symbol}
-\dots
+For each tape symbol of the simulated machine $\s \in \Gamma$,
+for each state of the simulated machine $q_i \in \qwar$,
+let $$\delta'((\text{simul}, q_i, \text{first symbol}),\A)
+=((\text{simul}, q_i, \text{look ahead}, \text{peek}, \A), \X, R).$$
+
+\paragraph{Head is not on the current or previous symbols}
+Here we design a generic look-ahead method. If the head of $M$ is not on the next
+symbol, then, copy the current symbol and recurse. Otherwise, if the transition
+asks to move left, copy the current and next symbols accordingly. If the
+transition asks to move right, copy the current, next and after next symbols
+accordingly. Note that the head of $M$ is always pointing to exactly one symbol
+by the previous construction, so we never have the case where the next symbol
+is $\e$.
+
+For each tape symbol of the simulated machine $\s \in \Gamma$,
+for each tape symbol of the simulated machine $\w \in \Gamma$,
+for each state of the simulated machine $q_i \in \qwar$,
+let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{peek}, \A),\Q)
+=((\text{simul}, q_i, \text{look ahead}, \text{copy one}, \A), \Q, R).$$
+
+Let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{copy one}, \A),\gamma)
+=((\text{simul}, q_i, \text{look ahead}, \text{copy one}, \A), \gamma, R).$$
+
+Let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{copy one}, \A),\0{})
+=((\text{simul}, q_i, \text{look ahead}, \text{back}), \A, L).$$
+
+Let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{back}),\gamma)
+=((\text{simul}, q_i, \text{look ahead}, \text{back}), \gamma, L).$$
+
+Let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{back}),\X)
+=((\text{simul}, q_i, \text{look ahead}, \text{read}), \X, R).$$
+
+Let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{read}),\A)
+=((\text{simul}, q_i, \text{look ahead}, \text{peek}, \A), \X, R).$$
+
+For each tape symbol of the simulated machine $\s \in \Gamma$,
+for each tape symbol of the simulated machine $\w \in \Gamma$,
+for each state of the simulated machine $q_i \in \qwar$,
+let $(q_j, \w, D)=\delta(q_i,\s)$.
+If $D=L$, for each tape symbol of the simulated machine $\y \in \Gamma$,
+let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{peek}, \C),\HA)
+=((\text{simul}, q_j, \text{copy rest}, \text{copy two}, \HC, \Q), \X, R).$$
+%
+If $D=R$, for each tape symbol of the simulated machine $\y \in \Gamma$,
+let $$\delta'((\text{simul}, q_i, \text{look ahead}, \text{peek}, \C),\HA)
+=((\text{simul}, q_j, \text{look ahead}, \text{move right}, \C, \Q), \X, R).$$
+
+For each tape symbol of the simulated machine $\y \in \Gamma$,
+for each tape symbol of the simulated machine $\w \in \Gamma$,
+for each tape symbol of the simulated machine $\d \in \Gamma$,
+for each state of the simulated machine $q_j \in \qwar$,
+let $$\delta'((\text{simul}, q_j, \text{look ahead}, \text{move right}, \C, \Q),\D)
+=((\text{simul}, q_j, \text{copy rest}, \text{copy three}, \C, \Q, \HD), \X, R).$$
+
+\paragraph{Copying three symbols of the working tape then copy the rest}
+For each $\psi \in \gpwb$,
+for each $\rho \in \gpwb$,
+for each $\chi \in \gpwb$,
+for each state of the simulated machine $q_j \in \qwar$,
+for each $\gamma \in \gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{copy three}, \psi, \rho, \chi), \gamma)
+= ((\text{simul}, q_j, \text{copy rest}, \text{copy three}, \psi, \rho, \chi), \gamma, R).$$
+
+For each $\psi \in \gpwb$,
+for each $\rho \in \gpwb$,
+for each $\chi \in \gpwb$,
+for each state of the simulated machine $q_j \in \qwar$,
+for each $\gamma \in\gpwb$,
+let $$\delta'((\text{simul}, q_j, \text{copy rest}, \text{copy three}, \psi, \rho, \chi), \0{})
+= ((\text{simul}, q_j, \text{copy rest}, \text{copy two}, \rho, \chi), \psi, R).$$
 
 \paragraph{Number of writes}
 The only transitions of the simulation \TM{} $S$ where we alter a cell are the
