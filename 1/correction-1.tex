@@ -625,12 +625,12 @@ give a number ($q'_i$) to each of those state tuples.
   \forall\,
   \s \in\Sigma.\\
   \delta'((\text{init}, \text{copy rest},\text{copy}, \s), \gamma)
-  &= ((\text{init}, \text{copy rest},\text{copy}, \s), \gamma, R)
+  &= ((\text{init}, \text{copy rest},\text{copy}, \s), \gamma, R),
   \forall\,
   \s \in\Sigma,
   \gamma \in\gpwb.\\
   \delta'((\text{init}, \text{copy rest},\text{copy}, \s), \0{})
-  &= ((\text{init},\text{copy rest},\text{back}), \A, L)
+  &= ((\text{init},\text{copy rest},\text{back}), \A, L),
   \forall\,
   \s \in\Sigma.
 \end{align}
@@ -638,14 +638,14 @@ give a number ($q'_i$) to each of those state tuples.
 \paragraph{Start the simulation}
 \begin{align}
   \delta'((\text{init},\text{copy rest},\text{read}), \e)
-  &= ((\text{simul},q_0, \text{bound}, \text{seek}), \e, R)
+  &= ((\text{simul},q_0, \text{bound}, \text{seek}), \e, R).
 \end{align}
 
 \paragraph{Bound the working tape}
 \begin{align}
   \delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\gamma)
   &=((\text{simul},
-  q_i, \text{bound}, \text{seek}),\gamma,R)
+  q_i, \text{bound}, \text{seek}),\gamma,R),
   \forall\,
   q_i \in \qwar,
   \gamma \in \gpwb.
@@ -656,7 +656,7 @@ of the working tape.
 \begin{align}
   \delta'((\text{simul}, q_i, \text{bound}, \text{seek}),\0{})
   &=((\text{simul},
-  q_i, \text{bound}, \text{back}),\e,L)
+  q_i, \text{bound}, \text{back}),\e,L),
   \forall\,
   q_i \in \qwar.
 \end{align}
@@ -665,7 +665,7 @@ of the working tape.
 \begin{align}
   \delta'((\text{simul}, q_i, \text{bound}, \text{back}),\gamma)
   &=((\text{simul},
-  q_i, \text{bound}, \text{back}),\gamma,L)
+  q_i, \text{bound}, \text{back}),\gamma,L),
   \forall\,
   q_i \in \qwar,
   \gamma \in \gpwe.
