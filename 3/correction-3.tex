@@ -108,7 +108,7 @@
 
 \makeatother
 
-\title{Computability and Complexity:\\Exercise Session 3 (2015-10-09)}
+\title{Computability and Complexity:\\Exercise Session 3 (2016-10-12)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
 \date{\today}
 
@@ -186,14 +186,15 @@ To solve this problem, we have to handle four cases:
 = \frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_i} \Delta_i -
 \frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_j} \Delta_j
 =\mathop{lcm}(\Delta_i,\Delta_j) - \mathop{lcm}(\Delta_i,\Delta_j)
-= 0\).
+= 0\). A longer, but simpler, solution is to choose $c_i = \Delta_j$ and $c_j =
+\Delta_i$.
 \end{enumerate}
 Note that you can build a TM that decides the problem by checking for all those
 cases in finite time.
 
 \section{Exercise 5.9}
 
-We showed during last lecture (2015-10-05) that given some non-trivial property
+We showed during last lecture (2016-10-10) that given some non-trivial property
 \(P\) the problem of deciding whether the language \(L(M)\) of some TM \(M\)
 has property \(P\), that is, \(L(M) \in P\), is undecidable. This result is
 Rice's theorem. To solve this exercise, we just have to show
