@@ -145,11 +145,12 @@ is false because for any \(c \ge 1\) we have that for all \(n > c\), \(n^2 > cn\
 
 \paragraph{(c)}
 \(n^2 = O(n \log^2 n)\)
-is false because for any \(c \ge 1\) we have that for all \(n > c \log^2 n\), \(n^2 > cn \log^2 n\).
+is false because $n$ grows faster than $\log^2 n$ (hint: check the derivatives).
 
 \paragraph{(d)}
 \(n \log n = O(n^2)\)
-is true because \(c = 1\) and \(n_0 = 0\) verify the definition.
+is true because $\log n$ grows slower than $n$ (hint: check the derivatives).
+For instance, \(c = 1\) and \(n_0 = 0\) verify the definition.
 
 \paragraph{(e)}
 \(3^n = 2^{O(n)}\)
@@ -187,7 +188,7 @@ As a reminder
 \infty \neq 0\).
 
 \paragraph{(f)}
-\(1 = o(\sfrac{1}{n})\) is false beacuse \(\lim_{n \to \infty}
+\(1 = o(\sfrac{1}{n})\) is false because \(\lim_{n \to \infty}
 \frac{1}{\sfrac{1}{n}} = \lim_{n \to \infty} n = \infty \neq 0\).
 
 
