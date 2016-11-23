@@ -126,8 +126,8 @@
 \maketitle
 \tableofcontents
 
-\section{3SAT is polynomial-time reducible to CLIQUE\footnote{%
-Theorem 7.32 from the reference book: Sipser M.,
+\section{3SAT is polynomial-time reducible to 3-COLORING\footnote{%
+Exercise 7.29 from the reference book: Sipser M.,
 \emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
 
 \subsection{Introduction}
@@ -188,43 +188,33 @@ The language 3SAT is a subset of CNF-SAT
 	exactly 3 literals per clause.}\}\)
 \end{definition}
 
-The language CLIQUE is the following
+The language 3-COLORING is the following
 \begin{definition}
-	CLIQUE \(= \{ \langle G , k \rangle \st \text{ \(G\) is a graph with a clique
-	of size \(k\).}\}\)
+	3-COLORING \(= \{ \langle G \rangle \st \text{ \(G\) is a graph and has
+	a proper 3-coloring.}\}\)
 \end{definition}
 
 \subsection{Statement and proof}
 
 We now prove the following
 \begin{theorem}
-	3SAT \(\le_P\) CLIQUE
+	3SAT \(\le_P\) 3-COLORING
 \end{theorem}
 
 \subsubsection{Reduction}
 
 Given a boolean formula \(\phi\) in conjunctive normal form with exactly three
 literals per clause, we construct graph \(G = (V,E)\) and then prove that \(G\)
-has a clique of size \(m\) if and only if \(\phi\) is satisfiable.
+has a proper 3-coloring of size \(m\) if and only if \(\phi\) is satisfiable.
 
-We start with an empty graph. For each clause we add a set of three vertices to
-the graph, called a triple. The three added vertices correspond to the three
-literals of the clause. For each pair of vertices that are not from the same
-triple, we add an edge if the two literals do not contradict each other. Note
-that we do not add any edge between the vertices of the same triple.
+We start with an empty graph. For each clause we add \ldots. 
 
 Here is a corresponding \emph{Turing-machine-like} description of the algorithm
 \begin{TMachine}{\(f =\) on input \(\langle \phi \rangle\):}
 \item[1.] \(V \gets \emptyset\)
 \item[2.] \(E \gets \emptyset\)
-\item[3.] For each \(c_j = (l_{j,1},l_{j,2},l_{j,3}) \in \phi\):
-\item[3.1.] \(T \gets \{v_{j,1},v_{j,2},v_{j,3}\}\)
-\item[3.2.] \(V \gets V \cup T\)
-\item[3.3.] For each \(v_{j,k} \in T\):
-\item[3.3.1.] For each \(v_{j',k'} \in V \setminus T\):
-\item[3.3.1.1.] \(E \gets E \cup \{\{v_{j,k},v_{j',k'}\}\}\) if \(l_{j,k} \neq
-  \lnot l_{j',k'}\)
-\item[4.] Output \(\langle (V,E) , m \rangle\)
+\item[?.] \ldots
+\item[4.] Output \(\langle (V,E) \rangle\)
 \end{TMachine}
 
 \subsubsection{Complexity}
@@ -233,42 +223,34 @@ check that the reduction takes polynomial time and that the new problem is of
 polynomial size.
 
 It is not difficult to see that the complexity of the algorithm above is
-quadratic in the number of clauses (\(O(m^2)\)). The size of the output graph
-(\(\card{V} + \card{E}\)) is also \(O(m^2)\). \(f\) runs thus in polynomial
+\ldots. The size of the output graph
+(\(\card{V} + \card{E}\)) is \(O(\ldots)\). \(f\) runs thus in polynomial
 time and produces a graph of polynomial size.
 
 \subsubsection{Correctness}
 
 We need to prove that \(\langle \phi \rangle \in \text{3SAT} \iff f(\langle \phi \rangle) \in
-\text{CLIQUE}\). We prove the two implications of the equivalence.
+\text{3-COLORING}\). We prove the two implications of the equivalence.
 
 \paragraph{(\(\implies\))} If \(\langle\phi\rangle \in \text{3SAT}\) then, by definition,
 there exists an assignment \((x_1', x_2', \ldots, x_n') \in \{0,1\}^n\) such
 that for each clause there is at least one literal \(l_{j,z_j}\) that evaluates
 to true. In other words, \(\exists l_{1,z_1},l_{2,z_2},\ldots,l_{m,z_m}\) such
 that no two literals \(l_{a,z_a},l_{b,z_b}\) are contradictory, that is,
-\(l_{a,z_a} \neq \lnot l_{b,z_b} \Forall a,b \in [m]\). The corresponding
-vertices in the graph \(G\) of \(f(\langle \phi \rangle) = \langle G,m
-\rangle\)
-form a \(m\)-clique, that
-is, the graph induced by \(v_{1,z_1},v_{2,z_2},\ldots,v_{m,z_m}\) must be
-complete. This holds because, by construction, an edge can only be missing if two
-vertices represent literals of the same clause, which is not the case here
-since we have selected exactly one literal per clause, \textbf{or} if two
-vertices represent contradictory literals, which is not
-possible either. Hence, \(f(\langle \phi \rangle) \in \text{CLIQUE}\).
+\(l_{a,z_a} \neq \lnot l_{b,z_b} \Forall a,b \in [m]\).
+%
+The corresponding
+vertices in the graph \(G\) of \(f(\langle \phi \rangle) = \langle G\rangle\)
+can be colored \ldots.
+%
+Hence, \(f(\langle \phi \rangle) \in \text{3-COLORING}\).
 
-\paragraph{(\(\impliedby\))} If \(f(\langle \phi \rangle) = \langle G, m \rangle \in \text{CLIQUE}\),
-then, by definition, \(G\) must contain a clique of size \(m\). By
-construction of \(G\), this clique cannot contain more than one vertex per
-triple, since there is no edge between two vertices of the same triple. Since
-there are \(m\) triples, a clique of size \(m\) must thus contain exactly one
-vertex per triple. Let us name those vertices
-\(v_{1,z_1},v_{2,z_2},\ldots,v_{m,z_m}\), they correspond to literals
-\(l_{1,z_1},l_{2,z_2},\ldots,l_{m,z_m}\) covering all the clauses of \(\phi\).
-By construction of \(G\), two such literals cannot be contradictory because
-their corresponding vertices, being part of the same clique, have an edge
-between them. Hence, \(\langle \phi \rangle \in\) 3SAT.
+\paragraph{(\(\impliedby\))} If \(f(\langle \phi \rangle) = \langle G
+\rangle \in \text{3-COLORING}\),
+then, by definition, \(G\) must have a proper 3-coloring. By
+construction of \(G\), this 3-coloring must \ldots.
+%
+Hence, \(\langle \phi \rangle \in\) 3SAT.
 
 \subsection{About Karp reductions}
 
@@ -285,9 +267,9 @@ the following algorithm
 Moreover, if the algorithm for \(B\) runs in polynomial time so does this
 algorithm.
 
-\subsection{CLIQUE is NP-complete}
+\subsection{3-COLORING is NP-complete}
 
-During the next lecture, we will define the notion of NP-completeness
+Let us recall the definition of NP-completeness
 \begin{definition}
 	A language \(B\) is NP-complete if it satisfies two conditions:
 	\begin{enumerate}
@@ -295,7 +277,8 @@ During the next lecture, we will define the notion of NP-completeness
 		\item every \(A\) in NP is polynomial-time reducible to \(B\).
 	\end{enumerate}
 \end{definition}
-and see that
+
+In a previous lecture we have seen that
 \begin{theorem}
 	CNF-SAT is NP-complete
 \end{theorem}
@@ -304,9 +287,9 @@ and that
 	CNF-SAT \(\le_P\) 3SAT.
 \end{theorem}
 Those two theorems together with the one we just proved and the fact that
-CLIQUE is in NP\footnote{Left as exercise for the reader}
+3-COLORING is in NP\footnote{Left as exercise for the reader}
 imply the following corollary
 \begin{corollary}
-	CLIQUE is NP-complete.
+	3-COLORING is NP-complete.
 \end{corollary}
 \end{document}
