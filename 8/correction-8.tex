@@ -128,7 +128,87 @@
 \maketitle
 \tableofcontents
 
-\section{INDEPENDENT-SET is NP-complete}
+\section{CLIQUE, VERTEX-COVER, and INDEPENDENT-SET}
+
+\begin{definition}[Independent set]
+  Let $G=(V,E)$, $S\subseteq V$. The set of vertices $S$ is an independent set
+  of $G$ if and only if for all $(u,v) \in S^2$ with $u\ne v$, $\{\,u,v\,\} \not\in E$.
+\end{definition}
+
+\begin{definition}[Clique]
+  Let $G=(V,E)$, $S\subseteq V$. The set of vertices $S$ is a clique of $G$
+  if and only if for all $(u,v) \in S^2$ with $u\ne v$, $\{\,u,v\,\} \in E$.
+\end{definition}
+
+\begin{definition}[Vertex cover]
+  Let $G=(V,E)$, $S\subseteq V$. The set of vertices $S$ is a vertex cover of
+  $G$ if and only if for all $\{u,v\} \in E$, $u \in S \lor v \in S$.
+\end{definition}
+
+\begin{definition}[Complement of a graph]
+  Let $G = (V,E)$, define $\bar{E}=\{\,\{\,u,v\,\} \st (u,v) \in S^2,
+  u \ne v, \{\,u,v\,\} \not\in E\,\}$ and $\bar{G} = (V,\bar{E})$.
+\end{definition}
+
+\begin{theorem}
+  Let $G = (V,E)$, $S \subseteq V$. The set $S$ is an independent set in $G$ if
+  and only if $S$ is a clique in $\bar{G}$.
+\end{theorem}
+
+\begin{proof}
+  Let us prove the two directions of the implication.
+  \paragraph{($\implies$)}%
+  Let $S$ be an independent set in $G$.
+  For any $\{\,u,v\,\} \in E$, by definition of an independent set, at most one
+  of $u$ and $v$ belongs to $S$, hence, at least one of $u$ and $v$ belongs to
+  $T$. Hence, by definition of a vertex cover, $T$ is a vertex cover.
+
+  \paragraph{($\impliedby$)}%
+  Let $T$ be a vertex cover in $G$.
+  For any $\{\,u,v\,\} \in E$, by definition of a vertex cover, at least one
+  of $u$ and $v$ belongs to $T$, hence, at most one of $u$ and $v$ belongs to
+  $S$. Hence, by definition of an independent set, $S$ is an independent set.
+\end{proof}
+
+\begin{theorem}
+  Let $G = (V,E)$, $S \subseteq V$. The set $S$ is an independent set in $G$ if
+  and only if $T = V \setminus S$ is a vertex cover in $G$.
+\end{theorem}
+
+\begin{proof}
+  Let us prove the two directions of the implication.
+  \paragraph{($\implies$)}%
+  Let $S$ be an independent set in $G$ and define $T = V \setminus S$.
+  For any $\{\,u,v\,\} \in E$, by definition of an independent set, at most one
+  of $u$ and $v$ belongs to $S$, hence, at least one of $u$ and $v$ belongs to
+  $T$. Hence, by definition of a vertex cover, $T$ is a vertex cover.
+
+  \paragraph{($\impliedby$)}%
+  Let $T$ be a vertex cover in $G$ and define $S = V \setminus T$.
+  For any $\{\,u,v\,\} \in E$, by definition of a vertex cover, at least one
+  of $u$ and $v$ belongs to $T$, hence, at most one of $u$ and $v$ belongs to
+  $S$. Hence, by definition of an independent set, $S$ is an independent set.
+\end{proof}
+
+\begin{definition}
+  INDEPENDENT-SET $= \{\langle G,k \rangle \st \text{$G$ contains an independent set of size $k$.} \}$
+\end{definition}
+
+\begin{definition}
+  CLIQUE $= \{\langle G,k \rangle \st \text{$G$ contains a clique of size $k$.} \}$
+\end{definition}
+
+\begin{definition}
+  VERTEX-COVER $= \{\langle G,k \rangle \st \text{$G$ contains a vertex-cover of size $k$.} \}$
+\end{definition}
+
+
+\begin{theorem}
+INDEPENDENT-SET is NP-complete.
+\end{theorem}
+
+\begin{proof}
+\end{proof}
 
 \section{\texorpdfstring{$\ne$-SAT is NP-complete\footnote{%
 Exercise 7.26 from the reference book: Sipser M.,
