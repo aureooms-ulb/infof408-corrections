@@ -143,11 +143,13 @@ The second part, that is, the part about complexity, focuses on the resources
 it takes to solve decidable problems. We already introduced the classes P and
 NP. NP is the class of problems for which there exists a nondeterministic
 polynomial-time algorithm. An equivalent definition is to consider the
-languages for which all words have at least one corresponding certificate of
-appartenance of polynomial size that can be verified using a polynomial-time
+languages for which all words have at least one corresponding membership
+certificate of polynomial size that can be verified using a polynomial-time
 algorithm called a verifier. P is the class of problems for which there exists
-a deterministic polynomial-time algorithm. By definition P is contained in NP.
-However, we do not know whether P is different from NP.
+a deterministic polynomial-time algorithm, that is, algorithms we consider
+efficient. By definition P is contained in NP.
+However, we do not know whether P is different from NP, that is, whether
+deciding is as easy as verifying.
 
 Later on in the lectures, we will define the notion of NP-completeness and show
 that, while we (today) cannot answer the question ``P vs. NP'', we can identify
@@ -178,21 +180,37 @@ Let us begin with a few definitions
 
 The language CNF-SAT is defined as
 \begin{definition}
-	CNF-SAT \(= \{ \langle \phi \rangle \st \phi \in\) CNF and there exists an
-	assignment \(\in \{0,1\}^n\) on the variables \(x_1,x_2,\ldots,x_n\) that
-	makes the formula evaluate to true. \(\}\)
+  CNF-SAT $= \{\, \langle \phi \rangle \st \text{$\phi \in$ CNF and there exists an
+  assignment $\in \{0,1\}^n$ on the variables $x_1,x_2,\ldots,x_n$ that
+  makes the formula evaluate to true.}\,\}$
 \end{definition}
 
 The language 3SAT is a subset of CNF-SAT
 \begin{definition}
-	3SAT \(= \{ \langle \phi \rangle \st \phi \in \text{CNF-SAT and has
-	exactly 3 literals per clause.}\}\)
+  3SAT $= \{\,\langle \phi \rangle \st \phi \in \text{CNF-SAT and has
+  exactly 3 literals per clause.}\,\}$
+\end{definition}
+
+Given a graph, an independent set is a subset of its vertices such that
+\textbf{no} pair in this subset is connected by an edge.
+\begin{definition}[Independent set]
+  Let $G=(V,E)$, $S\subseteq V$. The set of vertices $S$ is an independent set
+  of $G$ if and only if for all $(u,v) \in S^2$ with $u\ne v$, $\{\,u,v\,\} \not\in E$.
+\end{definition}
+
+Given a graph, we define a proper 3-coloring
+\begin{definition}
+  Given a graph $G=(V,E)$, a proper 3-coloring of $G$ is a triple of
+  independent sets
+  $R,G,B\subseteq V$ that are pairwise disjoint, that is, $R\cap G
+  =\emptyset,R\cap B=\emptyset,G\cap B =\emptyset$, and such that $R\cup G\cup
+  B = V$.
 \end{definition}
 
 The language 3-COLORING is the following
 \begin{definition}
-	3-COLORING \(= \{ \langle G \rangle \st \text{ \(G\) is a graph and has
-	a proper 3-coloring.}\}\)
+  3-COLORING $= \{\, \langle G \rangle \st \text{$G$ is a graph and has
+  a proper 3-coloring.}\,\}$.
 \end{definition}
 
 \subsection{Statement and proof}
@@ -205,8 +223,9 @@ We now prove the following
 \subsubsection{Reduction}
 
 Given a boolean formula \(\phi\) in conjunctive normal form with exactly three
-literals per clause, we construct graph \(G = (V,E)\) and then prove that \(G\)
-has a proper 3-coloring of size \(m\) if and only if \(\phi\) is satisfiable.
+literals per clause, we construct a graph \(G = (V,E)\) and then prove that \(G\)
+has a proper 3-coloring of size \(m\), for some $m$ to be determined later,
+if and only if \(\phi\) is satisfiable.
 
 We start with an empty graph. For each clause we add \ldots. 
 
