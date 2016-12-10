@@ -304,11 +304,117 @@ VERTEX-COVER is NP-complete.
   is, VERTEX-COVER is NP-hard.
 \end{proof}
 
-\section{\texorpdfstring{$\ne$-SAT is NP-complete\footnote{%
+\section{\texorpdfstring{$\ne$SAT\footnote{%
 Exercise 7.26 from the reference book: Sipser M.,
 \emph{Introduction to the Theory of Computation}, 3rd edition
 (2013).
 In the second edition of the book, the exercise is Exercise 7.24.
-}}{$\ne$-SAT is NP-complete}}
+}}{$\ne$SAT}}
+
+Let us start with a definition:
+\begin{definition}
+  Let $\phi$ be a 3cnf-formula. An $\ne$-assignment to the variables of $\phi$
+  is one where each clause contains two literals with unequal truth values.
+\end{definition}
+In other words, an $\ne$-assignment satisfies $\phi$ without assigning three
+true literals in any clause.
+
+\begin{theorem}\label{neg}
+  The negation of any $\ne$-assignment to $\phi$ is also an $\ne$-assignment.
+\end{theorem}
+\begin{proof}
+  An $\ne$-assignment to the variables of $\phi$ is such that each clause
+  contains a true and a false literal. Hence, the negation of that
+  $\ne$-assignement is such that each clause of $\phi$ contains a false
+  and a true literal, that is, it is an $\ne$-assignment.
+\end{proof}
+
+Let $\ne$SAT be the collection of 3cnf-formulas that have an $\ne$-assignment.
+\begin{definition}
+  $\ne$SAT = $\{\,\langle \phi \rangle\st \text{$\phi$ has an $\ne$-assignment.} \,\}$
+\end{definition}
+
+We show there is a polynomial time reduction from 3SAT to $\ne$SAT.
+\begin{theorem}
+  3SAT $\le_P$ $\ne$SAT.
+\end{theorem}
+
+\begin{proof}
+  Given $\varphi$ a 3cnf-formula, let $\phi$ be the formula where we replace
+  each clause $c_i = (x \lor y \lor z)$ of $\varphi$, with the two clauses $(x
+  \lor y \lor \alpha_i)$ and $(\bar{\alpha_i} \lor z \lor \beta)$, where $\alpha_i$ is a
+  new variable for each clause $c_i$, and $\beta$ is a single additional new
+  variable common to every second clause in $\phi$.
+
+  Let us check that $\varphi$ is satisfiable if and only if $\phi$ has an
+  $\ne$-assignment.
+
+  \paragraph{($\implies$)} If $\varphi$ is satisfiable, set $\beta=F$, for each
+  $c_i$, looking at~\ref{table}, if $x=F$, $y=F$, $z=T$, set $\alpha_i=T$,
+  otherwise set $\alpha_i=F$.
+
+  \paragraph{($\impliedby$)}
+  If $\phi$ has an $\ne$-assignment, then, by~\ref{neg}, it has an
+  $\ne$-assignment with $\beta$ set to false. Looking at the $\ne$-assignments
+  with $\beta$ set to false in~\ref{table}, we see that in all cases $\varphi$
+  is satisfiable.
+
+\begin{table}
+	\centering
+	\caption{Truth table for a clause in $\varphi$ and its corresponding clauses in
+	$\phi$.}\label{table}
+	\begin{tabular}{|c|ccc|c|cc|c|}
+	\hline
+	& $x$ & $y$ & $z$ & $(x \lor y \lor z)$ & $\alpha_i$ & $\beta$ & $(x \lor
+	y \lor \alpha_i) \land (\bar{\alpha_i} \lor z \lor \beta)$ \\
+	\hline
+	1 & F & F & F & F & F & F & F \\
+	2 & F & F & T & T & F & F & F \\
+	3 & F & T & F & T & F & F & T \\
+	4 & F & T & T & T & F & F & T \\
+	5 & T & F & F & T & F & F & T \\
+	6 & T & F & T & T & F & F & T \\
+	7 & T & T & F & T & F & F & T \\
+	8 & T & T & T & T & F & F & T \\
+	\hline
+	9 & F & F & F & F & T & F & F \\
+	10 & F & F & T & T & T & F & T \\
+	11 & F & T & F & T & T & F & F \\
+	12 & F & T & T & T & T & F & T \\
+	13 & T & F & F & T & T & F & F \\
+	14 & T & F & T & T & T & F & T \\
+	15 & T & T & F & T & T & F & F \\
+	16 & T & T & T & T & T & F & F \\
+	\hline
+	%17 & F & F & F & F & F & T & F \\
+	%18 & F & F & T & T & F & T & F \\
+	%19 & F & T & F & T & F & T & T \\
+	%20 & F & T & T & T & F & T & F \\
+	%21 & T & F & F & T & F & T & T \\
+	%22 & T & F & T & T & F & T & F \\
+	%23 & T & T & F & T & F & T & T \\
+	%24 & T & T & T & T & F & T & F \\
+	%\hline
+	%25 & F & F & F & F & T & T & T \\
+	%26 & F & F & T & T & T & T & T \\
+	%27 & F & T & F & T & T & T & T \\
+	%28 & F & T & T & T & T & T & T \\
+	%29 & T & F & F & T & T & T & T \\
+	%30 & T & F & T & T & T & T & T \\
+	%31 & T & T & F & T & T & T & T \\
+	%32 & T & T & T & T & T & T & F \\
+	%\hline
+\end{tabular}
+\end{table}
+
+The reduction takes linear time: $\phi$ is exactly two times longer than $\varphi$.
+\end{proof}
+
+Given a 3cnf-formula $\phi$, it is easy to see that an $\ne$-assignment to
+$\phi$ is a polynomial size certificate for the belonging of $\phi$ to $\ne$SAT
+that can be verified in polynomial time. Hence,
+\begin{theorem}
+  $\ne$SAT is NP-complete.
+\end{theorem}
 
 \end{document}
