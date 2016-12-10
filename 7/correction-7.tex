@@ -130,7 +130,7 @@ skip=6pt,list=false,hypcap=false
 \maketitle
 \tableofcontents
 
-\section{3SAT is polynomial-time reducible to 3-COLORING\footnote{%
+\section{3-COLORING\footnote{%
 Exercise 7.29 from the reference book: Sipser M.,
 \emph{Introduction to the Theory of Computation}, 3rd edition (2013).
 In the second edition of the book, this exercise is Exercise 7.27.}}
@@ -153,7 +153,8 @@ algorithm called a verifier. P is the class of problems for which there exists
 a deterministic polynomial-time algorithm, that is, algorithms we consider
 efficient. By definition P is contained in NP\@.
 However, we do not know whether P is different from NP, that is, whether
-deciding is as easy as verifying.
+deciding is as easy as verifying, or, equivalentely, whether deterministic
+algorithms are as powerful as nondeterministic ones.
 
 Later on in the lectures, we will define the notion of NP-completeness and show
 that, while we (today) cannot answer the question ``P vs. NP'', we can identify
@@ -210,11 +211,12 @@ Given a graph, an independent set is a subset of its vertices such that
 \end{definition}
 
 Given a graph, we define a proper 3-coloring
-\begin{definition}[3-coloring]
+\begin{definition}[Proper 3-coloring]
   Given a graph $G=(V,E)$, a proper 3-coloring of $G$ is a triple of
-  independent sets $R,G,B\subseteq V$, called colors, that are pairwise
-  disjoint, that is, $R\cap G =\emptyset,R\cap B=\emptyset,G\cap B =\emptyset$,
-  and such that $R\cup G\cup B = V$.
+  independent sets $A,B,C\subseteq V$, called colors, that partition $V$. To
+  partition $V$, $A$, $B$, and $C$ must be pairwise
+  disjoint, that is, $A\cap B =\emptyset,B\cap C=\emptyset,C\cap A =\emptyset$,
+  and their union must equal $V$, that is, $A\cup B\cup C = V$.
 \end{definition}
 
 The language 3-COLORING is the following
@@ -283,7 +285,16 @@ introducing a few gadgets that will prove useful in our construction.
 The color palette gadget (T,F,N) shown in~\ref{fig:ga:pa} will allow us to give meaning
 to the colors of a 3-coloring of our constructed graph.
 The variable gadget ($x_i$,$\bar{x_i}$)~\ref{fig:ga:va} and the ``OR'' gadget
-(A,B,C,D,E)~\ref{fig:ga:or} will be used to encode $\phi$.
+(A,B,C,D,E)~\ref{fig:ga:or} will be used to encode $\phi$. To understand where
+the ``OR'' gadget gets its name from, let us suppose we want a proper 3-coloring
+$(t,f,n)$ of the gadget. In what follows, we will say ``color the
+vertex $Z$ with color $x$'' when we mean ``add vertex $Z$ to set $x$''. As is
+easily checked, as soon as one of the input vertices A or B of the gadget is
+colored with color $t$ we can complete the proper 3-coloring and get E to be
+colored with $t$. However, if both input vertices A and B are colored $f$,
+there is no way to complete the proper 3-coloring and get E to be colored
+with $t$. When thinking about the colors $t$ and $f$ as boolean value true and
+false, one sees the similarity between this gadget and the logic ``OR'' gate.
 
 \paragraph{Construction}
 \begin{figure}
@@ -469,22 +480,36 @@ We need to prove that $\langle \phi \rangle \in \text{3SAT} \iff f(\langle \phi 
 \paragraph{($\implies$)} If $\langle\phi\rangle \in \text{3SAT}$ then, by definition,
 there exists an assignment $(x_1', x_2', \ldots, x_n') \in \{0,1\}^n$ such
 that for each clause there is at least one literal $l_{j,z_j}$ that evaluates
-to true. In other words, $\exists l_{1,z_1},l_{2,z_2},\ldots,l_{m,z_m}$ such
-that no two literals $l_{a,z_a},l_{b,z_b}$ are contradictory, that is,
-$l_{a,z_a} \neq \bar{l_{b,z_b}} \Forall a,b \in [m]$.
+to true.
+Let $A$, $B$, and $C$ be three empty sets. In what follows, we will say ``color the
+vertex $v$ with color $K$'' when we mean ``add vertex $v$ to set $K$''.
 %
-The corresponding
-vertices in the graph $G$ of $f(\langle \phi \rangle) = \langle G\rangle$
-can be colored \ldots.
-%
-Hence, $f(\langle \phi \rangle) \in \text{3-COLORING}$.
+Color the vertex $T$ with color $A$,
+the vertex $F$ with color $B$, and
+the vertex $N$ with color $C$.
+For each variable $x_i$, if $x_i'=1$, color the vertex $x_i$ with $A$ and
+$\bar{x_i}$ with $B$, otherwise, if $x_i'=0$, color the vertex
+$x_i$ with $B$ and $\bar{x_i}$ with $A$. This partial 3-coloring is allowed,
+because, by construction, the vertices $x_i$ and $\bar{x_i}$ must
+have different colors and cannot be colored with $C$. With this partial proper
+3-coloring, each clause gadget has at least
+one input vertex colored $A$ and, by construction of the clause gadgets,
+there is a 3-coloring of the clause gadget with the three input vertex colors
+as chosen above, and the color of the output vertex, $T$, set to $A$, as
+chosen. Hence $G$ has a proper 3-coloring,
+and $f(\langle \phi \rangle) \in \text{3-COLORING}$.
 
-\paragraph{($\impliedby$)} If $f(\langle \phi \rangle) = \langle G
+\paragraph{($\impliedby$)} Conversely, if $f(\langle \phi \rangle) = \langle G
 \rangle \in \text{3-COLORING}$,
-then, by definition, $G$ must have a proper 3-coloring. By
-construction of $G$, this 3-coloring must \ldots.
-%
-Hence, $\langle \phi \rangle \in$ 3SAT.
+then, by definition, $G$ must have a proper 3-coloring $(A,B,C)$. Without loss
+of generality, assume $T\in A, F\in B$, and $N\in C$. Then all vertices $x_i$
+and $\bar{x_i}$ must be colored either with $A$ or $B$. Because $T\in A$,
+the only way for the 3-coloring to exist is to have, for each clause gadget,
+at least one of the input vertices colored with $A$. A satisfying assignement
+for $\phi$ has, for each clause of $\phi$, at least one of its literals set
+true. Hence, a satisfying assignment $(x_1', x_2', \ldots, x_n')$ is easily
+deduced from the proper 3-coloring of $G$: set $x_i'=1$ if the vertex $x_i$ is
+colored $A$, otherwise set $x_i'=0$. Hence, $\langle \phi \rangle \in$ 3SAT.
 
 \subsection{About Karp reductions}
 
