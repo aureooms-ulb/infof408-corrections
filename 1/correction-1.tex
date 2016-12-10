@@ -1,5 +1,5 @@
 \documentclass{article}
-\errorcontextlines 10000
+\setcounter{errorcontextlines}{10000}
 
 \makeatletter
 \usepackage{fontspec}
@@ -10,7 +10,7 @@
 
 \usepackage{hyperref}
 
-\hypersetup{
+\hypersetup{%
 	linktocpage  = true, %page number is the link (not title)
 	colorlinks   = true, %Colours links instead of ugly boxes
 	urlcolor     = darkblue, %Colour for external hyperlinks
@@ -40,14 +40,17 @@
 %\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
 %\color{bookColor}
 
-\definecolor{lightgray}{rgb}{.9,.9,.9}
-\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
 \definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
 \usepackage[stable]{footmisc}
 \usepackage{graphicx}
 \usepackage{caption}
-\usepackage{subcaption}
+\usepackage[margin=5pt,
+font+=small,labelformat=parens,labelsep=space,
+skip=6pt,list=false,hypcap=false
+]{subcaption}
 \usepackage{tikz}
 \usepackage{url}
 \usepackage{amsmath}
@@ -125,7 +128,7 @@
 \newcommand{\reject}{\emph{reject}}
 \makeatother
 
-\title{Computability and Complexity:\\Exercise Session 1 (2016-09-28)}
+\title{Computability and Complexity:\\Exercise Session 1 (2016--09--28)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
 \date{\today}
 
@@ -151,7 +154,7 @@ interpret ``writing to a cell'' as altering the content of the cell
 			\draw[->] (4,1.25) -- (4,.75) ;
 
 			\foreach \y/\v in {2/{1/0,2/1,3/1,4/0,5/1},0/{1/0,2/1,3/0,4/0,5/1}}
-			\foreach \x/\k in \v {
+			\foreach \x/\k in \v {%
 				\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 				\draw (\x,\y) node{$\k$};
 			}
@@ -167,7 +170,6 @@ interpret ``writing to a cell'' as altering the content of the cell
 		\end{tikzpicture}
         \caption{Altering a cell, \(\delta(q_i,1) = (q_j,0,R)\). Counting as one write operation.}
     \end{subfigure}%
-    ~
     \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
@@ -175,7 +177,7 @@ interpret ``writing to a cell'' as altering the content of the cell
 			\draw[->] (4,1.25) -- (4,.75) ;
 
 			\foreach \y/\v in {2/{1/0,2/1,3/1,4/0,5/1},0/{1/0,2/1,3/1,4/0,5/1}}
-			\foreach \x/\k in \v {
+			\foreach \x/\k in \v {%
 				\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 				\draw (\x,\y) node{$\k$};
 			}
@@ -191,8 +193,7 @@ interpret ``writing to a cell'' as altering the content of the cell
 		\end{tikzpicture}
 		\caption{Keeping the cell as is, \(\delta(q_i,1) = (q_j,1,R)\). Counting as zero write operations.}
     \end{subfigure}
-	\caption{Counting write operations.}
-	\label{writing}
+	\caption{Counting write operations.}\label{writing}
 \end{figure}
 
 At the beginning of the execution of the \TM{}, the input is
@@ -249,7 +250,7 @@ at the end of the currently used portion of the tape.
 We thus add this special symbol directly to the right of the last cell being written to by the
 copy procedure (and also at the end of the input before beginning the
 simulation). The cells containing this special character will only be written to once.
-This is handled by steps 7 and 8 in \ref{copying:last}.
+This is handled by steps 7 and 8 in~\ref{copying:last}.
 
 Here are the detailed steps to copy a symbol \A{}:
 \begin{enumerate}
@@ -294,10 +295,10 @@ symbol (see~\ref{copying}).
 				-4/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
 				-6/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\Q,8/\0,9/\0,10/\0,11/\0,12/\0},%
 				-8/{1/\X,2/\A,3/\A,4/\Q,5/\A,6/\e,7/\Q,8/\0,9/\0,10/\0,11/\0,12/\0},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -313,7 +314,6 @@ symbol (see~\ref{copying}).
 		\end{tikzpicture}
 	\caption{Copying the first cell.}
     \end{subfigure}%
-	~
     \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
@@ -337,10 +337,10 @@ symbol (see~\ref{copying}).
 				-10/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\0},%
 				-12/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\e},%
 				-14/{1/\X,2/\X,3/\X,4/\X,5/\X,6/\e,7/\Q,8/\A,9/\A,10/\Q,11/\A,12/\e},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -357,11 +357,9 @@ symbol (see~\ref{copying}).
 			\draw (.5,-14) node[anchor=east]{9.} ;
 
 		\end{tikzpicture}
-	\caption{Copying the last cell.}
-	\label{copying:last}
+	\caption{Copying the last cell.}\label{copying:last}
     \end{subfigure}
-	\caption{Copying working cells.}
-	\label{copying}
+	\caption{Copying working cells.}\label{copying}
 \end{figure}
 
 We still need to describe how we can simulate \(M\), that is, remember the
@@ -382,7 +380,7 @@ see~\ref{head}).
 		\draw[->] (1,3.25) -- (1,2.75) ;
 
 		\foreach \y/\v in {2/{1/\Q,2/\HA,3/\Q,4/\Q,5/\A,6/\e}}
-		\foreach \x/\k in \v {
+		\foreach \x/\k in \v {%
 			\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 			\draw (\x,\y) node{$\k$};
 		}
@@ -394,8 +392,7 @@ see~\ref{head}).
 
 	\end{tikzpicture}
 	\caption{The first cell is pointed by the head of \(S\) (the arrow).
-	The second cell is pointed by the head of \(M\) (the starred symbol).}
-	\label{head}
+	The second cell is pointed by the head of \(M\) (the starred symbol).}\label{head}
 \end{figure}
 We do not need to color the first cell at the beginning of
 the simulation since we ``know'' the first cell is pointed by the head at the
@@ -406,7 +403,7 @@ appropriate symbols/marks/colors added.
 
 Before copying a cell we need to check whether the next one is the head (is a
 colored symbol).
-In that case, we have two possibilities (see \ref{transition}):
+In that case, we have two possibilities (see~\ref{transition}):
 \begin{enumerate}
 \item If the transition function makes the head move left, then
 we copy the current cell (the cell to the left of the
@@ -432,10 +429,10 @@ using the colored version of the symbol.
 			\foreach \y/\v in {%
 				2/{1/\X,2/\Q,3/\HA,4/\A,5/\A,6/\e,7/\A,8/\0,9/\0,10/\0,11/\0,12/\0},%
 				0/{1/\X,2/\X,3/\X,4/\X,5/\A,6/\e,7/\A,8/\HQ,9/\Q,10/\A,11/\0,12/\0},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -447,7 +444,6 @@ using the colored version of the symbol.
 		\end{tikzpicture}
 		\caption{\(\delta(q_i,a) = (q_j,b,L)\), that is, moving left.}
     \end{subfigure}%
-	~
     \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
@@ -457,10 +453,10 @@ using the colored version of the symbol.
 			\foreach \y/\v in {%
 				2/{1/\X,2/\Q,3/\HA,4/\A,5/\A,6/\e,7/\A,8/\0,9/\0,10/\0,11/\0,12/\0},%
 				0/{1/\X,2/\X,3/\X,4/\X,5/\A,6/\e,7/\A,8/\Q,9/\Q,10/\HA,11/\0,12/\0},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -472,8 +468,7 @@ using the colored version of the symbol.
 		\end{tikzpicture}
 		\caption{\(\delta(q_i,a) = (q_j,b,R)\), that is, moving right.}
     \end{subfigure}%
-	\caption{Handling the transition function.}
-	\label{transition}
+	\caption{Handling the transition function.}\label{transition}
 \end{figure}
 
 We also need to handle two special cases.
@@ -488,12 +483,12 @@ We also need to handle two special cases.
 			\foreach \y/\v in {%
 				2/{1/\e,2/\HA,3/\A,4/\A,5/\A,6/\e,7/\0,8/\0,9/\0,10/\0,11/\0,12/\0},%
 				0/{1/\e,2/\X,3/\A,4/\A,5/\A,6/\e,7/\HQ,8/\0,9/\0,10/\0,11/\0,12/\0},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
 				\draw[dotted] (.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -504,10 +499,8 @@ We also need to handle two special cases.
 
 		\end{tikzpicture}
 		\caption{\(\delta(q_i,a) = (q_j,b,L)\), that is, moving left on the
-		leftmost cell.}
-		\label{transition:leftmost}
+		leftmost cell.}\label{transition:leftmost}
     \end{subfigure}%
-	~
     \begin{subfigure}{0.4\textwidth}
         \centering
 		\begin{tikzpicture}[scale=.5]
@@ -517,12 +510,12 @@ We also need to handle two special cases.
 			\foreach \y/\v in {%
 				2/{1/\e,2/\X,3/\X,4/\A,5/\HA,6/\e,7/\A,8/\Q,9/\0,10/\0,11/\0,12/\0},%
 				0/{1/\e,2/\X,3/\X,4/\X,5/\X,6/\e,7/\A,8/\Q,9/\A,10/\Q,11/\BB,12/\e},%
-			}{
+			}{%
 				\draw[dotted] (12.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (12.5,\y) +(0,-.5)-- +(.5,-.5);
 				\draw[dotted] (.5,\y) +(0,0.5)-- +(.5,0.5);
 				\draw[dotted] (.5,\y) +(0,-.5)-- +(.5,-.5);
-				\foreach \x/\k in \v {
+				\foreach \x/\k in \v {%
 					\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 					\draw (\x,\y) node{$\k$};
 				}
@@ -533,8 +526,7 @@ We also need to handle two special cases.
 
 		\end{tikzpicture}
 		\caption{\(\delta(q_i,a) = (q_j,b,R)\), that is, moving right on the
-		rightmost cell.}
-		\label{transition:rightmost}
+		rightmost cell.}\label{transition:rightmost}
     \end{subfigure}%
 	\caption{Handling the transition function (edge cases).}
 \end{figure}
@@ -890,7 +882,7 @@ Since all ``odd'' cells contain symbols and ``even'' cells contain cross marks,
 it is not difficult to see that we can build a \TM{} that will know
 which type of cell the head is currently pointing at (there is a finite number
 of types of cells (2) so we can encode this in a finite number of additional
-states compared to the write-twice version). Look \ref{copying:write-once} for
+states compared to the write-twice version). Look~\ref{copying:write-once} for
 an example of how copying works using two cells per symbol.
 \begin{figure}
     \centering
@@ -915,10 +907,10 @@ an example of how copying works using two cells per symbol.
 			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
 			-8/{1/\Q,3/\A,5/\A,7/\Q,9/\A,11/\e,12/\Q,14/\0,16/\0,18/\0,20/\0,22/\0,%
 			2/\X,4/\0,6/\0,8/\0,10/\0,13/\0,15/\0,17/\0,19/\0,21/\0,23/\0},%
-		}{
+		}{%
 			\draw[dotted] (23.5,\y) +(0,0.5)-- +(.5,0.5);
 			\draw[dotted] (23.5,\y) +(0,-.5)-- +(.5,-.5);
-			\foreach \x/\k in \v {
+			\foreach \x/\k in \v {%
 				\draw (\x,\y) +(-.5,-.5) rectangle ++(.5,.5);
 				\draw (\x,\y) node{$\k$};
 			}
@@ -932,14 +924,13 @@ an example of how copying works using two cells per symbol.
 		\draw (.5,-8) node[anchor=east]{6.} ;
 
 	\end{tikzpicture}
-	\caption{Copying a single cell with a write-once TM.}
-	\label{copying:write-once}
+	\caption{Copying a single cell with a write-once TM.}\label{copying:write-once}
 \end{figure}
 
-Symbol cells will only be written to once since we do not cross them off anymore.
-crossed-off cells contain the original blank symbol of the tape until the
-corresponding symbol cell has been copied. When the corresponding symbol cell
-is copied we write the \X{} symbol in the crossed-off cell. Since a symbol
+Symbol cells will only be written to once since we do not cross them off
+anymore. Crossed-off cells contain the original blank symbol of the tape until
+the corresponding symbol cell has been copied. When the corresponding symbol
+cell is copied we write the \X{} symbol in the crossed-off cell. Since a symbol
 cell is copied only once, a crossed-off cell is written to only once.
 
 Again, a simple way to format the input for \(S\) to work
