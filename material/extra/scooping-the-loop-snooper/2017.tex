@@ -1,0 +1,253 @@
+\section{Scooping the Loop Snooper}
+What is the following poem about?
+
+\begin{verse}
+\emph{No general procedure for bug checks will do}\footnote{%
+\emph{Geoffrey K. Pullum}
+\url{http://www.lel.ed.ac.uk/~gpullum/loopsnoop.html}%
+}.\\
+Now, I won't just assert that, I’ll prove it to you.\\
+I will prove that although you might work till you drop,\\
+you cannot tell if computation will stop.
+\end{verse}
+\begin{verse}
+For imagine we have a procedure called \(P\)\\
+that for specified input permits you to see\\
+whether specified source code, with all of its faults,\\
+defines a routine that eventually halts.
+\end{verse}
+\begin{verse}
+You feed in your program, with suitable data,\\
+and \(P\) gets to work, and a little while later\\
+(in finite compute time) correctly infers\\
+whether infinite looping behavior occurs.
+\end{verse}
+\begin{verse}
+If there will be no looping, then \(P\) prints out ``Good.''\\
+That means work on this input will halt, as it should.\\
+But if it detects an unstoppable loop,\\
+then \(P\) reports ``Bad!'' -- which means you're in the soup.
+\end{verse}
+\begin{verse}
+Well, the truth is that \(P\) cannot possibly be,\\
+because if you wrote it and gave it to me,\\
+I could use it to set up a logical bind\\
+that would shatter your reason and scramble your mind.
+\end{verse}
+\begin{verse}
+Here's the trick that I’ll use -- and it's simple to do.\\
+I’ll define a procedure, which I will call \(Q\),\\
+that will use \(P\)'s predictions of halting success\\
+to stir up a terrible logical mess.
+\end{verse}
+\begin{verse}
+For a specified program, say \(A\), one supplies,\\
+the first step of this program called \(Q\) I devise\\
+is to find out from \(P\) what's the right thing to say\\
+of the looping behavior of \(A\) run on \(A\).
+\end{verse}
+\begin{verse}
+If \(P\)'s answer is ``Bad!'', \(Q\) will suddenly stop.\\
+But otherwise, \(Q\) will go back to the top,\\
+and start off again, looping endlessly back,\\
+till the universe dies and turns frozen and black.
+\end{verse}
+\begin{verse}
+And this program called \(Q\) wouldn't stay on the shelf;\\
+I would ask it to forecast its run on itself.\\
+When it reads its own source code, just what will it do?\\
+What's the looping behavior of \(Q\) run on \(Q\)?
+\end{verse}
+\begin{verse}
+If \(P\) warns of infinite loops, \(Q\) will quit;\\
+yet \(P\) is supposed to speak truly of it!\\
+And if \(Q\)'s going to quit, then \(P\) should say ``Good.''\\
+Which makes \(Q\) start to loop! (\(P\) denied that it would.)
+\end{verse}
+\begin{verse}
+No matter how \(P\) might perform, \(Q\) will scoop it:\\
+\(Q\) uses \(P\)'s output to make \(P\) look stupid.\\
+	Whatever \(P\) says, it cannot predict \(Q\):\\
+\(P\) is right when it's wrong, and is false when it's true!
+\end{verse}
+\begin{verse}
+I’ve created a paradox, neat as can be --\\
+and simply by using your putative \(P\).\\
+When you posited \(P\) you stepped into a snare;\\
+Your assumption has led you right into my lair.
+\end{verse}
+\begin{verse}
+So where can this argument possibly go?\\
+I don't have to tell you; I'm sure you must know.\\
+A \textbf{reductio}: There cannot possibly be\\
+a procedure that acts like the mythical \(P\).
+\end{verse}
+\begin{verse}
+You can never find general mechanical means\\
+for predicting the acts of computing machines;\\
+it's something that cannot be done. So we users\\
+must find our own bugs. Our computers are losers!
+\end{verse}
+
+\subsection{Solution}
+
+We define the following language
+\begin{displaymath}
+\text{\HALTtm{}} = \{ \langle M,w \rangle \st \text{\(M\) is a \TM{} and \(M\)
+halts on \(w\)} \}.
+\end{displaymath}
+and prove the following theorem
+\begin{theorem}\label{HALTtm}
+\HALTtm{} is undecidable.
+\end{theorem}
+\begin{proof}
+We assume that HALT\textsubscript{TM} is decidable and obtain a contradiction.
+Suppose that \(P\) is a decider for \HALTtm{}.
+On input \(\langle M, w \rangle\), where \(M\) is a \TM{} and \(w\) is a
+word, \(P\) halts and accepts if \(M\) halts (accepting or rejecting) on \(w\).
+Furthermore, \(P\) halts and rejects if
+\(M\) loops on \(w\).
+In other words, we assume that \(P\) is a \TM{}, where
+\begin{displaymath}
+P(\langle M, w\rangle) = \begin{cases}
+	\emph{accept}&\text{if \(M\) halts on \(w\)}\\
+	\emph{reject}&\text{if \(M\) loops on \(w\)}.
+\end{cases}
+\end{displaymath}
+
+Now we construct a new Turing machine \(Q\) with \(P\) as a subroutine. This
+new \TM{} calls \(P\) to determine what \(M\) does when the input to \(M\)
+is its own
+description \(\langle M \rangle\).
+Once \(Q\) has determined this information, it does the opposite.
+That is, it loops if \(M\) halts and halts if \(M\) loops.
+The following is a description of \(Q\).
+
+\begin{TMachine}{\(Q =\) ``On input \(\langle M \rangle\), where \(M\) is a \TM{}:}
+\item[1.] Run \(P\) on input \(\langle M, \langle M \rangle \rangle\).
+\item[2.] Do the opposite of what \(M\) does according to the output of
+	\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, halt (by
+	either accepting or rejecting).''
+\end{TMachine}
+In summary,
+\begin{displaymath}
+	Q(\langle M\rangle) = \begin {cases}
+	\emph{halt}&\text{if \(M\) loops on \(\langle M\rangle\)}\\
+	\emph{loop}&\text{if \(M\) halts on \(\langle M\rangle\).}
+\end{cases}
+\end{displaymath}
+What happens when we run \(Q\) with its own description \(\langle Q\rangle\) as input? In that
+case, we get
+\begin{displaymath}
+Q(\langle Q\rangle) = \begin {cases}
+\emph{halt}&\text{if \(Q\) loops on \(\langle Q\rangle\)}\\
+\emph{loop}&\text{if \(Q\) halts on \(\langle Q\rangle\).}
+\end{cases}
+\end{displaymath}
+No matter what \(Q\) does, it is forced to do the opposite, which is obviously a
+contradiction. We must conclude that \(Q\) cannot exist, and therefore, that
+\(P\) cannot exist, that is, that \HALTtm{} is undecidable.
+\end{proof}
+\subsection{Questions}
+\subsubsection{Can we not prove that \HALTtm{} is undecidable using the fact
+that \Atm{} is undecidable?}
+
+\begin{theorem}\label{Atm}
+\Atm{} is undecidable.
+\end{theorem}
+
+For a proof of this theorem, see the textbook or the lecture notes you have taken
+on 2017-10-09. We now prove~\ref{HALTtm} using~\ref{Atm}.
+
+\begin{proof}
+By contradiction. Suppose \HALTtm{} is decidable, then,
+there exists a decider \(P\) such that \(L(P) =
+\text{\HALTtm{}} \). Using \(P\) we
+can build a decider \(D\) for \Atm{}
+
+\begin{TMachine}{\(D =\) ``On input \(\langle M,w \rangle\), where \(M\) is a \TM{} and \(w\) is
+a word:}
+	\item Run \(P\) on input \(\langle M,w \rangle\).
+	\item If \(P\) rejects, that is, warns of the looping behavior of \(M\) on
+		\(w\), reject.
+	\item Otherwise \(M\) will halt on \(w\). We can thus simulate \(M\) on
+		\(w\). If \(M\) accepts, accept. Otherwise, reject.'',
+\end{TMachine}
+a contradiction.
+\end{proof}
+
+\subsubsection{Can you prove the undecidability of \LOOPtm{}?}
+
+Define the following language
+\begin{displaymath}
+\text{\LOOPtm{}} = \{ \langle M,w \rangle \st \text{\(M\) is a \TM{} and \(M\)
+loops on \(w\)} \}.
+\end{displaymath}
+and prove the following theorem
+\begin{theorem}\label{LOOPtm}
+\LOOPtm{} is undecidable.
+\end{theorem}
+
+
+\section{Exercise 5.31}
+We are given the following conjecture
+\begin{conjecture}[Collatz's conjecture]\label{collatz}
+	Let\footnote{\(\N = \{1,2,\ldots\}\), that is, the set of all natural
+		numbers except \(0\).}
+\begin{displaymath}
+f:\N \to \N:f(x) = \begin{cases}
+	3 x + 1 & \text{if \(x\) is odd}\\
+	x / 2 & \text{if \(x\) is even}.
+\end{cases}
+\end{displaymath}
+For all \(x \in \N\) the set \(\{x,f(x),f(f(x)),\ldots\}\) contains \(1\).
+\end{conjecture}
+A conjecture is a statement
+for which we do not have a proof that it holds or does not hold.
+We want to show that if there existed a decider \(H\) for \Atm{}
+then we could build a
+\TM{} that would compute a proof of~\ref{collatz} for us.
+
+First, let us define \TM{} \(C\) that recognizes
+the subset of \(\N\)
+for which the conjecture holds, that is, \(\{x \in \N \st 1 \in
+\{x,f(x),f(f(x)),\ldots\} \}\).
+
+\begin{TMachine}{\(C =\) on input \(\langle x \rangle\):}
+\item[1.] While \(x \neq 1\): \(x \gets f(x)\)
+\item[2.] \(1 \in \{x,f(x),f(f(x)),\ldots\}\) so \accept.
+\end{TMachine}
+
+To be able to easily combine\footnote{Alternatively, one can use a mapping from
+\(\Sigma\) to \(\N\).} this \TM{} with others, we will define
+a \TM{} \(C_{\Sigma^*}\) so that~\ref{collatz} holds if and only if
+\(L(C_{\Sigma^*}) =
+		\Sigma^*\). Here we take \(\Sigma = \{0,1\}\), the binary alphabet.
+
+\begin{TMachine}{\(C_{\Sigma^*} =\) on input \(w\):}
+\item[1.] If\footnote{This can be checked in a finite amount of time.} \(w \not\in
+\{\texttt{1},\texttt{10},\texttt{11},\texttt{100},\texttt{101},\texttt{110},\texttt{111},\ldots\}\),
+that is, \(w\) is not\footnote{For example, \(w
+	= \epsilon\).} the binary representation \(\langle x \rangle\)
+		of a number \(x \in \N\), \accept.
+	\item[2.] While \(x \neq 1\): \(x \gets f(x)\)
+	\item[3.] \(1 \in \{x,f(x),f(f(x)),\ldots\}\) so \accept.
+\end{TMachine}
+
+Using \(H\) we build \(R_{\neq \Sigma^*}\), a recognizer for the language
+\(L(R_{\neq \Sigma^*}) = \{\langle M\rangle\st L(M) \neq \Sigma^*\}\).
+
+\begin{TMachine}{\(R_{\neq \Sigma^*} =\) on input \(\langle M \rangle\):}
+	\item[1.] For each \(w \in \Sigma^*\) in lexicographic order:
+	\item[1.1.] Run \(H\) on \(\langle M , w \rangle\).
+	\item[1.2.] If \(H\) rejects, \accept.
+\end{TMachine}
+
+Finally, we run \(H\) on \(\langle R_{\neq \Sigma^*}, \langle C_{\Sigma^*} \rangle
+		\rangle\) to check whether~\ref{collatz} holds. If \(H\) rejects then
+		\(L(C_{\Sigma^*}) = \Sigma^*\) and hence the conjecture holds, otherwise the
+		conjecture does not hold.
+
+
+
+
