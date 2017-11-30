@@ -3,14 +3,14 @@ TARGETS=$(shell find . -maxdepth 1 -type d -name [^\.]\* | sed 's:^\./::' | sort
 
 all:
 	for target in $(TARGETS) ; do \
-        make -C $$target ; \
-    done
+		make -C $$target ; \
+	done
 
 
 clean:
 	for target in $(TARGETS) ; do \
-        make -C $$target clean ; \
-    done
+		make -C $$target clean ; \
+	done
 	rm -f infof408-corrections.zip
 
 zip: infof408-corrections.zip
