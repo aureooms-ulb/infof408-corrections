@@ -1,21 +1,13 @@
+.PHONY: all clean
 
-TARGETS=$(shell find . -maxdepth 1 -type d -name [^\.]\* | sed 's:^\./::' | sort)
+YEARS=$(shell find . -maxdepth 1 -type d -name [1-9][0-9]\* | sed 's:^\./::' | sort)
 
 all:
-	for target in $(TARGETS) ; do \
-        make -C $$target ; \
-    done
-
+	for year in $(YEARS) ; do \
+		make -C $$year ; \
+	done
 
 clean:
-	for target in $(TARGETS) ; do \
-        make -C $$target clean ; \
-    done
-	rm -f infof408-corrections.zip
-
-zip: infof408-corrections.zip
-
-infof408-corrections.zip: all
-	rm -f infof408-corrections.zip
-	zip -j infof408-corrections.zip [0-9]*/correction-[0-9]*.pdf extra/*/*.pdf
-
+	for year in $(YEARS) ; do \
+		make -C $$year clean ; \
+	done
