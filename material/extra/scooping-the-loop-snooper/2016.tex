@@ -94,7 +94,7 @@ must find our own bugs. Our computers are losers!
 We define the following language
 \begin{displaymath}
 \text{\HALTtm{}} = \{ \langle M,w \rangle \st \text{\(M\) is a \TM{} and \(M\)
-halts on \(w\)} \}.
+stops on \(w\)} \}.
 \end{displaymath}
 and prove the following theorem
 \begin{theorem}\label{HALTtm}
@@ -104,13 +104,13 @@ and prove the following theorem
 We assume that HALT\textsubscript{TM} is decidable and obtain a contradiction.
 Suppose that \(P\) is a decider for \HALTtm{}.
 On input \(\langle M, w \rangle\), where \(M\) is a \TM{} and \(w\) is a
-word, \(P\) halts and accepts if \(M\) halts (accepting or rejecting) on \(w\).
+word, \(P\) halts and accepts if \(M\) stops (accepting or rejecting) on \(w\).
 Furthermore, \(P\) halts and rejects if
 \(M\) loops on \(w\).
 In other words, we assume that \(P\) is a \TM{}, where
 \begin{displaymath}
 P(\langle M, w\rangle) = \begin{cases}
-	\emph{accept}&\text{if \(M\) halts on \(w\)}\\
+	\emph{accept}&\text{if \(M\) stops on \(w\)}\\
 	\emph{reject}&\text{if \(M\) loops on \(w\)}.
 \end{cases}
 \end{displaymath}
@@ -120,28 +120,28 @@ new \TM{} calls \(P\) to determine what \(M\) does when the input to \(M\)
 is its own
 description \(\langle M \rangle\).
 Once \(Q\) has determined this information, it does the opposite.
-That is, it loops if \(M\) halts and halts if \(M\) loops.
+That is, it loops if \(M\) stops and stops if \(M\) loops.
 The following is a description of \(Q\).
 
 \begin{TMachine}{\(Q =\) ``On input \(\langle M \rangle\), where \(M\) is a \TM{}:}
 \item[1.] Run \(P\) on input \(\langle M, \langle M \rangle \rangle\).
 \item[2.] Do the opposite of what \(M\) does according to the output of
-	\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, halt (by
+	\(P\). That is, if \(P\) accepts, loop ; and if \(P\) rejects, stop (by
 	either accepting or rejecting).''
 \end{TMachine}
 In summary,
 \begin{displaymath}
 	Q(\langle M\rangle) = \begin {cases}
-	\emph{halt}&\text{if \(M\) loops on \(\langle M\rangle\)}\\
-	\emph{loop}&\text{if \(M\) halts on \(\langle M\rangle\).}
+	\emph{stop}&\text{if \(M\) loops on \(\langle M\rangle\)}\\
+	\emph{loop}&\text{if \(M\) stops on \(\langle M\rangle\).}
 \end{cases}
 \end{displaymath}
 What happens when we run \(Q\) with its own description \(\langle Q\rangle\) as input? In that
 case, we get
 \begin{displaymath}
 Q(\langle Q\rangle) = \begin {cases}
-\emph{halt}&\text{if \(Q\) loops on \(\langle Q\rangle\)}\\
-\emph{loop}&\text{if \(Q\) halts on \(\langle Q\rangle\).}
+\emph{stop}&\text{if \(Q\) loops on \(\langle Q\rangle\)}\\
+\emph{loop}&\text{if \(Q\) stops on \(\langle Q\rangle\).}
 \end{cases}
 \end{displaymath}
 No matter what \(Q\) does, it is forced to do the opposite, which is obviously a
@@ -157,7 +157,7 @@ that \Atm{} is undecidable?}
 \end{theorem}
 
 For a proof of this theorem, see the textbook or the lecture notes you have taken
-on 2017-10-09. We now prove~\ref{HALTtm} using~\ref{Atm}.
+on 2016-10-03. We now prove~\ref{HALTtm} using~\ref{Atm}.
 
 \begin{proof}
 By contradiction. Suppose \HALTtm{} is decidable, then,
@@ -170,20 +170,8 @@ a word:}
 	\item Run \(P\) on input \(\langle M,w \rangle\).
 	\item If \(P\) rejects, that is, warns of the looping behavior of \(M\) on
 		\(w\), reject.
-	\item Otherwise \(M\) will halt on \(w\). We can thus simulate \(M\) on
+	\item Otherwise \(M\) will stop on \(w\). We can thus simulate \(M\) on
 		\(w\). If \(M\) accepts, accept. Otherwise, reject.'',
 \end{TMachine}
 a contradiction.
 \end{proof}
-
-\subsubsection{Can you prove the undecidability of \LOOPtm{}?}
-
-Define the following language
-\begin{displaymath}
-\text{\LOOPtm{}} = \{ \langle M,w \rangle \st \text{\(M\) is a \TM{} and \(M\)
-loops on \(w\)} \}.
-\end{displaymath}
-and prove the following theorem
-\begin{theorem}\label{LOOPtm}
-\LOOPtm{} is undecidable.
-\end{theorem}

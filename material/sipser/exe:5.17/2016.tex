@@ -1,0 +1,39 @@
+\section{Exercise 5.17}
+We consider \ref{PCP} again, this time adding the constraint that the alphabet
+is unary, for example \(\Sigma = \{1\}\). Note that in this case, you can always start a
+match since all dominos are of the form\footnote{\(1^n = \underbrace{11\ldots1}_{n \text{ times}}\)}
+\(\mleft[\frac{1^m}{1^n}\mright]\)
+and hence for each domino either the bottom string is a prefix of the top
+string or the top string is a prefix of the bottom string, or both.
+For each domino \(d\) of the form \(\mleft[\frac{1^m}{1^n}\mright]\) let us
+define \(\Delta(d) = m - n\). Since there is only one symbol,
+we only need to match the lengths of the
+top and bottom part of a match, and hence a \(k\)-tuple \(M = (i_1,i_2,\ldots,i_k)\)
+is a match if and only if \(\sum_{i \in M}
+	\Delta(\mleft[\frac{t_i}{b_i}\mright]) = 0\).
+To solve this problem, we have to handle four cases:
+\begin{enumerate}
+	\item If \(P\) contains a domino \(d=\mleft[\frac{1^m}{1^n}\mright]\) such that
+		\(m=n\), that is \(\Delta(d) = 0\) then we have a match consisting of this single domino.
+	\item If each domino \(d \in P\) is such that \(\Delta(d) < 0\) then there
+		is no way we can find a match.
+	\item Symmetrically, if each domino \(d \in P\) is such that \(\Delta(d) > 0\) then there
+		is no way we can find a match.
+	\item If for \(\Delta_i, \Delta_j > 0\) there are \(d_i,d_j \in P\) such
+		that \(\Delta(d_i) = -\Delta_i\) and \(\Delta(d_j) = +\Delta_j\) then a
+		match can be found by computing the lowest common multiple of
+		\(\Delta_i\) and \(\Delta_j\). Let \(c_i =
+			\frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_i}\) and \(c_j =
+			\frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_j}\) then a valid
+			match is \(M = (\underbrace{i i \ldots i}_{c_i \text{
+							times}},\underbrace{j j \ldots j}_{c_j
+			\text{ times}})\) since then \(\sum_{k \in M}
+	\Delta(d_k) = c_i \Delta_i - c_j \Delta_j
+= \frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_i} \Delta_i -
+\frac{\mathop{lcm}(\Delta_i,\Delta_j)}{\Delta_j} \Delta_j
+=\mathop{lcm}(\Delta_i,\Delta_j) - \mathop{lcm}(\Delta_i,\Delta_j)
+= 0\). A longer, but simpler, solution is to choose $c_i = \Delta_j$ and $c_j =
+\Delta_i$.
+\end{enumerate}
+Note that you can build a TM that decides the problem by checking for all those
+cases in finite time.

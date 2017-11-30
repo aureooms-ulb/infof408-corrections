@@ -1,0 +1,33 @@
+\section{\texorpdfstring{Exercise 7.18\footnote{%
+Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{Exercise 7.18}}
+
+We want to prove that
+\begin{theorem}
+P \(=\) NP \(\implies\) P \(\setminus \{\emptyset, \Sigma^*\} =\) NP-complete.
+\end{theorem}
+\begin{proof}
+	Indeed \(\emptyset\) is not NP-complete. Suppose it was, then for each
+	\(A \in\) NP, there would
+	exist some computable function \(f\) such that \(w \in A \iff f(w) \in
+	\emptyset\). However, whatever \(f\) is, for all \(w \in \Sigma^*\), \(f(w) \not\in
+\emptyset\) and so it is impossible to map ``yes'' instances of \(A\) to
+``yes'' instances of \(\emptyset\). Languages that are not \(\emptyset\)
+contain at least one ``yes'' instance. By a similar argument, \(\Sigma^*\) is
+not NP-complete. In that case, it is impossible to map ``no'' instances.
+
+If P \(=\) NP then for each pair of languages \(A, B \in\) NP, where \(B\) is
+neither \(\emptyset\) nor \(\Sigma^*\), we can design a computable function
+\(f_{A \le_P B}\) that runs in polynomial time so that \(w \in A \iff f_{A
+\le_P B}(w) \in B\). Let \(x \in B\) and \(z \not\in B\) and \(M_A\) be a
+Turing-machine that decides \(A\) in polynomial time
+\begin{TMachine}{\(f_{A \le_P B} =\) on input \(w\)}
+\item[1.] Run \(M_A\) on \(w\).
+\item[2.] If \(w \in A\) write \(x\) on the tape and halt. Otherwise, write
+\(z\) on the tape and halt.
+\end{TMachine}
+Note that \(x\) and \(z\) do not depend on \(w\) and hence, their size does not
+depend on the input size. The whole computation runs thus in polynomial time.
+
+\end{proof}

@@ -1,0 +1,182 @@
+\section{3SAT is polynomial-time reducible to CLIQUE\footnote{%
+Theorem 7.32 from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+
+\subsection{Introduction}
+
+Let us recall the big picture. We have shown in the first part of the course,
+the part about computability, that not all problems can be solved by means of
+Turing machines. We made the distinction between decidable and undecidable
+problems, the former being the ones we can solve with algorithms, that is,
+procedures that eventually terminate.
+
+The second part, that is, the part about complexity, focuses on the resources
+it takes to solve decidable problems. We already introduced the classes P and
+NP\@. NP is the class of problems for which there exists a nondeterministic
+polynomial-time algorithm. An equivalent definition is to consider the
+languages for which all words have at least one corresponding certificate of
+appartenance of polynomial size that can be verified using a polynomial-time
+algorithm called a verifier. P is the class of problems for which there exists
+a deterministic polynomial-time algorithm. By definition P is contained in NP\@.
+However, we do not know whether P is different from NP.
+
+Later on in the lectures, we will define the notion of NP-completeness and show
+that, while we (today) cannot answer the question ``P vs. NP'', we can identify
+a set of problems, the NP-complete problems, that capture the complexity of all
+the problems in NP\@. This kind of result relies heavily on the notion of
+reduction.
+
+\subsection{Definitions}
+
+We already saw that the reducibility of a problem to
+another need not rely on similarity between the two problems. It is
+possible to prove reducibility results between two \emph{a priori} unrelated problems.
+The goal of this exercise is to show you a first reduction of an NP-complete
+problem to a problem in NP that, at first sight, might not seem intuitive.
+
+Let us begin with a few definitions
+\begin{definition}
+	A boolean formula \(\phi\) over \(n\) variables \(x_1,x_2,\ldots,x_n\) is in
+	conjunctive normal form if \(\phi\) can be
+	written as a conjunction of \(m\) clauses \(c_1 \land c_2 \land \cdots \land
+	c_m\) where each clause \(c_j\) can be written as a disjunction of
+	\(k_j\) literals
+	\((l_{j1} \lor l_{j2} \lor \cdots \lor l_{jk_j})\) where each literal is
+	either a variable \(x_i\) or the negation of a variable \(\lnot x_i\).
+	The language CNF is the language of boolean formulae in conjunctive normal
+	form.
+\end{definition}
+
+The language CNF-SAT is defined as
+\begin{definition}
+	CNF-SAT \(= \{ \langle \phi \rangle \st \phi \in\) CNF and there exists an
+	assignment \(\in \{0,1\}^n\) on the variables \(x_1,x_2,\ldots,x_n\) that
+	makes the formula evaluate to true. \(\}\)
+\end{definition}
+
+The language 3SAT is a subset of CNF-SAT
+\begin{definition}
+	3SAT \(= \{ \langle \phi \rangle \st \phi \in \text{CNF-SAT and has
+	exactly 3 literals per clause.}\}\)
+\end{definition}
+
+The language CLIQUE is the following
+\begin{definition}
+	CLIQUE \(= \{ \langle G , k \rangle \st \text{ \(G\) is a graph with a clique
+	of size \(k\).}\}\)
+\end{definition}
+
+\subsection{Statement and proof}
+
+We now prove the following
+\begin{theorem}
+	3SAT \(\le_P\) CLIQUE
+\end{theorem}
+
+\subsubsection{Reduction}
+
+Given a boolean formula \(\phi\) in conjunctive normal form with exactly three
+literals per clause, we construct graph \(G = (V,E)\) and then prove that \(G\)
+has a clique of size \(m\) if and only if \(\phi\) is satisfiable.
+
+We start with an empty graph. For each clause we add a set of three vertices to
+the graph, called a triple. The three added vertices correspond to the three
+literals of the clause. For each pair of vertices that are not from the same
+triple, we add an edge if the two literals do not contradict each other. Note
+that we do not add any edge between the vertices of the same triple.
+
+Here is a corresponding \emph{Turing-machine-like} description of the algorithm
+\begin{TMachine}{\(f =\) on input \(\langle \phi \rangle\):}
+\item[1.] \(V \gets \emptyset\)
+\item[2.] \(E \gets \emptyset\)
+\item[3.] For each \(c_j = (l_{j1},l_{j2},l_{j3}) \in \phi\):
+\item[3.1.] \(T \gets \{v_{j1},v_{j2},v_{j3}\}\)
+\item[3.2.] \(V \gets V \cup T\)
+\item[3.3.] For each \(v_{jk} \in T\):
+\item[3.3.1.] For each \(v_{j'k'} \in V \setminus T\):
+\item[3.3.1.1.] \(E \gets E \cup \{\{v_{jk},v_{j'k'}\}\}\) if \(l_{jk} \neq \lnot l_{j'k'}\)
+\item[4.] Output \(\langle (V,E) , m \rangle\)
+\end{TMachine}
+
+\subsubsection{Complexity}
+An important step when reducing an NP-complete problem to an NP problem is to
+check that the reduction takes polynomial time and that the new problem is of
+polynomial size.
+
+It is not difficult to see that the complexity of the algorithm above is
+quadratic in the number of clauses (\(O(m^2)\)). The size of the output graph
+(\(\card{V} + \card{E}\)) is also \(O(m^2)\). \(f\) runs thus in polynomial
+time and produces a graph of polynomial size.
+
+\subsubsection{Correctness}
+
+We need to prove that \(\langle \phi \rangle \in \text{3SAT} \iff f(\langle \phi \rangle) \in
+\text{CLIQUE}\). We prove the two implications of the equivalence.
+
+\paragraph{(\(\implies\))} If \(\langle\phi\rangle \in \text{3SAT}\) then, by definition,
+there exists an assignment \((x_1', x_2', \ldots, x_n') \in \{0,1\}^n\) such
+that for each clause there is at least one literal \(l_{jz_j}\) that evaluates
+to true. In other words, \(\exists l_{1z_1},l_{2z_2},\ldots,l_{mz_m}\) such
+that no two literals \(l_{az_a},l_{bz_b}\) are contradictory, that is,
+\(l_{az_a} \neq \lnot l_{bz_b} \Forall a,b \in [m]\). The corresponding
+vertices in the graph \(G\) of \(f(\langle \phi \rangle) = \langle G,m
+\rangle\)
+form a \(m\)-clique, that
+is, the graph induced by \(v_{1z_1},v_{2z_2},\ldots,v_{mz_m}\) must be
+complete. This holds because, by construction, an edge can only be missing if two
+vertices represent literals of the same clause, which is not the case here
+since we have selected exactly one literal per clause, \textbf{or} if two
+vertices represent contradictory literals, which is not
+possible either. Hence, \(f(\langle \phi \rangle) \in \text{CLIQUE}\).
+
+\paragraph{(\(\impliedby\))} If \(f(\langle \phi \rangle) = \langle G, m \rangle \in \text{CLIQUE}\),
+then, by definition, \(G\) must contain a clique of size \(m\). By
+construction of \(G\), this clique cannot contain more than one vertex per
+triple, since there is no edge between two vertices of the same triple. Since
+there are \(m\) triples, a clique of size \(m\) must thus contain exactly one
+vertex per triple. Let us name those vertices
+\(v_{1z_1},v_{2z_2},\ldots,v_{mz_m}\), they correspond to literals
+\(l_{1z_1},l_{2z_2},\ldots,l_{mz_m}\) covering all the clauses of \(\phi\).
+By construction of \(G\), two such literals cannot be contradictory because
+their corresponding vertices, being part of the same clique, have an edge
+between them. Hence, \(\langle \phi \rangle \in\) 3SAT.
+
+\subsection{About Karp reductions}
+
+What we just did is called a Karp reduction. Given two languages \(A\)
+and \(B\), an algorithm for deciding \(B\), and a polynomial-time
+mapping procedure \(f\) such that
+\(a \in A\) if and only if \(f(a) \in B\), we can decide whether \(a \in A\) using
+the following algorithm
+\begin{TMachine}{On input \(a\):}
+\item[1.] Translate instance \(a \in A\) to the corresponding instance \(f(a) \in
+	B\) in polynomial time.
+\item[2.] Answer the same as the algorithm for \(B\) run on \(f(a)\).
+\end{TMachine}
+Moreover, if the algorithm for \(B\) runs in polynomial time so does this
+algorithm.
+
+\subsection{CLIQUE is NP-complete}
+
+During the next lecture, we will define the notion of NP-completeness
+\begin{definition}
+	A language \(B\) is NP-complete if it satisfies two conditions:
+	\begin{enumerate}
+		\item \(B\) is in NP, and
+		\item every \(A\) in NP is polynomial-time reducible to \(B\).
+	\end{enumerate}
+\end{definition}
+and see that
+\begin{theorem}
+	CNF-SAT is NP-complete
+\end{theorem}
+and that
+\begin{theorem}
+	CNF-SAT \(\le_P\) 3SAT.
+\end{theorem}
+Those two theorems together with the one we just proved and the fact that
+CLIQUE is in NP\footnote{Left as exercise for the reader}
+imply the following corollary
+\begin{corollary}
+	CLIQUE is NP-complete.
+\end{corollary}

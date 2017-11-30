@@ -1,0 +1,48 @@
+\section{Exercises 3.15 and 3.16}
+\subsection{Exercise 3.15}
+\paragraph{(b)} \( A \circ B = \{ w_a w_b \st w_a \in A \land w_b \in B\}\),
+that is, the words that are the result of concatenating a word of \(B\) to a
+word of \(A\).
+
+If we are given a \TM{} \(M_A\) that decides a language \(A\) and
+a \TM{} \(M_B\) that decides a language \(B\) we can decide the
+language \(A \circ B\) using \(M_{A \circ B}\) defined as follows
+\begin{TMachine}{\(M_{A \circ B} =\) On input word \(w = w_1 w_2 \ldots w_n\):}
+\item[1.] For each possible split \(i \in \{0,1,\ldots,n\}\)
+\item[1.1.] Run \(M_A\) on \(w_1 \ldots w_i\). If it rejects, continue with next split.
+\item[1.2.] Run \(M_B\) on \(w_{i+1} \ldots w_n\). If it accepts, \accept.
+\item[2.] \reject.
+\end{TMachine}
+
+\paragraph{(d)}
+\( \overline{A} = \Sigma^{*} \setminus A = \{ w \in \Sigma^{*} \st w \not \in A
+	\}\), that is, words containing only symbols of the language alphabet that are not in the
+	language.
+
+If we are given a \TM{} \(M_A\) that decides a language \(A\)
+we can decide the
+language \(\overline{A}\) using \(M_{\overline{A}}\) defined as follows
+\begin{TMachine}{\(M_{\overline{A}} =\) On input word \(w\):}
+\item[1.] Run \(M_A\) on \(w\). If it rejects, \accept. Otherwise, \reject.
+\end{TMachine}
+
+\paragraph{(e)}
+\( A \cap B = \{w \st w \in A \land w \in B\}\), that is, words that are in both \(A\) and \(B\).
+
+If we are given a \TM{} \(M_A\) that decides a language \(A\) and
+a \TM{} \(M_B\) that decides a language \(B\) we can decide the
+language \(A \cap B\) using \(M_{A \cap B}\) defined as follows
+\begin{TMachine}{\(M_{A \cap B} =\) On input word \(w\):}
+\item[1.] Run \(M_A\) on \(w\). If it rejects, \reject.
+\item[2.] Run \(M_B\) on \(w\). If it rejects, \reject. Otherwise, \accept.''
+\end{TMachine}
+
+\subsection{Exercise 3.16}
+\paragraph{(b),(d)}
+Like we already saw during the first exercise session, when dealing with
+recognizers we must be careful not to trap ourselves in infinite loops. A
+generic way for avoiding this trap is to run simulations in parallel. For
+exercise \textbf{(b)} we do the simulations for all splits in
+parallel. For exercise \textbf{(d)} we do not need this trick since both
+machines must accept in order to accept. We can thus wait for the first to
+accept before running the second, unlike exercise \textbf{(a)}.

@@ -1,0 +1,61 @@
+\section{Exercise 5.18}
+During the last exercise session we showed that there are decidable variants
+of Post's correspondence problem. The variants we saw add some constraint on
+the input of the problem. For example, if the string alphabet is \(\Sigma =
+\{1\}\) or if the top and bottom string of each domino must have the same
+length then the problem of finding a match becomes decidable.
+
+To show that the PCP is undecidable, we reduced \Atm{} to PCP, showing that we
+could simulate a complete run of a \TM{} by trying to find a match on a
+set of dominos. The string alphabet in this case contained a symbol for each
+state of the \TM{}, for each symbol of the input tape and also the symbols
+\texttt{\(\star\)} and \texttt{\(\Diamond\)}.
+What we now show is that an alphabet of size \(2\) is enough to make
+the problem undecidable.
+
+Given \(\Gamma = \{\alpha_1, \alpha_2, \ldots, \alpha_n\}\), an alphabet of size \(n\),
+we can map any PCP instance over this alphabet to a PCP instance over alphabet
+\(\Sigma = \{0,1\}\). We have several options, the next three subsections give
+three possible mappings. For each of these mapping we can construct a PCP
+instance over \(\Sigma\)
+by translating each domino of the instance over \(\Gamma\) to a domino composed
+of symbols of \(\Sigma\). To each match of this new instance corresponds one,
+and only one, match of the original instance.
+
+\subsection{Using a unary-like encoding}
+We map \(\alpha_1\) to \texttt{01}, \(\alpha_2\) to \texttt{011}, etc., that
+is, \(\alpha_i\) to
+\(f(\alpha_i) =
+\texttt{0}\mathrlap{\overbrace{\phantom{\texttt{1}\ldots
+\texttt{1}\strut}}^{i~\text{times}}}\texttt{1}\ldots\texttt{1}\).
+Since each symbol image \(f(\alpha_i)\) starts with a \texttt{0} and
+contains exactly one \texttt{0},
+we can only match a symbol that appears at the same position in the top
+and in the bottom string of a match in the original PCP instance by matching
+the mapped symbol in the top and bottom string of the constructed PCP instance.
+In other words, to each match for the original PCP instance corresponds a match
+for the constructed PCP instance and vice versa.
+
+\subsection{Using fixed size words}
+We map \(\alpha_1\) to
+\(\overbrace{\texttt{0}\ldots\texttt{00}}^{%
+\scriptsize\begin{tabular}{c}\(\ceil{\log n}\)\\symbols\end{tabular}}\),
+\(\alpha_2\) to
+\(\overbrace{\texttt{0}\ldots\texttt{01}}^{%
+\scriptsize\begin{tabular}{c}\(\ceil{\log n}\)\\symbols\end{tabular}}\),
+etc., that is,
+\(\alpha_i\) to \(f(\alpha_i) =\) \emph{binary representation of \(i-1\)
+using exactly \(\ceil{\log n}\) bits}.
+Like before, there is only one way to encode and decode the top and
+bottom string of a match, hence there is a mapping from matches in the original
+instance to matches of the constructed instance.
+
+\subsection{Using a prefix-free encoding}
+Indeed, any way of encoding the symbols of
+\(\Gamma\) using \texttt{0} and \texttt{1} in such a way that a string of
+\texttt{0} and \texttt{1} is uniquely decodable into a string over \(\Gamma\)
+will work. A last example of such mappings is prefix-free encodings, that is,
+mappings from \(\Gamma\) to \(\Sigma^*\) such that no encoding of a symbol of
+\(\Gamma\) is a prefix of the encoding of another symbol. An example for
+\(\Gamma = \{a,b,c\}\) is \(f(a) = \texttt{0}\), \(f(b) = \texttt{10}\), \(f(c)
+= \texttt{11}\).

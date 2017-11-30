@@ -1,0 +1,35 @@
+\section{Exercise 5.19\footnote{Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition (2013).}}
+
+Remember the definition of Post's correspondence problem
+\begin{problem}\label{PCP}
+	Given a finite set of \(n\) dominos\footnote{\([n] = \{1,2,\ldots,n\}\)}
+	\(P = \mleft\{ \mleft[\frac{t_1}{b_1}\mright] , \mleft[\frac{t_2}{b_2}\mright] , \ldots
+			, \mleft[\frac{t_n}{b_n}\mright]\mright\}\), such that \(t_i, b_i
+		\in \Sigma^*\)
+			for all \(i \in [n]\), decide
+	whether there exists a \(k\)-tuple of indices \((i_1,i_2,\ldots,i_k)\),
+	called a match,
+	such that\footnote{\(v = v_1 v_2 \ldots v_{n_v} \in \Sigma^* \land w = w_1 w_2 \ldots
+			w_{n_w} \in \Sigma^* \implies v \circ w = v_1 v_2 \ldots v_{n_v} w_1 w_2
+	\ldots w_{n_w}\) }
+	\(t_{i_1} \circ t_{i_2} \circ \cdots \circ t_{i_k} =
+	b_{i_1} \circ b_{i_2} \circ \cdots \circ b_{i_k} \).
+\end{problem}
+
+In the \emph{silly Post Correspondence Problem, SPCP}, the top string \(t_i\)
+in each pair has the same length has the bottom string \(b_i\). We can decide
+this problem using the following observation.
+A match for a set of dominos \(P\) can only start with a domino whose top
+string has as a prefix the bottom string or vice versa. If such a domino does
+not exist then there is simply no way one can build a match.
+For the SPCP, we thus have two cases:
+\begin{enumerate}
+	\item Either there is no such domino, and there is no match.
+	\item Or this domino exists and then a match can be this single domino
+		since without loss of generality the bottom string is a prefix of the
+		top string and both strings have the same length. Hence, they must be
+		equal.
+\end{enumerate}
+Note that you can build a TM that decides the problem by checking that \(P\)
+contains such a domino in finite time.

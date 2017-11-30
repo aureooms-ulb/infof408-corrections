@@ -1,0 +1,44 @@
+\section{\texorpdfstring{TQBF is in PSPACE\footnote{%
+First part in Theorem 8.9 from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{TQBF is in PSPACE}}
+
+As a reminder
+\begin{definition}
+	SPACE\((f(n))\) \(= \{L \st L \) is a language decided by an \(O(f(n))\) space
+	deterministic Turing machine.\(\}\)
+\end{definition}
+\begin{definition}
+	PSPACE \(= \bigcup_k\) SPACE\((n^k)\)
+\end{definition}
+\begin{definition}
+	TQBF \(= \{ \langle \phi \rangle \st \phi\) is a true fully quantified
+	boolean formula.\(\}\)
+\end{definition}
+
+\begin{theorem}
+	TQBF \(\in\) PSPACE
+\end{theorem}
+
+\begin{proof}
+Obviously, the following recursive algorithm decides TQBF
+\begin{TMachine}{\(T =\) ``On input \(\langle \varphi \rangle\), a fully quantified Boolean formula:}
+\item[1.] If \(\varphi\) contains no quantifiers, then it is an expression with only
+constants, so evaluate \(\varphi\) and accept if it is true; otherwise, reject.
+\item[2.] If \(\varphi\) equals \(\exists x~\phi\), recursively call \(T\) on
+	\(\phi\), first with \(0\) substituted
+	for \(x\) and then with \(1\) substituted for \(x\). If either result is accept,
+then \accept; otherwise, \reject.
+\item[3.] If \(\varphi\) equals \(\forall x~\phi\), recursively call \(T\) on
+	\(\phi\), first with \(0\) substituted
+	for \(x\) and then with \(1\) substituted for \(x\). If both results are
+	accept, then \accept; otherwise, \reject.''
+\end{TMachine}
+
+The depth of the recursion is \(m\), the number of variables.
+Note that \(m = O(n)\), where \(n\) is the size of the input formula.
+At each level of
+the recursion we only need to store the value of one variable and so the space
+used is \(O(n)\). Hence, this algorithm decides TQBF using linear space.
+
+\end{proof}
