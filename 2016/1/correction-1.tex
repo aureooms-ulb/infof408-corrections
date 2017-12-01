@@ -1,132 +1,7 @@
 \documentclass{article}
 \setcounter{errorcontextlines}{10000}
-
-\makeatletter
-\usepackage{fontspec}
-\usepackage{xunicode}
-\usepackage{xltxtra}
-
-\usepackage{fullpage}
-
-\usepackage{hyperref}
-
-\hypersetup{%
-	linktocpage  = true, %page number is the link (not title)
-	colorlinks   = true, %Colours links instead of ugly boxes
-	urlcolor     = darkblue, %Colour for external hyperlinks
-	linkcolor    = darkblue, %Colour of internal links
-	citecolor    = darkblue   %Colour of citations
-}
-
-%\hypersetup{
-%	linktocpage  = true, %page number is the link (not title)
-%	colorlinks   = true, %Colours links instead of ugly boxes
-%	allcolors = bookColor,
-%	hidelinks = true
-%}
-
-% good looking urls
-\urlstyle{same}
-
-% we use this for our references as well
-\let\sref\ref
-\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
-\usepackage[nameinlink]{cleveref}
-
-% define colors %
-\usepackage[table]{xcolor}
-
-%\usepackage[table,dvipdfx,cmyk]{xcolor}
-%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
-%\color{bookColor}
-
-\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
-\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
-\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
-\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
-\usepackage[stable]{footmisc}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage[margin=5pt,
-font+=small,labelformat=parens,labelsep=space,
-skip=6pt,list=false,hypcap=false
-]{subcaption}
-\usepackage{tikz}
-\usepackage{url}
-\usepackage{amsmath}
-\usepackage{calc}
-\newlength{\maxmin}
-\setlength{\maxmin}{\widthof{$\max$}-\widthof{$\min$}}
-
-\usepackage{stackengine,scalerel}
-\renewcommand\useanchorwidth{T}
-%\newcommand\obullet[1]{\ThisStyle{\ensurestackMath{%
-  %\stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\bullet}}}}
-%\newcommand\ocirc[1]{\ThisStyle{\ensurestackMath{%
-  %\stackon[1pt]{\SavedStyle#1}{\SavedStyle\kern.6\LMpt\circ}}}}
-
-\newcommand{\obullet}[1]{\ensuremath{#1^*}}
-\newcommand{\0}{\texttt{\textvisiblespace}}
-\newcommand{\°}{\obullet{\0}}
-\newcommand{\BB}{\obullet{\underline{\0}}}
-\newcommand{\A}{\obullet{\s}}
-\newcommand{\D}{\obullet{\d}}
-\newcommand{\Q}{\obullet{\w}}
-\renewcommand{\C}{\obullet{\y}}
-\newcommand{\HA}{\obullet{\underline{\s}}}
-\newcommand{\HD}{\obullet{\underline{\d}}}
-\newcommand{\HQ}{\obullet{\underline{\w}}}
-\newcommand{\HC}{\obullet{\underline{\y}}}
-\newcommand{\s}{\texttt{a}}
-\newcommand{\w}{\texttt{b}}
-\newcommand{\y}{\texttt{c}}
-\renewcommand{\d}{\texttt{d}}
-\newcommand{\X}{\texttt{x}}
-\newcommand{\e}{\texttt{\#}}
-\newcommand{\st}{\colon\,}
-\newcommand{\TM}{TM}
-\newcommand{\qz}{q_0}
-\newcommand{\qa}{q_\text{accept}}
-\newcommand{\qr}{q_\text{reject}}
-\newcommand{\qpz}{q'_0}
-\newcommand{\qpa}{q'_\text{accept}}
-\newcommand{\qpr}{q'_\text{reject}}
-\newcommand{\gwb}{\Gamma\setminus\{\,\0{}\,\}}
-\newcommand{\gpwb}{\Gamma'_{\0{}}}
-\newcommand{\gpwx}{\Gamma'_{\X{}}}
-\newcommand{\gpwe}{\Gamma'_{\e{}}}
-\newcommand{\qwar}{\tilde{Q}}
-\newcommand{\qpwar}{\tilde{Q'}}
-
-% TURING MACHINE DESCRIPTIONS
-\usepackage{changepage}
-\newenvironment{steps}%
-{%
-\vspace{0.25cm}%
-\begin{adjustwidth}{0.3cm}{0cm}%
-\begin{description}%
-}
-{%
-\end{description}%
-\end{adjustwidth}%
-\vspace{0.1cm}%
-}
-
-\newcounter{TMachine}[section]
-\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
-\newenvironment{TMachine}[1]
-  {\refstepcounter{TMachine}%
-   \par%
-   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
-   \noindent{#1}%
-   \begin{steps}}%\begin{TMachine}
-  {\end{steps}%
-\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
-}% \end{TMachine}
-
-\newcommand{\accept}{\emph{accept}}
-\newcommand{\reject}{\emph{reject}}
-\makeatother
+\usepackage{../../macros/2016/all}
+\usepackage{../../macros/2016/tm}
 
 \title{Computability and Complexity:\\Exercise Session 1 (2016--09--28)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
@@ -136,7 +11,7 @@ skip=6pt,list=false,hypcap=false
 \maketitle
 \tableofcontents
 
-\input{../../material/sipser/exe:3.10/2016.tex}
-\input{../../material/sipser/exe:3.15,3.16/2016.tex}
+\input{../../material/sipser/exe:3.10/2016}
+\input{../../material/sipser/exe:3.15,3.16/2016}
 
 \end{document}

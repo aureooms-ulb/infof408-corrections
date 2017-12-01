@@ -1,96 +1,6 @@
 \documentclass{article}
-\errorcontextlines 10000
-
-\makeatletter
-\usepackage{fontspec}
-\usepackage{xunicode}
-\usepackage{xltxtra}
-
-\usepackage{fullpage}
-
-\usepackage{hyperref}
-
-\hypersetup{
-	linktocpage  = true, %page number is the link (not title)
-	colorlinks   = true, %Colours links instead of ugly boxes
-	urlcolor     = darkblue, %Colour for external hyperlinks
-	linkcolor    = darkblue, %Colour of internal links
-	citecolor    = darkblue   %Colour of citations
-}
-
-%\hypersetup{
-%	linktocpage  = true, %page number is the link (not title)
-%	colorlinks   = true, %Colours links instead of ugly boxes
-%	allcolors = bookColor,
-%	hidelinks = true
-%}
-
-% good looking urls
-\urlstyle{same}
-
-% we use this for our references as well
-\let\sref\ref
-\AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
-\usepackage[nameinlink]{cleveref}
-
-% define colors %
-\usepackage[table]{xcolor}
-
-%\usepackage[table,dvipdfx,cmyk]{xcolor}
-%\definecolor{bookColor}{cmyk}{0 ,0 ,0 ,1}
-%\color{bookColor}
-
-\definecolor{lightgray}{rgb}{.9,.9,.9}
-\definecolor{darkgray}{rgb}{.4,.4,.4}
-\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
-\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
-\usepackage[stable]{footmisc}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{tikz}
-\usepackage{url}
-\usepackage{amsmath,amsthm}
-\newcommand{\theoremname}{Theorem}
-\newtheorem{theorem}{\theoremname}
-
-\newcommand{\st}{\colon\,}
-\newcommand{\TM}{TM}
-\newcommand{\Atm}{A\textsubscript{TM}}
-\newcommand{\HALTtm}{HALT\textsubscript{TM}}
-
-\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
-            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
-
-% TURING MACHINE DESCRIPTIONS
-\usepackage{changepage}
-\newenvironment{steps}%
-{%
-\vspace{0.25cm}%
-\begin{adjustwidth}{0.3cm}{0cm}%
-\begin{description}%
-}
-{%
-\end{description}%
-\end{adjustwidth}%
-\vspace{0.1cm}%
-}
-
-\newcounter{TMachine}[section]
-\renewcommand{\theTMachine}{\thesection.\arabic{TMachine}}%
-\newenvironment{TMachine}[1]
-  {\refstepcounter{TMachine}%
-   \par%
-   \vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space above
-   \noindent{#1}%
-   \begin{steps}}%\begin{TMachine}
-  {\end{steps}%
-\vspace{.5\baselineskip\@plus.2\baselineskip\@minus.2\baselineskip}% Space below
-}% \end{TMachine}
-
-\newcommand{\accept}{\emph{accept}}
-\newcommand{\reject}{\emph{reject}}
-\makeatother
+\setcounter{errorcontextlines}{10000}
+\usepackage{../../macros/2017/all}
 
 \title{Computability and Complexity:\\Exercise Session 3 (2017-10-18)}
 \author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
@@ -100,6 +10,6 @@
 \maketitle
 \tableofcontents
 
-\input{../../material/sipser/exe:4.30=4.28/2017.tex}
+\input{../../material/sipser/exe:4.30=4.28/2017}
 
 \end{document}
