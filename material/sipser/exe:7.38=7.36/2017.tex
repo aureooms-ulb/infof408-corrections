@@ -1,0 +1,20 @@
+\section{\texorpdfstring{Exercise 7.38\footnote{%
+Exercises from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013). In the
+second edition of the book, this exercise is Exercise 7.36.}}{Exercise 7.38}}
+
+Le \(D\) be a decider for SAT, here is an algorithm that computes a satisfiable
+assignment for an input formula \(\phi\) on variables \(x_1,x_2,\ldots,x_n\)
+\begin{TMachine}{\(M =\) on input \(\langle \phi \rangle\)}
+\item[1.] Decide whether \(\phi\) is satisfiable using \(D\).
+\item[1.1.] Output ``not satisfiable'' and halt if the decider rejects.
+\item[2.] For \(i = 1\) to \(n\):
+\item[2.1.] Decide whether \(\phi \land x_i\) is satisfiable using \(D\).
+\item[2.2.] If the decider accepts, let \(a_i = 1\) and \(\phi \gets \phi \land
+	x_i\).
+\item[2.3.] Otherwise, let \(a_i = 0\) and \(\phi \gets \phi \land \overline{x_i}\).
+\item[3.] Output \(a_1, a_2, \ldots, a_n\).
+\end{TMachine}
+Suppose P = NP. Then there exists a decider \(D\) for SAT that runs in
+polynomial time. Then the algorithm given above runs in polynomial time.

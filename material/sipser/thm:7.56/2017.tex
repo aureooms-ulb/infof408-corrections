@@ -1,0 +1,156 @@
+\section{\texorpdfstring{SUBSET-SUM is NP-complete\footnote{%
+Theorem 7.56 from the reference book: Sipser M.,
+\emph{Introduction to the Theory of Computation}, 3rd edition
+(2013).}}{SUBSET-SUM is NP-complete}}
+Let us define the language SUBSET-SUM
+\begin{definition}
+	SUBSET-SUM \(= \{\langle S, t\rangle \st\)
+	\(S = \{x_1,x_2,\ldots,x_n\} \subset \N\),
+	\(t \in \N\) and there exists \(X \subseteq S\) such that
+	\(\sum_{x \in X} x = t\)
+	\(\}\)
+\end{definition}
+It is easy to see that SUBSET-SUM \(\in\) NP since we can use \(X\) as a
+certificate of polynomial size.
+We are left to prove that all problems in NP reduce to SUBSET-SUM in polynomial
+time. We do this by reducing 3SAT to SUBSET-SUM in polynomial time.
+\begin{theorem}
+	3SAT \(\le_P\) SUBSET-SUM
+\end{theorem}
+\begin{proof}
+	Given a 3-CNF formula \(\Phi\) with \(n\) variables
+	\(\{x_1,x_2,\ldots,x_n\}\) and \(m\) clauses \(\{c_1,c_2,\ldots,c_m\}\)
+	we build the SUBSET-SUM instance \(f(\langle \Phi \rangle) = \langle
+	S,t\rangle\) with set \(S =
+	\{y_1,z_1,y_2,z_2,\ldots,y_n,z_n,g_1,h_1,g_2,h_2,\ldots,g_m,h_m\}\) and
+	\(t = 11\ldots133\ldots3\) as in
+	\ref{subsetsum}. For the sake of the explanation, we consider that each of
+	these numbers is composed of exactly \(n+m\) digits, including leading
+	zeros.
+
+	For each variable \(x_i\) we define the two numbers
+	\(y_i\) and \(z_i\). The first \(n\) digits of \(y_i\) and \(z_i\) are
+	zeros except for the \(\nth{i}\) digit which is set to \(1\). The first
+	\(n\) digits of \(g_j\) and \(h_j\) are zeros. The first
+	\(n\) digits of \(t\) are ones so that if \(X\) exists it must contain
+	exactly one of \(y_i\) and \(z_i\) for each \(i\).
+	The \(\nth{(n+j)}\) digit of \(y_i\) is set to \(1\) if the literal \(x_i\)
+	appears in clause \(c_j\), it is set to \(0\) otherwise.
+	The \(\nth{(n+j)}\) digit of \(z_i\) is set to \(1\) if the literal
+	\(\overline{x_i}\)
+	appears in clause \(c_j\), it is set to \(0\) otherwise. The last \(m\)
+	digits of \(g_j\) and \(h_j\) are zeros except for the \(\nth{(n+j)}\) digit
+	which is set to \(1\). The last \(m\) digits of \(t\) are set to \(3\).
+
+	We want to prove that \(\langle \Phi \rangle \in \text{3SAT} \iff \langle
+	S,t\rangle \in \text{SUBSET-SUM}\).
+	If \(\Phi\) is satisfiable, then there
+	exists an assignment \(a = (a_1, a_2,\ldots,a_n) \in \{0,1\}^n\) on the
+	variables \(x_1,x_2,\ldots,x_n\) such that each clause \(c_j\) of \(\Phi\)
+	is satisfied. This means that at least one literal of \(c_j\) is true. We
+	build a certificate \(X\) from this assigment by including \(y_i\) if and
+	only if \(a_i = 1\). We include \(z_i\) if and only if \(a_i = 0\).
+	At this point of the construction of \(X\), the first \(n\) digits of the
+	sum of the elements of \(X\) are ones, and each \(\nth{(n+j)}\) digit of
+	the same sum is between \(1\) and \(3\). The former is true because we
+	included exactly one of \(y_i\) and \(z_i\) for each \(i \in
+	\{1,2,\ldots,n\}\) and the latter is true because each clause contains at
+	most three literals and, since each clause \(c_j\) is satisfied by
+	assignment \(a\), for each \(j \in \{1,2,\ldots,m\}\) at least one of the
+	included numbers as a \(1\) at the \(\nth{(n+j)}\) position.
+	We then include as many of \(g_j\) and \(h_j\) are necessary to reach the
+	target sum \(t\).
+
+	For the other direction, consider a certificate \(X\) for the instance
+	\(\langle S,t\rangle\). By construction, this certificate must include
+	exactly one of \(y_i\) and \(z_i\). We build a satisfying assignment \(a =
+	(a_1,a_2,\ldots,a_n) \in \{0,1\}^n\) for \(\Phi\) as follows. If \(y_i \in
+	X\), set \(a_i = 1\). Otherwise set \(a_i = 0\). For \(\sum_{x \in X} x\)
+	to be equal to \(t\), it must be that for each \(j \in \{1,2,\ldots,m\}\)
+	at least one of the included \(y_i\) or \(z_i\) has a \(0\) at position
+	\(\nth{(n+j)}\) otherwise the \(\nth{(n+j)}\) digit of the sum can never
+	reach \(3\). This means that for each \(c_j\), at least one literal is set
+	to true by assignment \(a\). \(a\) is thus a satisfying assignment for
+	\(\Phi\).
+
+	Note that a carry never occurs when computing the sum of a subset of \(S\)
+	because the digits of the numbers of \(S\) are zeros or ones and there are
+	at most five ones when considering the \(\nth{i}\) digit of all numbers of
+	\(S\). The complexity of this reduction is quadratic in the number of
+	variables and clauses.
+\end{proof}
+
+\begin{table}
+	\centering
+	\begin{tabular}{|c|*{6}{c}||*{6}{c}|}
+	\hline
+	& \(x_1\) & \(x_2\) & \(\cdots\) & \(x_i\) & \(\cdots\) & \(x_n\) & \(c_1\) & \(c_2\)
+	& \(\cdots\) & \(c_j\) & \(\cdots\) & \(c_m\)\\
+	\hline
+
+	\(y_1\) & \(1\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(1\)\\
+	\(z_1\) & \(1\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\)\\
+
+	\(y_2\) & \(0\) & \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(1\)
+	& \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\(z_2\) & \(0\) & \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\)\\
+
+	\(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) & \(\ddots\)
+	& \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) &
+	\(\ddots\) & \(\vdots\)\\
+
+	\(y_i\) & \(0\) & \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\(z_i\) & \(0\) & \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(0\) & \(1\)
+	& \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(0\)\\
+
+	\(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) & \(\ddots\)
+	& \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) &
+	\(\ddots\) & \(\vdots\)\\
+
+	\(y_n\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\) & \(0\)
+	& \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\(z_n\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\) & \(0\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\hhline{|=|*{6}{=}||*{6}{=}|}
+	\(g_1\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(1\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\(h_1\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(1\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+
+	\(g_2\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+	\(h_2\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(1\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\)\\
+
+	\(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) & \(\ddots\)
+	& \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) &
+	\(\ddots\) & \(\vdots\)\\
+
+	\(g_i\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(0\)\\
+	\(h_i\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(1\) & \(\cdots\) & \(0\)\\
+
+	\(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) & \(\ddots\)
+	& \(\vdots\) & \(\vdots\) & \(\vdots\) & \(\ddots\) & \(\vdots\) &
+	\(\ddots\) & \(\vdots\)\\
+
+	\(g_m\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\)\\
+	\(h_m\) & \(0\) & \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(0\) & \(0\)
+	& \(0\) & \(\cdots\) & \(0\) & \(\cdots\) & \(1\)\\
+	\hhline{|=|*{6}{=}||*{6}{=}|}
+	\(t\) & \(1\) & \(1\) & \(\cdots\) & \(1\) & \(\cdots\) & \(1\) & \(3\)
+	& \(3\) & \(\cdots\) & \(3\) & \(\cdots\) & \(3\)\\
+	\hline
+\end{tabular}
+\caption{Construction of \(S\) and \(t\) for \(\Phi =
+	(x_2\lor\overline{x_i}\lor\ldots) \land
+	(\overline{x_1}\lor x_2 \lor x_n) \land \cdots \land
+(x_1\lor\overline{x_i}\lor\ldots) \land \cdots \land (x_1 \lor \overline{x_1} \lor \overline{x_2} )\).}
+\label{subsetsum}
+\end{table}
