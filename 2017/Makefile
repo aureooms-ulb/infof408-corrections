@@ -1,21 +1,22 @@
+.PHONY: all clean zip
 
-TARGETS=$(shell find . -maxdepth 1 -type d -name [^\.]\* | sed 's:^\./::' | sort)
+SUBFOLDERS=$(shell find . -maxdepth 1 -type d -name [^\.]\* | sed 's:^\./::' | sort)
+ZIP=$(shell basename $(CURDIR))-infof408-exercises
 
 all:
-	for target in $(TARGETS) ; do \
-		make -C $$target ; \
+	for subfolder in $(SUBFOLDERS) ; do \
+		make -C $$subfolder ; \
 	done
 
 
 clean:
-	for target in $(TARGETS) ; do \
-		make -C $$target clean ; \
+	for subfolder in $(SUBFOLDERS) ; do \
+		make -C $$subfolder clean ; \
 	done
-	rm -f infof408-corrections.zip
+	rm -f $(ZIP)
 
-zip: infof408-corrections.zip
+zip: $(ZIP)
 
-infof408-corrections.zip: all
-	rm -f infof408-corrections.zip
-	zip -j infof408-corrections.zip [0-9]*/correction-[0-9]*.pdf extra/*/*.pdf
-
+$(ZIP): all
+	rm -f $@
+	zip -j $@ [0-9]*/correction-[0-9]*.pdf extra/*/*.pdf

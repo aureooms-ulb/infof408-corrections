@@ -1,14 +1,15 @@
 # INFOF408: Corrections of the exercise sessions
 
-One folder per session. Build with make.
+One folder per year, one subfolder per session. Build with make.
 
-## Build all corrections and extras
+## Build corrections and extras for all years
 
-	make # creates a pdf file in each folder in `./` and `./extra`
+	make
 
-## Create a zip archive including all corrections and extras
+## Create a zip archive including all corrections and extras of a given year
 
-	make zip # creates the file infof408-corrections.zip
+	cd 2017
+	make zip # creates the file 2017-infof408-exercises.zip
 
 ## Delete all generated files
 
