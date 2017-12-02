@@ -19,4 +19,4 @@ zip: $(ZIP)
 
 $(ZIP): all
 	rm -f $@
-	zip -j $@ [0-9]*/correction-[0-9]*.pdf extra/*/*.pdf
+	zip -j $@ [0-9]*/solution-[0-9]*.pdf extra/*/*.pdf

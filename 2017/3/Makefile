@@ -1,5 +1,5 @@
 
-TARGET=correction-$(shell basename $(CURDIR))
+TARGET=solution-$(shell basename $(CURDIR))
 
 all: $(TARGET).pdf
 
