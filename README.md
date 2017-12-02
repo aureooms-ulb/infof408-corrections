@@ -9,7 +9,7 @@ One folder per year, one subfolder per session. Build with make.
 ## Create a zip archive including all solutions and extras of a given year
 
 	cd 2017
-	make zip # creates the file 2017-infof408-exercises.zip
+	make zip # creates the file 2017-infof408-solutions.zip
 
 ## Delete all generated files
 
