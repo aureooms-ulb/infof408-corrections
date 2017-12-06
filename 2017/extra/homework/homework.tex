@@ -1,0 +1,76 @@
+\documentclass{article}
+\setcounter{errorcontextlines}{10000}
+\usepackage{fontspec}
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+\usepackage{fullpage}
+\usepackage{mleftright}
+
+\usepackage{hyperref}
+\hypersetup{%
+	linktocpage  = true, %page number is the link (not title)
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = darkblue, %Colour for external hyperlinks
+	linkcolor    = darkblue, %Colour of internal links
+	citecolor    = darkblue   %Colour of citations
+}
+
+% define colors %
+\usepackage[table]{xcolor}
+
+\definecolor{lightgray}{rgb}{0.9,0.9,0.9}
+\definecolor{darkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{darkblue}{rgb}{0.02, 0.17, 0.40}
+
+% good looking urls
+\urlstyle{same}
+
+\newcommand{\theoremname}{Theorem}
+\newcommand{\corollaryname}{Corollary}
+\newcommand{\problemname}{Problem}
+\newcommand{\conjecturename}{Conjecture}
+\newcommand{\definitionname}{Definition}
+
+\usepackage{url}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
+\usepackage{xfrac}
+
+\newtheorem{theorem}{\theoremname}
+\newtheorem{corollary}{\corollaryname}
+\newtheorem{problem}{\problemname}
+\newtheorem{conjecture}{\conjecturename}
+\newtheorem{definition}{\definitionname}
+
+\title{Computability and Complexity:\\Homework December 2017}
+\author{Aurélien Ooms\footnote{aureooms@ulb.ac.be}}
+\date{\today}
+
+\begin{document}
+\maketitle
+\section*{Instructions} The homework is due on Monday December 18 10AM at the
+beginning of the Q\&A session. Your solution must be typeset and printed on
+paper. A correct solution will grant you bonus points for the final exam.
+Plagiarism will be severely sanctionned.
+
+\section*{Homework}
+Let us start with a definition:
+\begin{definition}
+  Let $\phi$ be a 3CNF-formula. A $\ne$-assignment to the variables of $\phi$
+  is one where each clause contains two literals with unequal truth values.
+\end{definition}
+In other words, a $\ne$-assignment satisfies $\phi$ without assigning three
+true literals in any clause.
+
+Let $\ne$SAT be the collection of 3CNF-formulas that have a $\ne$-assignment.
+\begin{definition}
+  $\ne$SAT = $\{\,\langle \phi \rangle\colon\, \text{$\phi$ has a $\ne$-assignment.} \,\}$
+\end{definition}
+
+\paragraph{Your task:} You are asked to prove that $\ne$SAT is NP-complete.
+
+\paragraph{Hint:} Prove that the negation of any $\ne$-assignment of $\phi$ is
+also a $\ne$-assignment of $\phi$.
+%
+\end{document}
