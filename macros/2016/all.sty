@@ -35,6 +35,7 @@
 % we use this for our references as well
 \let\sref\ref
 \AtBeginDocument{\renewcommand{\ref}[1]{\mbox{\autoref{#1}}}}
+\usepackage{amsmath,amsthm,amsfonts,mathtools}
 \usepackage[nameinlink]{cleveref}
 
 % define colors %
@@ -60,7 +61,6 @@ skip=6pt,list=false,hypcap=false
 \pgfdeclarelayer{bg}    % declare background layer
 \pgfsetlayers{bg,main}  % set the order of the layers (main is the standard layer)
 \usepackage{url}
-\usepackage{amsmath,amsthm,amsfonts,mathtools}
 \usepackage{xfrac}
 
 
