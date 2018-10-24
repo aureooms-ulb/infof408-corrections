@@ -1,0 +1,33 @@
+\section{Exercise 5.9}
+
+We showed during a previous lecture (2018-10-15) that given some non-trivial property
+\(P\) the problem of deciding whether the language \(L(M)\) of some TM \(M\)
+has property \(P\), that is, \(L(M) \in P\), is undecidable. This result is
+Rice's theorem. To solve this exercise, we just have to show
+that\footnote{\(w = w_1 w_2 \ldots w_n \iff w^{\mathcal{R}} = w_{n} w_{n-1}\ldots w_{1}\)}
+\(P = \{A \st w \in A \iff
+w^{\mathcal{R}} \in A \}\) is indeed a non-trivial\footnote{Non-trivial means
+that \(P \neq \emptyset \land P \neq \mathcal{P}(\Sigma^*)\), where
+\(\mathcal{P}(S)\) is the set of all subsets of \(S\). \(\mathcal{P}\) is
+called the powerset operator.} property. For
+example, \(\{\texttt{01}\} \not\in P\) so \(P \neq \mathcal{P}(\Sigma^*)\) and
+\(\{\texttt{1}\} \in P\) so \(P \neq \emptyset\).
+
+Alternatively, we can produce the following proof reducing \Atm{} to our problem.
+Let us assume \(T = \{\langle M \rangle \st M \text{ is a \TM{} that accepts
+\(w^{\mathcal{R}}\) whenever it accepts \(w\)}\}\) is decidable. That means
+there exists a decider \(H\) for language \(T\). Given some input \(\langle
+M,w\rangle\) to test against the language \Atm{}, build the following
+\TM{}:
+
+\begin{TMachine}{\(D_{\langle M,w\rangle} =\) on input \(x\):}
+\item[1.] If \(x = \texttt{01}\): \accept.
+\item[2.] Otherwise run \(M\) on \(w\). If \(M\) accepts, \accept. Otherwise
+		\reject.
+\end{TMachine}
+Note that \(L(D) = \Sigma^* \in P\) if and only if \(M\) accepts \(w\) and
+\(L(D) = \{\texttt{01}\} \not\in P\) if and only if \(M\) does not accept
+\(w\). Hence, for any input \(\langle M,w\rangle\) we can decide whether \(M\)
+accepts \(w\) by running the decider \(H\) on \(\langle D_{\langle M,w\rangle}
+\rangle\), a contradiction with respect to the theorem about the undecidability
+of \Atm{} we proved during the lectures.
